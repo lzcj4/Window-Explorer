@@ -68,7 +68,7 @@
               <GridViewColumn.Header >
                 <CheckBox x:Name="chkAll" Background="Transparent"
                            IsEnabled="{Binding IsCheckEnabled,ElementName=ucContent}"
-                           IsChecked="{Binding IsChecked,Mode=TwoWay,ElementName=ucContent}"
+                           IsChecked="{Binding IsChecked,Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type UserControl}}}"                         
                            VerticalAlignment="Center"  HorizontalAlignment="Left"/>
               </GridViewColumn.Header>
 
