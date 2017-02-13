@@ -1,0 +1,176 @@
+﻿<Window x:Name="window" x:Class="FileExplorer.Test"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileExplorer"
+        xmlns:vm="clr-namespace:FileExplorer.ViewModel"
+        mc:Ignorable="d"
+        Title="Test" Height="500" Width="500">
+    <Window.Resources>
+        <Storyboard x:Key="RotateBorderStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="border">
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="180"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="grid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="0.216"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="180.818"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="path">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1.021"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="path">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="0.999"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0.911"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="path">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-2.147"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-1.134"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="path">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="0.626"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-1.433"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="path">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="163.317"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="170.761"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="path1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="3.24"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="14.043"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="path1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-1.033"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-0.945"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="path1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-1.49"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1.05"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="path1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-1.426"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-2.028"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="path1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="0.932"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0.929"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="grid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="1.061"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="grid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="1.025"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="grid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="3"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="grid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="1.333"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(SkewTransform.AngleX)" Storyboard.TargetName="path">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-6.263"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="ellipse">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="2.475"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="ellipse">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-1.333"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-12.993"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="ellipse">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="1.984"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="ellipse">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-14.667"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.01" Value="-10.05"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="Storyboard1">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="border">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="89.821"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">           
+            <BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
+        </EventTrigger>
+    </Window.Triggers>
+    <Grid Background="#FFC0E4CF" Margin="0,0,-152,-31" >
+        <Border x:Name="border" BorderThickness="5" Width="100" Height="1"  BorderBrush="Red" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="18.666,73.333,0,0" VerticalAlignment="Top" >
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+        </Border>
+        <Grid x:Name="grid" Width="100" Height="100" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="25.333,98.5,0,70.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Path x:Name="path1" Data="M21.166667,0.50000002 L29.166667,20.499997 L14.5,32.5 L7.166667,23.833333 L17.166334,17.166667 L11.833333,3.167 z" Fill="#FFF4F4F5" Margin="30.166,-13.333,0,81.333" Stroke="Black" Stretch="Fill" HorizontalAlignment="Left" Width="27.667" RenderTransformOrigin="0.5,0.5">
+                <Path.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="-1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Path.RenderTransform>
+            </Path>
+
+            <Path x:Name="path" Data="M21.166667,0.50000002 L29.166667,20.499997 L14.5,32.5 L7.166667,23.833333 L17.166334,17.166667 L11.833333,3.167 z" Fill="#FFF4F4F5" Margin="39.333,78.469,0,-19.13" Stroke="Black" Stretch="Fill" HorizontalAlignment="Left" Width="27.667" RenderTransformOrigin="0.5,0.5">
+                <Path.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="150.909"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Path.RenderTransform>
+            </Path>
+            <Ellipse x:Name="ellipse"  Margin="35.205,42.091,13.748,16.482" Stroke="Black" RenderTransformOrigin="0.5,0.5">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+
+        </Grid>
+        <RadioButton x:Name="radioButton" Content="RadioButton" 
+                     VerticalAlignment="Bottom" 
+                     Style="{DynamicResource RadioButtonIconStyle}"
+                     vm:IconAttachedProp.CheckedIcon="../Assets/eventImportanceSelect.png"
+                     vm:IconAttachedProp.UncheckedIcon="../Assets/eventImportance.png" 
+                     Margin="153.333,0,141.333,94.666"/>
+
+        <RadioButton x:Name="radioButton2" Content="RadioButton" 
+                     VerticalAlignment="Bottom" 
+                     Style="{DynamicResource RadioButtonIconStyle}"
+                     vm:IconAttachedProp.CheckedIcon="../Assets/eventNormalSelect.png"
+                     vm:IconAttachedProp.UncheckedIcon="../Assets/eventNormal.png" 
+                     Margin="153.333,0,141.333,45.332"/>
+
+
+    </Grid>
+</Window>

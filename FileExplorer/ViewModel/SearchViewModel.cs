@@ -123,6 +123,7 @@ namespace FileExplorer.ViewModel
                 SetProperty(ref musicCount, value, "MusicCount");
             }
         }
+                
 
         private int documentCount = 0;
         public int DocumentCount

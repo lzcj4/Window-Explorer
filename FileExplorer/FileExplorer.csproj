@@ -38,6 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -83,6 +84,9 @@
     <Compile Include="Model\LocalRootFolder.cs" />
     <Compile Include="Shell\DataSourceShell.cs" />
     <Compile Include="Shell\ShellAPI.cs" />
+    <Compile Include="Test.xaml.cs">
+      <DependentUpon>Test.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UCContent.xaml.cs">
       <DependentUpon>UCContent.xaml</DependentUpon>
     </Compile>
@@ -100,6 +104,7 @@
     </Compile>
     <Compile Include="ViewModel\FileExplorerViewModel.cs" />
     <Compile Include="ViewModel\GenericCommand.cs" />
+    <Compile Include="ViewModel\IconAttachedProp.cs" />
     <Compile Include="ViewModel\ISearch.cs" />
     <Compile Include="ViewModel\ISortOrder.cs" />
     <Compile Include="ViewModel\SearchViewModel.cs" />
@@ -120,6 +125,30 @@
     <Page Include="Strings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\RadioButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theme\cn\Color.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theme\cn\Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theme\en\Color.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Theme\en\Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UCContent.xaml">
       <SubType>Designer</SubType>
@@ -177,6 +206,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Indicator_small.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\eventImportance.png" />
+    <Resource Include="Assets\eventImportanceSelect.png" />
+    <Resource Include="Assets\eventNormal.png" />
+    <Resource Include="Assets\eventNormalSelect.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
