@@ -61,6 +61,7 @@ namespace FileExplorer.ViewModel
             }
         }
 
+  
         protected void ClearSortOptions()
         {
             if (!this.ContentView.IsNull())

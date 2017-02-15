@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:FileExplorer.Converter">
+    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+
+    <local:CompositeCoverter x:Key="reverseBooleanToVisibilityConverter">
+        <local:BooleanReserveConverter/>
+        <BooleanToVisibilityConverter />
+    </local:CompositeCoverter>
+
+    <local:EmpytToVisibilityConverter x:Key="empytToVisibilityConverter"/>
+
+</ResourceDictionary>

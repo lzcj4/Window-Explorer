@@ -32,18 +32,25 @@
                         <Border x:Name="radioButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" 
                                     BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
                                     CornerRadius="100" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                    Margin="1,1,2,1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <Grid x:Name="markGrid" Margin="2">
-                                <Image Source="{Binding Path=(vm:IconAttachedProp.UncheckedIcon),RelativeSource={RelativeSource  TemplatedParent}}" Width="16" Height="16" x:Name="iconUnchecked"/>
-                                <Image Source="{Binding Path=(vm:IconAttachedProp.CheckedIcon),RelativeSource={RelativeSource TemplatedParent}}"
-                                           Width="16" Height="16" x:Name="iconChecked" Visibility="Collapsed"/>
+                                    Margin="1,-1,2,1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Grid x:Name="markGrid" Margin="2,0,2,2">
+                                <Image Source="{Binding Path=(vm:UIAttachedProp.UncheckedIcon),RelativeSource={RelativeSource  TemplatedParent}}" 
+                                       Width="{Binding Path=(vm:UIAttachedProp.IconWidth),RelativeSource={RelativeSource  TemplatedParent}}"
+                                       Height="{Binding Path=(vm:UIAttachedProp.IconHeight),RelativeSource={RelativeSource  TemplatedParent}}" 
+                                       x:Name="iconUnchecked" Margin="0,0,0,0"/>
+                                <Image Source="{Binding Path=(vm:UIAttachedProp.CheckedIcon),RelativeSource={RelativeSource TemplatedParent}}"
+                                       Width="{Binding Path=(vm:UIAttachedProp.IconWidth),RelativeSource={RelativeSource  TemplatedParent}}"
+                                       Height="{Binding Path=(vm:UIAttachedProp.IconHeight),RelativeSource={RelativeSource  TemplatedParent}}" 
+                                       x:Name="iconChecked" Visibility="Collapsed"/>
 
                             </Grid>
                         </Border>
                         <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
                                               Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                              Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}"
-                                              RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                              Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="HasContent" Value="True">

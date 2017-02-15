@@ -154,7 +154,7 @@
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding FolderPath}" VerticalAlignment="Center"  TextTrimming="CharacterEllipsis"
-           ToolTip="{Binding FolderPath}" />
+                             ToolTip="{Binding FolderPath}" />
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>

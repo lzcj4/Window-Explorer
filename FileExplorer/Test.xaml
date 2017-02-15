@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileExplorer"
         xmlns:vm="clr-namespace:FileExplorer.ViewModel"
+        xmlns:control="clr-namespace:FileExplorer.Controls"      
         mc:Ignorable="d"
-        Title="Test" Height="500" Width="800">
+        Title="Test" Height="608" Width="1354">
     <Window.Resources>
         <Storyboard x:Key="Storyboard1">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="border">
@@ -14,14 +15,15 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:1" Value="89.821"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-
     </Window.Resources>
+
     <Window.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
             <BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
         </EventTrigger>
     </Window.Triggers>
-    <Grid Background="#FFC0E4CF" Margin="0,0,-152,-31" >
+
+    <Grid >
         <Border x:Name="border" BorderThickness="5" Width="100" Height="1"  BorderBrush="Red" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="18.666,73.333,0,0" VerticalAlignment="Top" >
             <Border.RenderTransform>
                 <TransformGroup>
@@ -32,6 +34,7 @@
                 </TransformGroup>
             </Border.RenderTransform>
         </Border>
+
         <Grid x:Name="grid" Width="100" Height="100" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="25.333,98.5,0,70.5">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -74,23 +77,29 @@
             </Ellipse>
 
         </Grid>
+
         <RadioButton x:Name="radioButton" Content="RadioButton" 
-                     VerticalAlignment="Bottom" 
-                     Style="{DynamicResource RadioButtonIconStyle}"
-                     vm:IconAttachedProp.CheckedIcon="../Assets/eventImportanceSelect.png"
-                     vm:IconAttachedProp.UncheckedIcon="../Assets/eventImportance.png" 
-                     Margin="153.333,0,141.333,94.666"/>
+                     VerticalAlignment="Top"     
+                     vm:UIAttachedProp.IconHeight="16"
+                     vm:UIAttachedProp.IconWidth="16"
+                     vm:UIAttachedProp.CheckedIcon="../Assets/eventImportanceSelect.png"
+                     vm:UIAttachedProp.UncheckedIcon="../Assets/eventImportance.png" 
+                     Style="{DynamicResource RadioButtonIconStyle}"                    
+                     Margin="174.333,52.334,120.333,0"/>
 
         <RadioButton x:Name="radioButton2" Content="RadioButton" 
-                     VerticalAlignment="Bottom" 
-                     Style="{DynamicResource RadioButtonIconStyle}"
-                     vm:IconAttachedProp.CheckedIcon="../Assets/eventNormalSelect.png"
-                     vm:IconAttachedProp.UncheckedIcon="../Assets/eventNormal.png" 
-                     Margin="153.333,0,141.333,45.332"/>
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="269,226.5,0,0" VerticalAlignment="Top" Width="120" 
-                  vm:IconAttachedProp.DefaultIcon="./Assets/eventNormalSelect.png" 
-                  Template="{StaticResource ComboBoxSearchTemplate}"
-                 >
+                     VerticalAlignment="Top" 
+                     vm:UIAttachedProp.IconHeight="16"
+                     vm:UIAttachedProp.IconWidth="16"
+                     vm:UIAttachedProp.CheckedIcon="../Assets/eventNormalSelect.png"
+                     vm:UIAttachedProp.UncheckedIcon="../Assets/eventNormal.png" 
+                     Style="{DynamicResource RadioButtonIconStyle}"                   
+                     Margin="334.833,52.334,-40.167,0"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" 
+                  Margin="174.333,100.5,0,0" 
+                  VerticalAlignment="Top" Width="120" 
+                  vm:UIAttachedProp.DefaultIcon="../Assets/eventNormalSelect.png" 
+                  Template="{StaticResource ComboBoxSearchTemplate}">
             <ComboBox.Items>
                 <ComboBoxItem Content="A"/>
                 <ComboBoxItem Content="b"/>
@@ -98,6 +107,21 @@
             </ComboBox.Items>
         </ComboBox>
 
+        <control:UCPassword Password="{Binding Password}" Width="200" Height="20" 
+                            PasswordHint="密码设置"
+                            HorizontalAlignment="Left" Margin="174.333,144,0,0" 
+                            VerticalAlignment="Top" d:LayoutOverrides="Width, Height"/>
+
+        <TextBox  Width="100" Height="20" Background="White" HorizontalAlignment="Left" 
+                  Margin="174.333,185.5,0,0" VerticalAlignment="Top"  
+                  vm:UIAttachedProp.TextHint="ABC"
+                  d:LayoutOverrides="Width, Height"
+                  Template="{DynamicResource TextBoxWithHintControlTemplate}" />
+
+        <Button x:Name="button" Content="To Main" HorizontalAlignment="Left" Margin="43.666,129.813,0,0" 
+                VerticalAlignment="Top" Width="75" Click="button_Click"/>
+
+        <control:UCListView Width="500"  Margin="400,50,100,50" />
 
     </Grid>
 </Window>

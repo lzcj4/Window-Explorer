@@ -60,6 +60,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\UCListView.xaml.cs">
+      <DependentUpon>UCListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UCPager.xaml.cs">
+      <DependentUpon>UCPager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UCPassword.xaml.cs">
+      <DependentUpon>UCPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converter\AndConverter.cs" />
+    <Compile Include="Converter\BooleanReserveConverter.cs" />
+    <Compile Include="Converter\CompositeCoverter.cs" />
+    <Compile Include="Converter\EmpytToVisibilityConverter.cs" />
+    <Compile Include="Converter\OrConverter.cs" />
     <Compile Include="Factory\CDRomExplorerFactory.cs" />
     <Compile Include="Factory\CloudExplorerFactory.cs" />
     <Compile Include="Factory\JsonExplorerFactory.cs" />
@@ -107,21 +121,34 @@
     </Compile>
     <Compile Include="ViewModel\FileExplorerViewModel.cs" />
     <Compile Include="ViewModel\GenericCommand.cs" />
-    <Compile Include="ViewModel\IconAttachedProp.cs" />
+    <Compile Include="ViewModel\UIAttachedProp.cs" />
     <Compile Include="ViewModel\ISearch.cs" />
     <Compile Include="ViewModel\ISortOrder.cs" />
     <Compile Include="ViewModel\SearchViewModel.cs" />
     <Compile Include="ViewModel\SortOrderViewModel.cs" />
+    <Compile Include="ViewModel\TestViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ControlStyle.xaml">
+    <Page Include="Controls\UCListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LVControlStyle.xaml">
+    <Page Include="Controls\UCPager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\ControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UCPassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\LVControlStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -130,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Strings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\Converters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -219,6 +250,13 @@
     <Resource Include="Assets\eventImportanceSelect.png" />
     <Resource Include="Assets\eventNormal.png" />
     <Resource Include="Assets\eventNormalSelect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\eye_closed.png" />
+    <Resource Include="Assets\eye_opened.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\switch.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

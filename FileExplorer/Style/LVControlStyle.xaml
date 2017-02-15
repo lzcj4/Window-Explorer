@@ -11,17 +11,21 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
             </Grid.ColumnDefinitions>
-            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                   Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" 
+                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                   Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" 
+                   Placement="Bottom">
                 <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" 
                                                MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
-                    <Border x:Name="DropDownBorder" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1"
+                    <Border x:Name="DropDownBorder" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" 
+                            BorderThickness="1"
                             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
                         <ScrollViewer x:Name="DropDownScrollViewer">
                             <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                 <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                     <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=DropDownBorder}" 
-                                               Height="{Binding ActualHeight, ElementName=DropDownBorder}" Width="{Binding ActualWidth, ElementName=DropDownBorder}"/>
+                                               Height="{Binding ActualHeight, ElementName=DropDownBorder}" 
+                                               Width="{Binding ActualWidth, ElementName=DropDownBorder}"/>
                                 </Canvas>
                                 <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" 
                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
@@ -30,6 +34,7 @@
                     </Border>
                 </Themes:SystemDropShadowChrome>
             </Popup>
+            
             <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
                           Background="{TemplateBinding Background}" Grid.ColumnSpan="2" 
                           IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
@@ -51,7 +56,11 @@
                                         </Border.Background>
                                         <Border x:Name="splitBorder" BorderBrush="Transparent" BorderThickness="1" HorizontalAlignment="Right" 
                                                 Margin="0" SnapsToDevicePixels="True" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
-                                            <Image  x:Name="Arrow" Source="{Binding Path=(vm:IconAttachedProp.DefaultIcon),RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ComboBox}}}" Width="16" Height="16" Stretch="Uniform"/>
+                                            <Image  x:Name="Arrow" 
+                                                    Source="{Binding Path=(vm:UIAttachedProp.DefaultIcon),RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ComboBox}}}"
+                                                    Width="{Binding Path=(vm:UIAttachedProp.IconWidth),RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ComboBox}}}"
+                                                    Height="{Binding Path=(vm:UIAttachedProp.IconHeight),RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ComboBox}}}"
+                                                    Stretch="Uniform"/>
                                         </Border>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -172,9 +181,12 @@
                     </Style>
                 </ToggleButton.Style>
             </ToggleButton>
-            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}"
-                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                              IsHitTestVisible="False" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                              Content="{TemplateBinding SelectionBoxItem}"
+                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" 
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                              IsHitTestVisible="False" Margin="{TemplateBinding Padding}" 
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
         </Grid>
         <ControlTemplate.Triggers>
@@ -194,6 +206,43 @@
             <Trigger Property="CanContentScroll" SourceName="DropDownScrollViewer" Value="False">
                 <Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
                 <Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <ControlTemplate x:Key="TextBoxWithHintControlTemplate" TargetType="{x:Type TextBox}">
+        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+  
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock  Text="{Binding Path=(vm:UIAttachedProp.TextHint),RelativeSource={RelativeSource TemplatedParent}}" 
+                                                Foreground="#c7c6c6" Margin="2,1,0,0" 
+                                                x:Name="markText" Visibility="Collapsed"/>
+                </StackPanel>
+                <ScrollViewer x:Name="PART_ContentHost" Focusable="False" 
+                              HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter TargetName="markText" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsFocused" Value="False" />
+                    <Condition Property="Text" Value="" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="markText" Property="Visibility" Value="Visible" />
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF569DE5"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
