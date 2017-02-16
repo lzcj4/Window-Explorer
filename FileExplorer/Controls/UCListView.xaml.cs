@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -8,7 +8,6 @@ namespace FileExplorer.Controls
 
     public class TestModel
     {
-
         public int ID { get; set; }
         public string Name { get; set; }
         public bool IsChecked { get; set; }
@@ -31,16 +30,17 @@ namespace FileExplorer.Controls
             LoadData();
         }
 
+
+        private IList<TestModel> internalList;
         private void LoadData()
         {
-            IList<TestModel> list = new List<TestModel>();
-
-            for (int i = 0; i < 100; i++)
+            int len = 100;
+            internalList = new List<TestModel>();
+            for (int i = 0; i < len; i++)
             {
-                list.Add(new TestModel(i, "AAA"));
+                internalList.Add(new TestModel(i + 1, "AAA"));
             }
-
-            this.lvContent.ItemsSource = list;
+            ucPager.ItemLen = len;
         }
 
         bool isListView = false;
@@ -65,11 +65,21 @@ namespace FileExplorer.Controls
                 style = this.Resources[name] as Style;
             }
 
-            if(null != style)
+            if (null != style)
             {
                 this.lvContent.Style = style;
             }
         }
 
+        private void UCPager_PageChanged(object sender, PageEvnetArgs e)
+        {
+            int index = e.Index;
+            int len = e.Len;
+            if (index >= 0 && len > 0)
+            {
+                var tempItems = this.internalList.Skip(index * ucPager.PageSize).Take(len);
+                this.lvContent.ItemsSource = tempItems;
+            }
+        }
     }
 }

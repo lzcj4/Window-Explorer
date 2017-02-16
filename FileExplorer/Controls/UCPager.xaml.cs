@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FileExplorer.Controls
 {
-
     public class PageEvnetArgs : EventArgs
     {
-        public int StartIndex { get; private set; }
+        public int Index { get; private set; }
         public int Len { get; private set; }
 
         public PageEvnetArgs(int index, int len)
@@ -28,7 +19,7 @@ namespace FileExplorer.Controls
                 throw new InvalidOperationException("页码值必须大于0");
             }
 
-            this.StartIndex = index;
+            this.Index = index;
             this.Len = len;
         }
     }
@@ -62,14 +53,18 @@ namespace FileExplorer.Controls
              {
                  int newPageSize = (int)e.NewValue;
                  UCPager uc = d as UCPager;
-                 if (null != uc && uc.PageSize > 0 && newPageSize > 0)
+                 if (null != uc && uc.PageSize > 0 &&
+                     newPageSize > 0 && uc.ItemLen > 0)
                  {
                      uc.TotalPages = uc.ItemLen / newPageSize + 1;
-                     uc.ReloadPageButtons();
+                     if (uc.TotalPages > 0)
+                     {
+                         uc.ReloadPageButtons();
+                         uc.CheckDefaultPageButton();
+                     }
                  }
              }));
-
-
+        
 
         /// <summary>
         /// 总共多少条记录
@@ -86,13 +81,17 @@ namespace FileExplorer.Controls
             {
                 int newLen = (int)e.NewValue;
                 UCPager uc = d as UCPager;
-                if (null != uc && uc.PageSize > 0 && newLen > 0)
+                if (null != uc && uc.PageSize > 0 &&
+                    newLen > 0 && uc.ItemLen > 0)
                 {
                     uc.TotalPages = newLen / uc.PageSize + 1;
-                    uc.ReloadPageButtons();
+                    if (uc.TotalPages > 0)
+                    {
+                        uc.ReloadPageButtons();
+                        uc.CheckDefaultPageButton();
+                    }
                 }
             }));
-
 
 
         /// <summary>
@@ -109,6 +108,16 @@ namespace FileExplorer.Controls
             DependencyProperty.Register("ButtonLen", typeof(int), typeof(UCPager), new PropertyMetadata(5));
 
 
+        public int TotalPages
+        {
+            get { return (int)GetValue(TotalPagesProperty); }
+            set { SetValue(TotalPagesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TotalPages.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TotalPagesProperty =
+            DependencyProperty.Register("TotalPages", typeof(int), typeof(UCPager), new PropertyMetadata(0));
+
         #endregion
 
 
@@ -118,7 +127,7 @@ namespace FileExplorer.Controls
 
         private Button NextBtn { get; set; }
 
-        private int currentIndex = 0;
+        private int currentIndex = -1;
         private int CurrentIndex
         {
             get { return currentIndex; }
@@ -132,24 +141,24 @@ namespace FileExplorer.Controls
                     {
                         this.UncheckLastBtn();
                         btn.IsChecked = true;
-                        this.LastPageBtn = btn;
+                        this.lastClickedBtn = btn;
                     }
                     this.PreviousBtn.IsEnabled = this.CurrentIndex != 0;
                     this.NextBtn.IsEnabled = this.CurrentIndex != this.TotalPages - 1;
+
+                    this.RaisePageChanged(value, this.PageSize);
                 }
             }
         }
 
-        private int TotalPages { get; set; }
-
         private IList<ToggleButton> pageButtons = new List<ToggleButton>();
-
         public IList<ToggleButton> PageButtons
         {
             get { return pageButtons; }
             set { pageButtons = value; }
         }
-        private ToggleButton LastPageBtn { get; set; }
+
+        private ToggleButton lastClickedBtn { get; set; }
         private Thickness buttonMargin = new Thickness(5, 0, 0, 0);
 
         #endregion
@@ -203,8 +212,6 @@ namespace FileExplorer.Controls
                     this.CurrentIndex++;
                 }
             }
-
-
         }
 
         private bool isPrevious = false;
@@ -213,13 +220,14 @@ namespace FileExplorer.Controls
             if (this.CurrentIndex > 0)
             {
                 ToggleButton btn = PageButtons.FirstOrDefault(item => ((int)item.Tag) == this.CurrentIndex);
-                if (null != btn && (PageButtons.IndexOf(btn) == GetLastPageButtonIndex()))
+                if (null != btn && (PageButtons.IndexOf(btn) == 0))
                 {
                     int previewPage = this.CurrentIndex - this.ButtonLen;
                     if (previewPage >= 0)
                     {
                         this.isPrevious = true;
                         this.LoadNextPageButtons(previewPage);
+                        this.CurrentIndex--;
                     }
                 }
                 else
@@ -229,17 +237,23 @@ namespace FileExplorer.Controls
             }
         }
 
-        private void LoadPageButtons(bool isNext = true)
+        Style pageButtonStyle = null;
+        private Style GetPageButtonStyle()
         {
-            int pageIndex = this.CurrentIndex;
+            pageButtonStyle = pageButtonStyle ?? this.FindResource("PageButtonControlTemplate") as Style;
+            return pageButtonStyle;
+        }
 
+        private void LoadPageButtons(int startIndex)
+        {
             ToggleButton btn = null;
             for (int i = 0; i < this.ButtonLen; i++)
             {
-                if (pageIndex < this.TotalPages)
+                if (startIndex < this.TotalPages)
                 {
                     btn = new ToggleButton();
-                    btn.Tag = pageIndex;
+                    btn.Tag = startIndex;
+                    btn.Style = this.GetPageButtonStyle();
                     btn.Margin = buttonMargin;
 
                     btn.Click += (sender, e) =>
@@ -247,22 +261,24 @@ namespace FileExplorer.Controls
                         PageButtonClicked(((int)(sender as ButtonBase).Tag));
                     };
 
-                    btn.Content = string.Format("{0,2}", pageIndex + 1);
+                    btn.Content = string.Format("{0,2}", startIndex + 1);
                     this.PageButtons.Add(btn);
                 }
 
-                pageIndex++;
+                startIndex++;
             }
 
-            if (pageIndex < this.TotalPages - 1)
+            if (startIndex < this.TotalPages - 1)
             {
                 btn = new ToggleButton();
-                btn.Tag = pageIndex;
+                btn.Tag = startIndex;
                 btn.Margin = buttonMargin;
+                btn.Style = this.GetPageButtonStyle();
                 btn.Click += (sender, e) =>
                 {
                     this.isPrevious = false;
-                    LoadNextPageButtons((int)(sender as ButtonBase).Tag);
+                    this.CurrentIndex = (int)(sender as ButtonBase).Tag;
+                    LoadNextPageButtons(this.CurrentIndex);
                 };
                 btn.Content = btn.Content = string.Format("{0,2}", UCPager.STR_NEXT_PAGES);
                 this.PageButtons.Add(btn);
@@ -275,8 +291,7 @@ namespace FileExplorer.Controls
         {
             if (index != this.TotalPages - 1)
             {
-                this.CurrentIndex = index;
-                this.ReloadPageButtons();
+                this.ReloadPageButtons(index);
             }
         }
 
@@ -284,12 +299,6 @@ namespace FileExplorer.Controls
         {
             this.UncheckLastBtn();
             this.CurrentIndex = pageIndex;
-            int len = this.PageSize;
-            if (pageIndex == this.TotalPages - 1)
-            {
-                len = this.ItemLen % this.PageSize;
-                this.RaisePageChanged(pageIndex, len);
-            }
         }
 
         private void RemovePageButtons()
@@ -302,17 +311,25 @@ namespace FileExplorer.Controls
             this.PageButtons.Clear();
         }
 
-        private void ReloadPageButtons(bool isNext = true)
+        private void ReloadPageButtons(int startIndex = 0)
         {
             this.RemovePageButtons();
-            this.LoadPageButtons(isNext);
+            this.LoadPageButtons(startIndex);
+        }
+
+        private void CheckDefaultPageButton()
+        {
+            if (null != this.PageButtons && this.PageButtons.Count > 0)
+            {
+                this.CurrentIndex = 0;
+            }
         }
 
         private void UncheckLastBtn()
         {
-            if (this.LastPageBtn != null)
+            if (this.lastClickedBtn != null)
             {
-                this.LastPageBtn.IsChecked = false;
+                this.lastClickedBtn.IsChecked = false;
             }
         }
 
@@ -336,7 +353,7 @@ namespace FileExplorer.Controls
                 }
                 int index = this.PageButtons.Count > 1 && this.isPrevious ? this.PageButtons.Count - 2 : 0;
                 this.PageButtons[index].IsChecked = true;
-                this.LastPageBtn = this.PageButtons[index];
+                this.lastClickedBtn = this.PageButtons[index];
             }
 
             this.panelPager.Children.Add(this.NextBtn);
@@ -349,6 +366,11 @@ namespace FileExplorer.Controls
             if (index < 0 || len < 0)
             {
                 throw new InvalidOperationException();
+            }
+
+            if (index == this.TotalPages - 1)
+            {
+                len = this.ItemLen % this.PageSize;
             }
 
             if (null != this.PageChanged)
