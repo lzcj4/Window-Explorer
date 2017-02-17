@@ -447,6 +447,16 @@ namespace FileExplorer
         }
 
         #endregion
+
+        bool isListView = true;
+        private void menuSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            Style listStyle = this.FindResource("ListStyle") as Style;
+            Style thumbnailStyle = this.FindResource("ThumbnailStyle") as Style;
+
+            this.isListView = !this.isListView;
+            lvContent.Style = this.isListView ? listStyle : thumbnailStyle;
+        }
     }
 
     public class ContentEventArgs<T> : EventArgs

@@ -41,6 +41,7 @@ namespace FileExplorer.Controls
                 internalList.Add(new TestModel(i + 1, "AAA"));
             }
             ucPager.ItemLen = len;
+
         }
 
         bool isListView = false;
