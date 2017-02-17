@@ -55,13 +55,24 @@
                     </GridView>
                 </Setter.Value>
             </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>                    
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="ListView.AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="LightBlue"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="ImageViewListStyle" TargetType="{x:Type ListView}" >
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="3"/>
+                        <UniformGrid Rows="5"/>
                         <!--<WrapPanel ItemHeight="80" ItemWidth="100"   
                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                                    ScrollViewer.VerticalScrollBarVisibility="Auto"/>-->
@@ -112,23 +123,29 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0,10">
-            <Button   x:Name="btnSwitch" HorizontalAlignment="Right" Margin="0,0,10,0" Click="btnSwitch_Click">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="../Assets/switch.png" Width="16" Height="16"/>
-                        <TextBlock Text="切换" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <ToggleButton Content="大" Margin="0,0,10,0"/>
+                <ToggleButton Content="小" Margin="0,0,10,0"/>
+                <Button  x:Name="btnSwitch"  Margin="0,0,10,0" Click="btnSwitch_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/switch.png" Width="16" Height="16"/>
+                            <TextBlock Text="切换" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+
         </Grid>
 
         <Grid Grid.Row="1">
-            <ListView x:Name="lvContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                      Style="{StaticResource ImageViewListStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+            <ListView x:Name="lvContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  AlternationCount="2"
+                      Style="{StaticResource ImageViewListStyle}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
         </Grid>
 
         <Grid Grid.Row="2" Margin="0,10">
-            <local:UCPager PageSize="12" ButtonLen="7" x:Name="ucPager" PageChanged="UCPager_PageChanged"/>
+            <local:UCPager PageSize="16" ButtonSize="7" x:Name="ucPager" PageChanged="UCPager_PageChanged"/>
         </Grid>
     </Grid>
 </UserControl>

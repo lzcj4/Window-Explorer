@@ -34,7 +34,7 @@ namespace FileExplorer.Controls
         private IList<TestModel> internalList;
         private void LoadData()
         {
-            int len = 100;
+            int len = 223;
             internalList = new List<TestModel>();
             for (int i = 0; i < len; i++)
             {

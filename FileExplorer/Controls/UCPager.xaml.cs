@@ -34,7 +34,7 @@ namespace FileExplorer.Controls
 
         private const string STR_PREVIOUS_BUTTON = "上一页";
         private const string STR_NEXT_BUTTON = "下一页";
-        private const string STR_NEXT_PAGES = "*";
+        private const string STR_NEXT_PAGES = "...";
 
         #region DP
 
@@ -97,15 +97,15 @@ namespace FileExplorer.Controls
         /// <summary>
         /// 多少个页按钮，默认5个：(不含1个翻页键）
         /// </summary>
-        public int ButtonLen
+        public int ButtonSize
         {
-            get { return (int)GetValue(ButtonLenProperty); }
-            set { SetValue(ButtonLenProperty, value); }
+            get { return (int)GetValue(ButtonSizeProperty); }
+            set { SetValue(ButtonSizeProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for PageButtons.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ButtonLenProperty =
-            DependencyProperty.Register("ButtonLen", typeof(int), typeof(UCPager), new PropertyMetadata(5));
+        public static readonly DependencyProperty ButtonSizeProperty =
+            DependencyProperty.Register("ButtonSize", typeof(int), typeof(UCPager), new PropertyMetadata(5));
 
 
         public int TotalPages
@@ -222,7 +222,7 @@ namespace FileExplorer.Controls
                 ToggleButton btn = PageButtons.FirstOrDefault(item => ((int)item.Tag) == this.CurrentIndex);
                 if (null != btn && (PageButtons.IndexOf(btn) == 0))
                 {
-                    int previewPage = this.CurrentIndex - this.ButtonLen;
+                    int previewPage = this.CurrentIndex - this.ButtonSize;
                     if (previewPage >= 0)
                     {
                         this.isPrevious = true;
@@ -247,7 +247,7 @@ namespace FileExplorer.Controls
         private void LoadPageButtons(int startIndex)
         {
             ToggleButton btn = null;
-            for (int i = 0; i < this.ButtonLen; i++)
+            for (int i = 0; i < this.ButtonSize; i++)
             {
                 if (startIndex < this.TotalPages)
                 {
