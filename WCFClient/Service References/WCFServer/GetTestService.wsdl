@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://www.TestServer.com" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.TestServer.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.TestServer.com/Imports">
+      <xsd:import schemaLocation="http://localhost:9999/GetTestService?xsd=xsd0" namespace="http://www.TestServer.com" />
+      <xsd:import schemaLocation="http://localhost:9999/GetTestService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="TestServer_GetName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetName" />
+  </wsdl:message>
+  <wsdl:message name="TestServer_GetName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="TestServer_GetAge_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAge" />
+  </wsdl:message>
+  <wsdl:message name="TestServer_GetAge_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAgeResponse" />
+  </wsdl:message>
+  <wsdl:message name="TestServer_GetAgeByName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAgeByName" />
+  </wsdl:message>
+  <wsdl:message name="TestServer_GetAgeByName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAgeByNameResponse" />
+  </wsdl:message>
+  <wsdl:portType name="TestServer">
+    <wsdl:operation name="GetName">
+      <wsdl:input wsaw:Action="http://www.TestServer.com/TestServer/GetName" message="tns:TestServer_GetName_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.TestServer.com/TestServer/GetNameResponse" message="tns:TestServer_GetName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAge">
+      <wsdl:input wsaw:Action="http://www.TestServer.com/TestServer/GetAge" message="tns:TestServer_GetAge_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.TestServer.com/TestServer/GetAgeResponse" message="tns:TestServer_GetAge_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAgeByName">
+      <wsdl:input wsaw:Action="http://www.TestServer.com/TestServer/GetAgeByName" message="tns:TestServer_GetAgeByName_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.TestServer.com/TestServer/GetAgeByNameResponse" message="tns:TestServer_GetAgeByName_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

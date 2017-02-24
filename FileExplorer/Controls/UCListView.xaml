@@ -4,7 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FileExplorer.Controls"
-             xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="FileExplorer.Controls.UCListView"
+             xmlns:System="clr-namespace:System;assembly=mscorlib" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
+             x:Class="FileExplorer.Controls.UCListView"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -56,10 +59,10 @@
                 </Setter.Value>
             </Setter>
             <Setter Property="ItemContainerStyle">
-                <Setter.Value>                    
-                    <Style TargetType="ListViewItem">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ListViewItem}">
                         <Style.Triggers>
-                            <Trigger Property="ListView.AlternationIndex" Value="1">
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                 <Setter Property="Background" Value="LightBlue"/>
                             </Trigger>
                         </Style.Triggers>
@@ -72,7 +75,10 @@
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
-                        <UniformGrid Rows="5"/>
+                        <UniformGrid Rows="{Binding Path=(local:UCListView.Rows), RelativeSource={RelativeSource AncestorType={x:Type ListView}, 
+                            Mode=FindAncestor}}"
+                                     Columns="{Binding Path=(local:UCListView.Columns), RelativeSource={RelativeSource AncestorType={x:Type ListView}, 
+                            Mode=FindAncestor}}"/>
                         <!--<WrapPanel ItemHeight="80" ItemWidth="100"   
                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                                    ScrollViewer.VerticalScrollBarVisibility="Auto"/>-->
@@ -88,8 +94,13 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0">
-                                <Image Source="d://img//1.png" Width="80" Height="50"  />
-                                <CheckBox IsChecked="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListViewItem,Mode=FindAncestor}}"
+                                <Image Source="d://img//1.png" 
+                                       Width="{Binding Path=(local:UCListView.ImageWidth), 
+                                       RelativeSource={RelativeSource AncestorType={x:Type ListView},Mode=FindAncestor}}"  
+                                       Height="{Binding Path=(local:UCListView.ImageHeight), 
+                                       RelativeSource={RelativeSource AncestorType={x:Type ListView},  Mode=FindAncestor}}" />
+                                <CheckBox IsChecked="{Binding IsSelected, 
+                                          RelativeSource ={RelativeSource AncestorType={x:Type ListViewItem}, Mode=FindAncestor}}"
                                           VerticalAlignment="Top" HorizontalAlignment="Right"/>
                                 <Grid VerticalAlignment="Bottom" Background="#FFA2A3A5" Height="12"
                                       Panel.ZIndex="1" d:LayoutOverrides="VerticalAlignment">
@@ -124,24 +135,27 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0,10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <ToggleButton Content="大" Margin="0,0,10,0"/>
-                <ToggleButton Content="小" Margin="0,0,10,0"/>
+                <ToggleButton Content="大" Margin="0,0,10,0" Name="btnBig" Click="btnBig_Click"/>
+                <ToggleButton Content="小" Margin="0,0,10,0" Name="btnSmall" Click="btnSmall_Click"/>
                 <Button  x:Name="btnSwitch"  Margin="0,0,10,0" Click="btnSwitch_Click">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="../Assets/switch.png" Width="16" Height="16"/>
-                            <TextBlock Text="切换" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Assets/switch.png" Width="16" Height="16"/>
+                        <TextBlock Text="切换" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
                 </Button>
             </StackPanel>
 
         </Grid>
 
         <Grid Grid.Row="1">
-            <ListView x:Name="lvContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  AlternationCount="2"
+            <ListView x:Name="lvContent" HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch"  AlternationCount="2"
                       Style="{StaticResource ImageViewListStyle}" 
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      local:UCListView.Rows="5" 
+                      local:UCListView.Columns="3">
+            </ListView>
+
         </Grid>
 
         <Grid Grid.Row="2" Margin="0,10">

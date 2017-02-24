@@ -1,4 +1,4 @@
-﻿<Window x:Name="window" x:Class="FileExplorer.Test"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:FileExplorer"
         xmlns:vm="clr-namespace:FileExplorer.ViewModel"
         xmlns:control="clr-namespace:FileExplorer.Controls"      
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Name="window" x:Class="FileExplorer.Test"      
         mc:Ignorable="d"
         Title="Test" Height="608" Width="1354">
     <Window.Resources>
@@ -100,11 +101,9 @@
                   VerticalAlignment="Top" Width="120" 
                   vm:UIAttachedProp.DefaultIcon="../Assets/eventNormalSelect.png" 
                   Template="{StaticResource ComboBoxSearchTemplate}">
-            <ComboBox.Items>
-                <ComboBoxItem Content="A"/>
-                <ComboBoxItem Content="b"/>
-                <ComboBoxItem Content="C"/>
-            </ComboBox.Items>
+            <ComboBoxItem Content="A"/>
+            <ComboBoxItem Content="b"/>
+            <ComboBoxItem Content="C"/>
         </ComboBox>
 
         <control:UCPassword Password="{Binding Password}" Width="200" Height="20" 
@@ -121,7 +120,9 @@
         <Button x:Name="button" Content="To Main" HorizontalAlignment="Left" Margin="43.666,129.813,0,0" 
                 VerticalAlignment="Top" Width="75" Click="button_Click"/>
 
-        <control:UCListView Width="500"  Margin="400,50,100,50" />
+        <control:UCListView  Margin="573,50,99,0" Height="221" VerticalAlignment="Top" />
+        <control:UCImage Width="300" Height="300" Margin="158,186,888,91" />
+        <control:UCDataGrid Margin="573,0,83.24,127.04" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>

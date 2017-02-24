@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="FileExplorer.Controls.UCDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FileExplorer.Controls"
+              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="RowEditDataTemplate">
+            <TextBox Text="{Binding Title}"/>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid RowDetailsTemplate="{DynamicResource RowEditDataTemplate}"  AlternatingRowBackground="AliceBlue"
+                  CanUserAddRows="False"  Name="dataGrid" 
+                  AutoGenerateColumns="False"
+                  MouseDoubleClick="dataGrid_MouseDoubleClick" RowDetailsVisibilityMode="Collapsed" AreRowDetailsFrozen="True" IsReadOnly="True">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id"  Binding="{Binding ID}" />
+                <DataGridTextColumn Header="Title"  Binding="{Binding Title}" />
+                <DataGridTemplateColumn Header="Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button  Name="btnEdit" Click="btnEdit_Click">
+                                    <Button.Content>
+                                        <Image Source="../Assets/eventNormal.png"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+             
+            </DataGrid.Columns>
+
+        </DataGrid>
+    </Grid>
+</UserControl>
