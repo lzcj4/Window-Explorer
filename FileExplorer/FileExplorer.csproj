@@ -64,8 +64,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\UCDataGrid.xaml.cs">
-      <DependentUpon>UCDataGrid.xaml</DependentUpon>
+    <Compile Include="Controls\UCHotkey.xaml.cs">
+      <DependentUpon>UCHotkey.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\UCImage.xaml.cs">
       <DependentUpon>UCImage.xaml</DependentUpon>
@@ -88,7 +88,9 @@
     <Compile Include="Factory\CloudExplorerFactory.cs" />
     <Compile Include="Factory\JsonExplorerFactory.cs" />
     <Compile Include="Helper\FileExtension.cs" />
+    <Compile Include="HotkeyHelper.cs" />
     <Compile Include="ImageAnim.cs" />
+    <Compile Include="KeyHook.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -113,6 +115,9 @@
     <Compile Include="Shell\ShellAPI.cs" />
     <Compile Include="Test.xaml.cs">
       <DependentUpon>Test.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TestDataGrid.xaml.cs">
+      <DependentUpon>TestDataGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="UCContent.xaml.cs">
       <DependentUpon>UCContent.xaml</DependentUpon>
@@ -142,7 +147,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Controls\UCDataGrid.xaml">
+    <Compile Include="WinApi.cs" />
+    <Page Include="Controls\UCHotkey.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,6 +161,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UCPager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Resources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,6 +201,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -278,6 +296,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\delete.png" />
+    <Resource Include="Resources\Icons\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

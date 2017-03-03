@@ -122,7 +122,6 @@
 
         <control:UCListView  Margin="573,50,99,0" Height="221" VerticalAlignment="Top" />
         <control:UCImage Width="300" Height="300" Margin="158,186,888,91" />
-        <control:UCDataGrid Margin="573,0,83.24,127.04" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>
