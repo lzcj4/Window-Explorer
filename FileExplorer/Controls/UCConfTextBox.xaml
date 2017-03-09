@@ -1,0 +1,36 @@
+﻿<local:UCConfBase x:Class="FileExplorer.Controls.UCConfTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FileExplorer.Controls"
+              x:Name="ucTextBox"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <local:UCEditableTextBlock Grid.Row="0" Grid.Column="0" Width="80" HorizontalAlignment="Left" 
+                                   Text="{Binding Title}" />
+        <TextBox  Grid.Row="1" Grid.Column="0"  VerticalContentAlignment="Center"
+                  Text="{Binding Items[0].Title, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" />
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="5,0" VerticalAlignment="Center">
+            <Button  Margin="5,0" Command="{Binding RemoveCommand}">
+                <Button.Content>
+                    <Image  Width="16" Height="16"  Opacity="0.5" Source="{DynamicResource action_delete}"/>
+                </Button.Content>
+            </Button>
+
+        </StackPanel>
+
+    </Grid>
+</local:UCConfBase>

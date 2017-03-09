@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="FileExplorer.Controls.UCEditableTextBlock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FileExplorer.Controls"
+             mc:Ignorable="d" 
+             Name="ucText"
+             d:DesignHeight="30" d:DesignWidth="300">
+
+    <Grid>
+        <Label Name="labContent"  MinWidth="80"
+               Visibility="{Binding IsEditMode,ElementName=ucText,Converter={StaticResource reverseBooleanToVisibilityConverter}}"
+               Content="{Binding Text,Mode=TwoWay,ElementName=ucText}"             
+               MouseDoubleClick="labContent_MouseDoubleClick" />
+
+        <TextBox Name="txtContent" MinWidth="80" Margin="0,8,0,0" VerticalContentAlignment="Top"
+                 Visibility="{Binding IsEditMode,ElementName=ucText,Converter={StaticResource booleanToVisibilityConverter}}"
+                 Text="{Binding Text,Mode=TwoWay,ElementName=ucText,UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</UserControl>

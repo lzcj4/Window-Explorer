@@ -3,4 +3,6 @@
                     xmlns:local="clr-namespace:FileExplorer.Resources">
     <ImageSource x:Key="action_delete" >./Icons/delete.png</ImageSource>
     <ImageSource x:Key="action_edit" >./Icons/edit.png</ImageSource>
+    <ImageSource x:Key="action_add" >./Icons/add.png</ImageSource>
+    <ImageSource x:Key="action_exit" >./Icons/exit.png</ImageSource>
 </ResourceDictionary>

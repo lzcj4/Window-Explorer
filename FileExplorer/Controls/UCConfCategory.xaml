@@ -1,0 +1,79 @@
+﻿<local:UCConfBase x:Class="FileExplorer.Controls.UCConfCategory"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FileExplorer.Controls"                  
+             xmlns:conv="clr-namespace:FileExplorer.ViewModel"
+             mc:Ignorable="d" 
+             x:Name="ucSubCategory"
+             d:DesignHeight="200" d:DesignWidth="200">
+
+    <local:UCConfBase.Resources>
+        <conv:UCViewConverter x:Key="ucViewConverter"/>
+    </local:UCConfBase.Resources>
+
+    <Grid Margin="2">
+
+        <GroupBox BorderThickness="1">
+            <GroupBox.Header>
+                <local:UCEditableTextBlock/>
+            </GroupBox.Header>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Button     Margin="0,-8,0,0"
+                          HorizontalAlignment="Right" VerticalAlignment="Top"
+                          Visibility="{Binding IsEditMode,Mode=OneWay,Converter={StaticResource booleanToVisibilityConverter}}"
+                          Command="{Binding RemoveCommand}">
+                    <Button.Content>
+                        <Image  Width="16" Height="16"  Opacity="0.5" Source="{DynamicResource action_exit}"/>
+                    </Button.Content>
+                </Button>
+
+
+                <ItemsControl  Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                               ItemsSource="{Binding Items}">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="{x:Type ItemsControl}">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Background="{TemplateBinding Background}" 
+                                    Padding="{TemplateBinding Padding}" 
+                                    SnapsToDevicePixels="True">
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentControl Content="{Binding Converter={StaticResource ucViewConverter}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </Grid>
+
+        </GroupBox>
+
+        <Button  Margin="0,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="1"
+                Command="{Binding AddCommand}" >
+            <Button.Content>
+                <Image  Width="32" Height="32"  Opacity="0.5"   Source="{DynamicResource action_add}"/>
+            </Button.Content>
+        </Button>
+    </Grid>
+</local:UCConfBase>
