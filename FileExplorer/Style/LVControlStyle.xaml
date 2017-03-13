@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:FileExplorer" 
                     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
-                    xmlns:vm="clr-namespace:FileExplorer.ViewModel">
+                    xmlns:vm="clr-namespace:FileExplorer.Helper">
 
     <ControlTemplate x:Key="ComboBoxSearchTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="templateRoot" SnapsToDevicePixels="True">

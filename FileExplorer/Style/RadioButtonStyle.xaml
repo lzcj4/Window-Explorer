@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:FileExplorer.Style"
-                    xmlns:vm="clr-namespace:FileExplorer.ViewModel">
+                    xmlns:vm="clr-namespace:FileExplorer.Helper">
 
     <Style x:Key="RadioButtonIconStyle" TargetType="{x:Type RadioButton}">
         <Setter Property="FocusVisualStyle">
@@ -10,7 +10,9 @@
                     <Setter Property="Control.Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                <Rectangle Margin="2" SnapsToDevicePixels="True" 
+                                           Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" 
+                                           StrokeThickness="1" StrokeDashArray="1 2"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -29,7 +31,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border x:Name="radioButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" 
+                        <Border x:Name="radioButtonBorder" BorderBrush="{TemplateBinding BorderBrush}"  Visibility="Collapsed"
                                     BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
                                     CornerRadius="100" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                     Margin="1,-1,2,1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
@@ -60,7 +62,9 @@
                                         <Setter Property="Control.Template">
                                             <Setter.Value>
                                                 <ControlTemplate>
-                                                    <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                                    <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" 
+                                                               Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" 
+                                                               StrokeThickness="1" StrokeDashArray="1 2"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>

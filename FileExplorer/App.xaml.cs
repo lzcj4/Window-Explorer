@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FileExplorer.ViewModel;
+using System;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Reflection;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace FileExplorer
 {
@@ -27,6 +27,28 @@ namespace FileExplorer
                 Source =
               new Uri("/FileExplorer;component/Style/RadioButtonStyle.xaml", UriKind.RelativeOrAbsolute)
             });
+
+            InitialMEF(this);
         }
+
+        CompositionContainer container;
+        private void InitialMEF(Application app)
+        {
+            AggregateCatalog ac = new AggregateCatalog();
+            AssemblyCatalog catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
+            ac.Catalogs.Add(catalog);
+            container = new CompositionContainer(ac);
+            container.ComposeParts(app);
+            // container.SatisfyImportsOnce(this);
+            // AttributedModelServices.ComposeParts(container);
+            container.SatisfyImportsOnce(app);
+
+        }
+
+        [Import]
+        public Lazy<CategoryGroupViewModel> ViewModel { get; set; }
+        [ImportMany]
+        public IEnumerable<Lazy<IMEFTest>> Tests { get; set; }
+
     }
 }

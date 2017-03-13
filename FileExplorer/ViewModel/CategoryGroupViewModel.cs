@@ -1,8 +1,10 @@
 ﻿
 using FileExplorer.Helper;
+using System.ComponentModel.Composition;
 
 namespace FileExplorer.ViewModel
 {
+    [Export]
     public class CategoryGroupViewModel : DataViewModelBase<CategoryViewModel>
     {
         CategoryViewModel lastItem = null;

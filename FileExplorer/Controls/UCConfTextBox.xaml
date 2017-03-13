@@ -20,7 +20,7 @@
 
         <local:UCEditableTextBlock Grid.Row="0" Grid.Column="0" Width="80" HorizontalAlignment="Left" 
                                    Text="{Binding Title}" />
-        <TextBox  Grid.Row="1" Grid.Column="0"  VerticalContentAlignment="Center"
+        <TextBox  Grid.Row="1" Grid.Column="0"  VerticalContentAlignment="Center" TextWrapping="Wrap" 
                   Text="{Binding Items[0].Title, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" />
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="5,0" VerticalAlignment="Center">

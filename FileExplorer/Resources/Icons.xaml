@@ -5,4 +5,7 @@
     <ImageSource x:Key="action_edit" >./Icons/edit.png</ImageSource>
     <ImageSource x:Key="action_add" >./Icons/add.png</ImageSource>
     <ImageSource x:Key="action_exit" >./Icons/exit.png</ImageSource>
+    <ImageSource x:Key="action_add_default" >./Icons/add_default.png</ImageSource>
+    <ImageSource x:Key="action_add_mouseover" >./Icons/add_mouseover.png</ImageSource>
+    <ImageSource x:Key="action_add_pressed" >./Icons/add_pressed.png</ImageSource>
 </ResourceDictionary>

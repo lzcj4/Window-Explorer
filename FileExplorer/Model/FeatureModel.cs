@@ -9,7 +9,7 @@ namespace FileExplorer.Model
     /// <summary>
     /// 特征项，含选择数据项
     /// </summary>
-    public class FeatureModel : ICloneable
+    public class FeatureGroup : ICloneable
     {
         public string Title { get; set; }
         public string ID { get; set; }
@@ -19,8 +19,8 @@ namespace FileExplorer.Model
 
         public FeatureItem SelectedItem { get; set; }
 
-        public FeatureModel() { }
-        public FeatureModel(string title)
+        public FeatureGroup() { }
+        public FeatureGroup(string title)
         {
             if (title.IsNullOrEmpty())
             {
@@ -29,7 +29,7 @@ namespace FileExplorer.Model
             this.Title = title;
         }
 
-        public FeatureModel(string title, string id) : this(title)
+        public FeatureGroup(string title, string id) : this(title)
         {
             if (id.IsNullOrEmpty())
             {
@@ -40,7 +40,7 @@ namespace FileExplorer.Model
 
         public object Clone()
         {
-            FeatureModel result = new FeatureModel();
+            FeatureGroup result = new FeatureGroup();
             result.Title = this.Title;
             result.ID = this.ID;
             if (!this.SelectedItem.IsNull())

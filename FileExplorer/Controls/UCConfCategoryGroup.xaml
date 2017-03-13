@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FileExplorer.Controls"
+             xmlns:ap="clr-namespace:FileExplorer.Helper"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -35,12 +36,15 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <Button VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" Panel.ZIndex="1"
-                Command="{Binding AddCommand}" >
-            <Button.Content>
-                <Image  Width="64" Height="64" Opacity="0.5" Source="{DynamicResource action_add}"/>
-            </Button.Content>
-        </Button>
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20"          
+                ap:UIAttachedProp.Radius="32"
+                ap:UIAttachedProp.IconWidth="64"
+                ap:UIAttachedProp.IconHeight="64"
+                ap:UIAttachedProp.DefaultIcon="{DynamicResource action_add_default }"
+                ap:UIAttachedProp.MouseOverIcon="{DynamicResource action_add_mouseover}"
+                ap:UIAttachedProp.PressedIcon="{DynamicResource action_add_pressed}"
+                Style="{DynamicResource RoundButtonStyle}"
+                Command="{Binding AddCommand}"/>
 
     </Grid>
 </local:UCConfBase>

@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileExplorer"
-        xmlns:vm="clr-namespace:FileExplorer.ViewModel"
+        xmlns:vm="clr-namespace:FileExplorer.Helper"
         xmlns:control="clr-namespace:FileExplorer.Controls"      
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Name="window" x:Class="FileExplorer.Test"      
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Name="window" x:Class="FileExplorer.Test"      
         mc:Ignorable="d"
         Title="Test" Height="608" Width="1354">
     <Window.Resources>
