@@ -212,6 +212,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewRegions.cs" />
     <Compile Include="WinApi.cs" />
     <Page Include="Controls\UCConfCategoryGroup.xaml">
       <SubType>Designer</SubType>

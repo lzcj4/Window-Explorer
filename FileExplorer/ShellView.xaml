@@ -25,12 +25,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ContentControl Grid.Row="0"  prism:RegionManager.RegionName="up">
-            
-        </ContentControl>
-        <ContentControl Grid.Row="1"  prism:RegionManager.RegionName="down">
+        <ContentControl Grid.Row="0"  prism:RegionManager.RegionName="{x:Static local:ViewRegions.Region_Up}"/>
 
-        </ContentControl>
+        <ContentControl Grid.Row="1"  prism:RegionManager.RegionName="{x:Static local:ViewRegions.Region_Bottom}" Background="Red"/>
+
+
         <!--<uc:UCConfCategoryGroup/>-->
     </Grid>
 </Window>

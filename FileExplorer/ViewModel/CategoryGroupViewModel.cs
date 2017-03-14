@@ -1,7 +1,6 @@
 ﻿
 using FileExplorer.Controls;
 using FileExplorer.Helper;
-using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.Prism.Regions;
 using System.ComponentModel.Composition;
 
@@ -10,9 +9,10 @@ namespace FileExplorer.ViewModel
     [Export]
     public class CategoryGroupViewModel : DataViewModelBase<CategoryViewModel>
     {
-        CategoryViewModel lastItem = null;
         [Import]
-        IRegionManager rm;
+        IRegionManager regionManager;
+
+        CategoryViewModel lastItem = null;      
 
         public override void Add()
         {
@@ -28,8 +28,7 @@ namespace FileExplorer.ViewModel
 
         public void LoadViews()
         {
-            rm.Regions["up"].Add(new UCConfCategoryGroup());
+            regionManager.AddToRegion(ViewRegions.Region_Up, new UCConfCategoryGroup());
         }
-
     }
 }
