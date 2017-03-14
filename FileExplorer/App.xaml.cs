@@ -27,28 +27,10 @@ namespace FileExplorer
                 Source =
               new Uri("/FileExplorer;component/Style/RadioButtonStyle.xaml", UriKind.RelativeOrAbsolute)
             });
-
-            InitialMEF(this);
+            
+            AppBootstrapper bootstrapper = new AppBootstrapper();
+            bootstrapper.Run();
         }
-
-        CompositionContainer container;
-        private void InitialMEF(Application app)
-        {
-            AggregateCatalog ac = new AggregateCatalog();
-            AssemblyCatalog catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
-            ac.Catalogs.Add(catalog);
-            container = new CompositionContainer(ac);
-            container.ComposeParts(app);
-            // container.SatisfyImportsOnce(this);
-            // AttributedModelServices.ComposeParts(container);
-            container.SatisfyImportsOnce(app);
-
-        }
-
-        [Import]
-        public Lazy<CategoryGroupViewModel> ViewModel { get; set; }
-        [ImportMany]
-        public IEnumerable<Lazy<IMEFTest>> Tests { get; set; }
 
     }
 }
