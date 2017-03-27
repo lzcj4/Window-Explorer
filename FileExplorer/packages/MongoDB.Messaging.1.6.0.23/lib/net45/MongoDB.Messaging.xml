@@ -1,0 +1,4121 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MongoDB.Messaging</name>
+    </assembly>
+    <members>
+        <member name="T:MongoDB.Messaging.Change.ChangeRecord">
+            <summary>
+            MongoDB change record for the oplog.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.Timestamp">
+            <summary>
+            Gets or sets the timestamp for the operation.
+            </summary>
+            <value>
+            The timestamp for the change.
+            </value>
+            <remarks>
+            The 'ts' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.UniqueId">
+            <summary>
+            Gets or sets the unique identifier for the operation.
+            </summary>
+            <value>
+            The unique identifier for the operation.
+            </value>
+            <remarks>
+            The 'h' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.Version">
+            <summary>
+            Gets or sets the version of the oplog format.
+            </summary>
+            <value>
+            The version.
+            </value>
+            <remarks>
+            The 'v' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.Operation">
+            <summary>
+            Gets or sets the operation that took place. Known values can be 'i' for insert, 
+            'u' for update, 'd' for delete, 'c' for commands and 'n' for no-ops". 
+            </summary>
+            <value>
+            The operation.
+            </value>
+            <remarks>
+            The 'op' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.Namespace">
+            <summary>
+            Gets or sets the namespace, database and collection, for the operation.
+            </summary>
+            <value>
+            The namespace for the operation.
+            </value>
+            <remarks>
+            The 'ns' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.Query">
+            <summary>
+            Gets or sets the query for an update operation. 
+            </summary>
+            <value>
+            The query for an update operation.
+            </value>
+            <remarks>
+            The 'o2' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeRecord.Document">
+            <summary>
+            Gets or sets the document for the operation. The document will be different based on the operation.
+            </summary>
+            <value>
+            The document for the operation.
+            </value>
+            <remarks>
+            The 'o' field in the oplog document.
+            </remarks>
+        </member>
+        <member name="T:MongoDB.Messaging.Change.ChangeNotifier">
+            <summary>
+            Notification of MongoDB changes by tailing the oplog collection and publishing a change record.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Change.ChangeNotifier"/> class.
+            </summary>
+            <param name="connectionName">The name of the connection string in the application config.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="connectionName"/> is <see langword="null" /> or empty</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.#ctor(MongoDB.Driver.IMongoClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Change.ChangeNotifier"/> class.
+            </summary>
+            <param name="mongoClient">The MongoClient connection.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="mongoClient"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeNotifier.LastNotification">
+            <summary>
+            Gets or sets the last timestamp that was notified.  When notification is started, it will start notifications from this point.
+            </summary>
+            <value>
+            The last timestamp that was notified.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ChangeNotifier.Subscribers">
+            <summary>
+            Gets the change notification subscribers.
+            </summary>
+            <value>
+            The change notification subscribers.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.Start">
+            <summary>
+            Start listening for changes in the oplog. 
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.Stop">
+            <summary>
+            Stop listening for changes in the oplog. 
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.Subscribe(MongoDB.Messaging.Change.IHandleChange,System.String)">
+            <summary>
+            Subscribe to change notification with the specified <paramref name="subscriber"/> and collection namespace <paramref name="filter"/>.
+            </summary>
+            <param name="subscriber">The change notification subscriber.</param>
+            <param name="filter">The MongoDB collection namespace wildcard filter.</param>
+            <returns>The subscription instance.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="subscriber"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.Unsubscribe(MongoDB.Messaging.Change.ISubscription)">
+            <summary>
+            Unsubscribe the specified <paramref name="subscription"/>.
+            </summary>
+            <param name="subscription">The subscription to remove.</param>
+            <returns><c>true</c> if successsfully remove; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="subscription"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ChangeNotifier.Publish(MongoDB.Messaging.Change.ChangeRecord)">
+            <summary>
+            Publish the specified change record to all <see cref="P:MongoDB.Messaging.Change.ChangeNotifier.Subscribers"/>.
+            </summary>
+            <param name="changeRecord">The change record to publish.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="changeRecord"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="T:MongoDB.Messaging.Change.IHandleChange">
+            <summary>
+            An <see langword="interface"/> to implement to receive change notifications.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.IHandleChange.HandleChange(MongoDB.Messaging.Change.ChangeRecord)">
+            <summary>
+            Handle a MongoDB change record.
+            </summary>
+            <param name="change">The change record.</param>
+            <remarks>
+            This method is called on a thread-pool background thread.
+            </remarks>
+        </member>
+        <member name="T:MongoDB.Messaging.Change.ISubscription">
+            <summary>
+            An <see langword="interface"/> for a change subscription
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ISubscription.Filter">
+            <summary>
+            Gets MongoDB collection namespace wildcard filter.
+            </summary>
+            <value>
+            The MongoDB collection namespace wildcard filter.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.ISubscription.Handler">
+            <summary>
+            Gets the change notification handler.
+            </summary>
+            <value>
+            The change notification handler.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.ISubscription.BeginInvoke(MongoDB.Messaging.Change.ChangeRecord)">
+            <summary>
+            Begin invoke of <see cref="P:MongoDB.Messaging.Change.ISubscription.Handler"/> on the thread-pool background thread.
+            </summary>
+            <param name="change">The change record to send.</param>
+            <returns><c>true</c> if the Handler is still alive and was able to be invoked; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Change.Subscription">
+            <summary>
+            A change subscription
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.Subscription.#ctor(MongoDB.Messaging.Change.IHandleChange,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Change.Subscription"/> class.
+            </summary>
+            <param name="handler">The change handler.</param>
+            <param name="filter">The MongoDB collection namespace wildcard filter.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="handler"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.Subscription.Filter">
+            <summary>
+            Gets MongoDB collection namespace wildcard filter.
+            </summary>
+            <value>
+            The MongoDB collection namespace wildcard filter.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Change.Subscription.Handler">
+            <summary>
+            Gets the change notification handler.
+            </summary>
+            <value>
+            The change notification handler.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Change.Subscription.BeginInvoke(MongoDB.Messaging.Change.ChangeRecord)">
+            <summary>
+            Begin invoke of <see cref="P:MongoDB.Messaging.Change.Subscription.Handler"/> on the thread-pool background thread.
+            </summary>
+            <param name="change">The change record to send.</param>
+            <returns><c>true</c> if the Handler is still alive and was able to be invoked; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Configuration.IQueueManager">
+            <summary>
+            An <c>interface</c> defining the queue manager.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueManager.ConnectionName">
+            <summary>
+            Gets or sets the name of the connection string.
+            </summary>
+            <value>
+            The name of the connection.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueManager.NotificationConnection">
+            <summary>
+            Gets or sets the name of the connection string for change notification.
+            </summary>
+            <value>
+            The name of the connection for change notification.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueManager.ControlName">
+            <summary>
+            Gets or sets the name of the service control queue.
+            </summary>
+            <value>
+            The name of the service control queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueManager.Queues">
+            <summary>
+            Gets the configured queues.
+            </summary>
+            <value>
+            The configured queues.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueManager.Subscriptions">
+            <summary>
+            Gets the queues with an active subscriber.
+            </summary>
+            <value>
+            The queues with an active subscriber.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueManager.Database">
+            <summary>
+            Gets the underlying storage database.
+            </summary>
+            <value>
+            The underlying storage database.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.IQueueManager.Register(MongoDB.Messaging.Configuration.IQueueConfiguration)">
+            <summary>
+            Registers a queue with the specified configuration.
+            </summary>
+            <param name="queueConfiguration">The queue configuration to register.</param>
+            <returns>An instance of <see cref="T:MongoDB.Messaging.Configuration.IQueueContainer"/> that was registered.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.IQueueManager.Load(System.String)">
+            <summary>
+            Loads the specified queue by name. If the queue has not been configured, it will be created.
+            </summary>
+            <param name="queueName">Name of the queue.</param>
+            <returns>An instance of <see cref="T:MongoDB.Messaging.Configuration.IQueueContainer"/> with the queue name.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.IQueueManager.SetDatabase(MongoDB.Driver.IMongoDatabase)">
+            <summary>
+            Sets the underlying storage <paramref name="database"/>.
+            </summary>
+            <param name="database">The underlying storage database.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Configuration.IQueueContainer">
+            <summary>
+            An <c>interface</c> defining the components that make a up queue.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueContainer.Name">
+            <summary>
+            Gets the name of the queue.
+            </summary>
+            <value>
+            The name of the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueContainer.Repository">
+            <summary>
+            Gets the storage repository.
+            </summary>
+            <value>
+            The storage repository.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueContainer.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.IQueueContainer.ApplyDefaults(MongoDB.Messaging.Message)">
+            <summary>
+            Apply default settings to the specified <paramref name="message"/>.
+            </summary>
+            <param name="message">The message to update.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Configuration.IQueueConfiguration">
+            <summary>
+            An <c>interface</c> defining a queue configuration
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.Name">
+            <summary>
+            Gets or sets the name of the queue.
+            </summary>
+            <value>
+            The name of the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.Description">
+            <summary>
+            Gets or sets the user description for the queue.
+            </summary>
+            <value>
+            The description of the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.RetryCount">
+            <summary>
+            Gets or sets the number of times the message should retry on error. Use zero to prevent retry.
+            </summary>
+            <value>
+            The number of times the message should retry on error.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.Priority">
+            <summary>
+            Gets or sets the priority of the message in the queue.
+            </summary>
+            <value>
+            The priority of the message in the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.ResponseQueue">
+            <summary>
+            Gets or sets the response queue.
+            </summary>
+            <value>
+            The response queue.
+            </value>        
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.WorkerCount">
+            <summary>
+            Gets or sets the number of workers to run for this queue.
+            </summary>
+            <value>
+            The number of workers to run for this queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.PollTime">
+            <summary>
+            Gets or sets the worker poll time.
+            </summary>
+            <value>
+            The worker poll time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.ProcessTimeout">
+            <summary>
+            Gets or sets the process timeout.
+            </summary>
+            <value>
+            The process timeout.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.TimeoutPolicy">
+            <summary>
+            Gets or sets the timeout policy.
+            </summary>
+            <value>
+            The timeout policy.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.SubscriberFactory">
+            <summary>
+            Gets or sets the subscriber factory.
+            </summary>
+            <value>
+            The subscriber factory.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.RetryFactory">
+            <summary>
+            Gets or sets the retry message on error factory.
+            </summary>
+            <value>
+            The retry message on error factory.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.ExpireSuccessful">
+            <summary>
+            Gets or sets the time successful messages will kept before expiring.
+            </summary>
+            <value>
+            The time successful messages will kept before expiring.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.ExpireWarning">
+            <summary>
+            Gets or sets the time warning messages will kept before expiring.
+            </summary>
+            <value>
+            The time warning messages will kept before expiring.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.ExpireError">
+            <summary>
+            Gets or sets the time error messages will kept before expiring.
+            </summary>
+            <value>
+            The time error messages will kept before expiring.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.HealthCheck">
+            <summary>
+            Gets or sets the time between health checks.
+            </summary>
+            <value>
+            The time between health checks.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.LockCollection">
+            <summary>
+            Gets or sets the name lock collection.
+            </summary>
+            <value>
+            The name lock collection.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.IQueueConfiguration.Trigger">
+            <summary>
+            Gets or sets a value indicating weather the worker is triggered from a change notification.
+            </summary>
+            <value>
+              <c>true</c> to trigger worker on change; otherwise <c>false</c>.
+            </value>
+        </member>
+        <member name="T:MongoDB.Messaging.Configuration.QueueConfiguration">
+            <summary>
+            A <c>class</c> defining a queue configuration
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Configuration.QueueConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.Name">
+            <summary>
+            Gets or sets the name of the queue.
+            </summary>
+            <value>
+            The name of the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.Description">
+            <summary>
+            Gets or sets the user description for the queue.
+            </summary>
+            <value>
+            The description of the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.RetryCount">
+            <summary>
+            Gets or sets the number of times the message should retry on error. Use zero to prevent retry.
+            </summary>
+            <value>
+            The number of times the message should retry on error.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.Priority">
+            <summary>
+            Gets or sets the priority of the message in the queue.
+            </summary>
+            <value>
+            The priority of the message in the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.ResponseQueue">
+            <summary>
+            Gets or sets the response queue.
+            </summary>
+            <value>
+            The response queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.WorkerCount">
+            <summary>
+            Gets or sets the number of workers to run for this queue.
+            </summary>
+            <value>
+            The number of workers to run for this queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.PollTime">
+            <summary>
+            Gets or sets the worker poll time.
+            </summary>
+            <value>
+            The worker poll time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.ProcessTimeout">
+            <summary>
+            Gets or sets the process timeout.
+            </summary>
+            <value>
+            The process timeout.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.TimeoutPolicy">
+            <summary>
+            Gets or sets the timeout policy.
+            </summary>
+            <value>
+            The timeout policy.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.SubscriberFactory">
+            <summary>
+            Gets or sets the subscriber factory.
+            </summary>
+            <value>
+            The subscriber factory.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.RetryFactory">
+            <summary>
+            Gets or sets the retry message on error factory.
+            </summary>
+            <value>
+            The retry message on error factory.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.ExpireSuccessful">
+            <summary>
+            Gets or sets the time successful messages will kept before expiring.
+            </summary>
+            <value>
+            The time successful messages will kept before expiring.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.ExpireWarning">
+            <summary>
+            Gets or sets the time warning messages will kept before expiring.
+            </summary>
+            <value>
+            The time warning messages will kept before expiring.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.ExpireError">
+            <summary>
+            Gets or sets the time error messages will kept before expiring.
+            </summary>
+            <value>
+            The time error messages will kept before expiring.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.HealthCheck">
+            <summary>
+            Gets or sets the time between health checks.
+            </summary>
+            <value>
+            The time between health checks.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.LockCollection">
+            <summary>
+            Gets or sets the name lock collection.
+            </summary>
+            <value>
+            The name lock collection.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueConfiguration.Trigger">
+            <summary>
+            Gets or sets a value indicating weather the worker is triggered from a change notification.
+            </summary>
+            <value>
+              <c>true</c> to trigger worker on change; otherwise <c>false</c>.
+            </value>
+        </member>
+        <member name="T:MongoDB.Messaging.Configuration.QueueContainer">
+            <summary>
+            A <c>class</c> defining the components that make a up queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueContainer.#ctor(MongoDB.Messaging.Configuration.IQueueConfiguration,MongoDB.Messaging.Storage.IQueueRepository)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Configuration.QueueContainer"/> class.
+            </summary>
+            <param name="configuration">The queue configuration.</param>
+            <param name="repository">The storage repository.</param>
+            <exception cref="T:System.ArgumentNullException">
+            configuration
+            or
+            repository
+            </exception>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueContainer.Name">
+            <summary>
+            Gets the name of the queue.
+            </summary>
+            <value>
+            The name of the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueContainer.Repository">
+            <summary>
+            Gets the storage repository.
+            </summary>
+            <value>
+            The storage repository.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueContainer.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueContainer.ApplyDefaults(MongoDB.Messaging.Message)">
+            <summary>
+            Apply default settings to the specified <paramref name="message" />.
+            </summary>
+            <param name="message">The message to update.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Configuration.QueueManager">
+            <summary>
+            A class to manage message queues.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Configuration.QueueManager"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueManager.#ctor(MongoDB.Driver.IMongoDatabase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Configuration.QueueManager"/> class.
+            </summary>
+            <param name="database">The database connection to use.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.ConnectionName">
+            <summary>
+            Gets or sets the name of the connection string.
+            </summary>
+            <value>
+            The name of the connection.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.NotificationConnection">
+            <summary>
+            Gets or sets the name of the connection string for change notification.
+            </summary>
+            <value>
+            The name of the connection for change notification.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.ControlName">
+            <summary>
+            Gets or sets the name of the service control queue.
+            </summary>
+            <value>
+            The name of the service control queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.LockCollection">
+            <summary>
+            Gets or sets the name of the lock control collection.
+            </summary>
+            <value>
+            The name of the lock control collection.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.Queues">
+            <summary>
+            Gets the configured queues.
+            </summary>
+            <value>
+            The configured queues.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.Subscriptions">
+            <summary>
+            Gets the queues with an active subscriber.
+            </summary>
+            <value>
+            The queues with an active subscriber..
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Configuration.QueueManager.Database">
+            <summary>
+            Gets the underlying storage database.
+            </summary>
+            <value>
+            The underlying storage database.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueManager.Register(MongoDB.Messaging.Configuration.IQueueConfiguration)">
+            <summary>
+            Registers a queue with the specified configuration.
+            </summary>
+            <param name="queueConfiguration">The queue configuration to register.</param>
+            <returns>
+            An instance of <see cref="T:MongoDB.Messaging.Configuration.IQueueContainer" /> that was registered.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">queueConfiguration</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueManager.Load(System.String)">
+            <summary>
+            Loads the specified queue by name. If the queue has not been configured, it will be created.
+            </summary>
+            <param name="queueName">Name of the queue.</param>
+            <returns>
+            An instance of <see cref="T:MongoDB.Messaging.Configuration.IQueueContainer" /> with the queue name.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">queueName</exception>
+            <exception cref="T:System.ArgumentException">The queue name is invalid.;queueName</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Configuration.QueueManager.SetDatabase(MongoDB.Driver.IMongoDatabase)">
+            <summary>
+            Sets the underlying storage <paramref name="database"/>.
+            </summary>
+            <param name="database">The underlying storage database.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Extensions.DateTimeExtensions">
+            <summary>
+            <see cref="T:System.DateTime"/> extension methods
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Extensions.DateTimeExtensions.ToUnixTimeSeconds(System.DateTime)">
+            <summary>
+            Returns the number of seconds that have elapsed since 1970-01-01T00:00:00Z.
+            </summary>
+            <param name="dateTime">The date time.</param>
+            <returns>The number of seconds that have elapsed since 1970-01-01T00:00:00Z.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Extensions.DateTimeExtensions.FromUnixTimeSeconds(System.Int64)">
+            <summary>
+            Converts a Unix time expressed as the number of seconds that have elapsed since 1970-01-01T00:00:00Z to a <see cref="T:System.DateTime"/> value.
+            </summary>
+            <param name="seconds">A Unix time, expressed as the number of seconds that have elapsed since 1970-01-01T00:00:00Z.</param>
+            <returns>A date and time value that represents the same moment in time as the Unix time.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Extensions.StringExtensions">
+            <summary>
+            <see cref="T:System.String"/> extension methods
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Extensions.StringExtensions.Like(System.String,System.String)">
+            <summary>
+            Compares a string against a wildcard pattern.
+            </summary>
+            <param name="input">The string to match.</param>
+            <param name="mask">The wildcard pattern.</param>
+            <returns><c>true</c> if the pattern is matched; otherwise <c>false</c></returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.MessageBuilder">
+            <summary>
+            A fluent <see langword="class"/> to build a queue message
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.#ctor(MongoDB.Messaging.Message)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.MessageBuilder"/> class.
+            </summary>
+            <param name="message">The message to update.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.MessageBuilder.Message">
+            <summary>
+            Gets the message to be updated.
+            </summary>
+            <value>
+            The message to be updated..
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Name(System.String)">
+            <summary>
+            Set the system name for the message.
+            </summary>
+            <param name="name">The system name for the message.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Description(System.String)">
+            <summary>
+            Set the description for the message.
+            </summary>
+            <param name="value">The description for the message.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Description(System.String,System.Object[])">
+            <summary>
+            Set the description for the message using the string format.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Description(System.Object)">
+            <summary>
+            Set the description for the message from the specified object.ToString().
+            </summary>
+            <param name="value">The object to get the description from.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Data``1(``0)">
+            <summary>
+            Set the data to be processed with the messsage.
+            </summary>
+            <param name="value">The  data to be processed with the messsage.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="value"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Correlation(System.String)">
+            <summary>
+            Set the correlation identifier used to track messages.
+            </summary>
+            <param name="value">The correlation identifier used to track messages.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Priority(MongoDB.Messaging.MessagePriority)">
+            <summary>
+            Sets the priority of the message in the queue.
+            </summary>
+            <param name="value">The priority of the message in the queue.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.MessageBuilder.Retry(System.Int32)">
+            <summary>
+            Sets the number of times the message should retry on error.  Use zero to prevent retry.
+            </summary>
+            <param name="value">The number of times the message should retry on error.</param>
+            <returns>
+            A fluent interface to build a queue message
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.PublishQueueBuilder">
+            <summary>
+            A fluent builder to help publish a message to a queue
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.PublishQueueBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueManager,MongoDB.Messaging.Message)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.PublishQueueBuilder" /> class.
+            </summary>
+            <param name="manager">The queue manager.</param>
+            <param name="message">The message to update.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.PublishQueueBuilder.Message">
+            <summary>
+            Gets the message being built.
+            </summary>
+            <value>
+            The message being build.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.PublishQueueBuilder.Container">
+            <summary>
+            Gets the queue instance.
+            </summary>
+            <value>
+            The queue instance.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.PublishQueueBuilder.Queue(System.String)">
+            <summary>
+            Start building a message to a queue with the specified name.
+            </summary>
+            <param name="name">The name of the queue.</param>
+            <returns>A fluent interface to build the queue message.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.QueueConfigurationBase">
+            <summary>
+            A base queue configuration builder 
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueConfigurationBase.#ctor(MongoDB.Messaging.Configuration.IQueueConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.QueueConfigurationBase"/> class.
+            </summary>
+            <param name="configuration">The queue configuration.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.QueueConfigurationBase.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.QueueConfigurationBuilder">
+            <summary>
+            A queue configuration builder
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueConfigurationBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.QueueConfigurationBuilder"/> class.
+            </summary>
+            <param name="configuration">The queue configuration.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueConfigurationBuilder.Description(System.String)">
+            <summary>
+            Sets the queue description.
+            </summary>
+            <param name="queueDescription">The queue description.</param>
+            <returns>A fluent <see langword="interface"/> to build the queue message.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueConfigurationBuilder.Retry(System.Int32)">
+            <summary>
+            Sets the number of times the message should retry on error. Use zero to prevent retry.
+            </summary>
+            <param name="count">The number of retries.</param>
+            <returns>
+            A fluent <see langword="interface" /> to build the queue configuration.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueConfigurationBuilder.Priority(MongoDB.Messaging.MessagePriority)">
+            <summary>
+            Sets the priority of the message in the queue.
+            </summary>
+            <param name="value">The priority of the message in the queue.</param>
+            <returns>
+            A fluent <see langword="interface" /> to build the queue configuration.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueConfigurationBuilder.ResponseQueue(System.String)">
+            <summary>
+            Sets the response queue.
+            </summary>
+            <param name="queueName">Name of the response queue.</param>
+            <returns>
+            A fluent <see langword="interface" /> to build the queue configuration.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.QueueManagerBase">
+            <summary>
+            A queue manager builder base class
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBase.#ctor(MongoDB.Messaging.Configuration.IQueueManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.QueueManagerBase"/> class.
+            </summary>
+            <param name="manager">The manager.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.QueueManagerBase.Manager">
+            <summary>
+            Gets the queue manager.
+            </summary>
+            <value>
+            The queue manager.
+            </value>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.QueueManagerBuilder">
+            <summary>
+            A queue manager fluent builder.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.QueueManagerBuilder"/> class.
+            </summary>
+            <param name="manager">The queue manager.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBuilder.Connection(System.String)">
+            <summary>
+            Sets the name of the connection string.
+            </summary>
+            <param name="name">The name of the connection string.</param>
+            <returns>
+            A fluent <see langword="interface" /> for the queue manager.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBuilder.Notification(System.String)">
+            <summary>
+            Sets the name of the notification connection string.
+            </summary>
+            <param name="name">The name of the notification connection string.</param>
+            <returns>
+            A fluent <see langword="interface" /> for the queue manager.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBuilder.ControlQueue(System.String)">
+            <summary>
+            Sets the name of the service control queue.
+            </summary>
+            <param name="name">The name of the service control queue.</param>
+            <returns>
+            A fluent <see langword="interface" /> for the queue manager.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBuilder.Queue(System.Action{MongoDB.Messaging.Fluent.QueueNameBuilder})">
+            <summary>
+            Configure a message queue using the specified builder.
+            </summary>
+            <param name="builder">The fluent builder.</param>
+            <returns>
+            A fluent <see langword="interface" /> for the queue manager.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueManagerBuilder.Subscribe(System.Action{MongoDB.Messaging.Fluent.SubscriberQueueBuilder})">
+            <summary>
+            Configure a subscription to a message queue using the specified builder.
+            </summary>
+            <param name="builder">The fluent builder.</param>
+            <returns>
+            A fluent <see langword="interface" /> for the queue manager.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.QueueNameBuilder">
+            <summary>
+            A queue configuration builder
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueNameBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.QueueNameBuilder"/> class.
+            </summary>
+            <param name="manager">The queue manager.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.QueueNameBuilder.Name(System.String)">
+            <summary>
+            The name of the queue to configure.
+            </summary>
+            <param name="name">The queue name.</param>
+            <returns></returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.ScheduleQueueBuilder">
+            <summary>
+            A fluent builder to schedule a message for processing.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.ScheduleQueueBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueManager,MongoDB.Messaging.Message)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.ScheduleQueueBuilder"/> class.
+            </summary>
+            <param name="manager">The queue manager.</param>
+            <param name="message">The message to update.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.ScheduleQueueBuilder.Message">
+            <summary>
+            Gets the message being built.
+            </summary>
+            <value>
+            The message being build.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Fluent.ScheduleQueueBuilder.Container">
+            <summary>
+            Gets the queue instance.
+            </summary>
+            <value>
+            The queue instance.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.ScheduleQueueBuilder.Schedule(System.DateTime)">
+            <summary>
+            Start building a scheduled message to a queue with the specified date of processing.
+            </summary>
+            <param name="value">The <see cref="T:System.DateTime"/> the message is scheduled for processing on.</param>
+            <returns>
+            A fluent interface to build the queue message.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.SubscriberBuilder">
+            <summary>
+            A queue subscriber configuration builder
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.SubscriberBuilder"/> class.
+            </summary>
+            <param name="configuration">The queue configuration.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.PollTime(System.TimeSpan)">
+            <summary>
+            Sets the worker poll time.
+            </summary>
+            <param name="value">The worker poll time.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Workers(System.Int32)">
+            <summary>
+            Sets the number of workers to run for the queue.
+            </summary>
+            <param name="value">The number of workers to run for the queue.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Handler``1">
+            <summary>
+            Sets the subscriber factory the handles the messages for the queue
+            </summary>
+            <typeparam name="TSubscriber">The type of the subscriber.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Handler(System.Func{MongoDB.Messaging.Subscription.IMessageSubscriber})">
+            <summary>
+            Sets the subscriber factory the handles the messages for the queue
+            </summary>
+            <param name="factory">The subscriber factory.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Timeout(System.TimeSpan)">
+            <summary>
+            Sets the message processing timeout.
+            </summary>
+            <param name="value">The message processing timeout.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.TimeoutAction(MongoDB.Messaging.TimeoutPolicy)">
+            <summary>
+            Sets the timeout policy.
+            </summary>
+            <param name="value">The timeout policy.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Retry``1">
+            <summary>
+            Sets the retry factory the handles messages error retries
+            </summary>
+            <typeparam name="TFactory">The type of the factory.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Retry(System.Func{MongoDB.Messaging.Subscription.IMessageRetry})">
+            <summary>
+            Sets the retry factory the handles messages error retries
+            </summary>
+            <param name="factory">The retry factory.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.ExpireSuccessful(System.TimeSpan)">
+            <summary>
+            Sets the time successful messages will kept before expiring.
+            </summary>
+            <param name="value">The time successful messages will kept before expiring.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.ExpireWarning(System.TimeSpan)">
+            <summary>
+            Sets the time warning messages will kept before expiring.
+            </summary>
+            <param name="value">The time warning messages will kept before expiring.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.ExpireError(System.TimeSpan)">
+            <summary>
+            Sets the time error messages will kept before expiring.
+            </summary>
+            <param name="value">The time error messages will kept before expiring.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.HeathCheck(System.TimeSpan)">
+            <summary>
+            Sets the health check poll time.
+            </summary>
+            <param name="value">The health poll time.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberBuilder.Trigger(System.Boolean)">
+            <summary>
+            Sets weather the worker is triggered from a change notification.
+            </summary>
+            <param name="value"><c>true</c> to trigger worker on change; otherwise <c>false</c>.</param>
+            <returns></returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Fluent.SubscriberQueueBuilder">
+            <summary>
+            A queue subscriber configuration builder
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberQueueBuilder.#ctor(MongoDB.Messaging.Configuration.IQueueManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Fluent.SubscriberQueueBuilder"/> class.
+            </summary>
+            <param name="manager">The queue manager.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Fluent.SubscriberQueueBuilder.Queue(System.String)">
+            <summary>
+            The queue name to configure a subscriber for
+            </summary>
+            <param name="name">The queue name.</param>
+            <returns></returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Locks.DistributedLock">
+            <summary>
+            Distributed Lock manager provides synchronized access to a resources over a network
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.DistributedLock.#ctor(MongoDB.Driver.IMongoCollection{MongoDB.Messaging.Locks.LockData})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Locks.DistributedLock"/> class.
+            </summary>
+            <param name="collection">The collection.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.DistributedLock.#ctor(MongoDB.Driver.IMongoCollection{MongoDB.Messaging.Locks.LockData},System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Locks.DistributedLock"/> class.
+            </summary>
+            <param name="collection">The collection.</param>
+            <param name="lockExpiration">The default amount of time before the lock will expire and be free to be acquired again.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.DistributedLock.Acquire(System.String,System.TimeSpan)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+            <returns>
+              <c>true</c> if the lock was acquired; otherwise <c>false</c>
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.DistributedLock.Acquire(System.String,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+            <param name="wait">The wait.</param>
+            <returns>
+              <c>true</c> if the lock was acquired; otherwise <c>false</c></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.DistributedLock.Release(System.String)">
+            <summary>
+            Release a lock with the specified <paramref name="name"/>.
+            </summary>
+            <param name="name">The name of the lock.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Locks.ILockManager">
+            <summary>
+            An <see langword="interface"/> defining a MongoDB lock manager.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ILockManager.Acquire(System.String)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <returns><c>true</c> if the lock was acquired; otherwise <c>false</c></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ILockManager.Acquire(System.String,System.TimeSpan)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+            <returns><c>true</c> if the lock was acquired; otherwise <c>false</c></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ILockManager.Status(System.String)">
+            <summary>
+            Gets the status of a lock the specified <paramref name="name" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <returns>An object with status data about the lock.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ILockManager.Renew(System.String)">
+            <summary>
+            Renew the expiration of a lock with the specified <paramref name="name" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ILockManager.Renew(System.String,System.TimeSpan)">
+            <summary>
+            Renew the expiration of a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ILockManager.Release(System.String)">
+            <summary>
+            Release a lock with the specified <paramref name="name"/>.
+            </summary>
+            <param name="name">The name of the lock.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Locks.LockData">
+            <summary>
+            The status of a lock
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.Id">
+            <summary>
+            Gets or sets the identifier for the lock.
+            </summary>
+            <value>
+            The identifier for the lock.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.IsLocked">
+            <summary>
+            Gets or sets a value indicating whether this instance is locked.
+            </summary>
+            <value>
+              <c>true</c> if this instance is locked; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.UserName">
+            <summary>
+            Gets or sets the name of the user who acquired the lock.
+            </summary>
+            <value>
+            The name of the user who acquired the lock.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.MachineName">
+            <summary>
+            Gets or sets the name of the machine.
+            </summary>
+            <value>
+            The name of the machine.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.Process">
+            <summary>
+            Gets or sets the process identifier.
+            </summary>
+            <value>
+            The process identifier.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.Created">
+            <summary>
+            Gets or sets the date the lock was created in UTC time.
+            </summary>
+            <value>
+            The date the lock was created in UTC time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.Updated">
+            <summary>
+            Gets or sets the date the lock was updated in UTC time.
+            </summary>
+            <value>
+            The date the lock was updated in UTC time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockData.Expire">
+            <summary>
+            Gets or sets the date and time that this lock will expire and be free to be acquired.
+            </summary>
+            <value>
+            The date and time that this lock will expire and be free to be acquired.
+            </value>
+        </member>
+        <member name="T:MongoDB.Messaging.Locks.LockManager">
+            <summary>
+            An <see langword="abstract"/> implementation of <see cref="T:MongoDB.Messaging.Locks.ILockManager"/>.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.#ctor(MongoDB.Driver.IMongoCollection{MongoDB.Messaging.Locks.LockData},System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Locks.DistributedLock"/> class.
+            </summary>
+            <param name="collection">The collection.</param>
+            <param name="lockExpiration">The default amount of time before the lock will expire and be free to be acquired again.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockManager.LockExpiration">
+            <summary>
+            Gets or sets the default amount of time before the lock will expire and be free to be acquired again
+            </summary>
+            <value>
+            The default amount of time before the lock will expire and be free to be acquired again
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Locks.LockManager.Collection">
+            <summary>
+            Gets the underlying MongoDB collection for storing lock data.
+            </summary>
+            <value>
+            The underlying MongoDB collection for storing lock data.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.Acquire(System.String)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <returns>
+              <c>true</c> if the lock was acquired; otherwise <c>false</c>
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.Acquire(System.String,System.TimeSpan)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+            <returns>
+              <c>true</c> if the lock was acquired; otherwise <c>false</c>
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.Status(System.String)">
+            <summary>
+            Gets the status of a lock the specified <paramref name="name" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.Renew(System.String)">
+            <summary>
+            Renew the expiration of a lock with the specified <paramref name="name" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.Renew(System.String,System.TimeSpan)">
+            <summary>
+            Renew the expiration of a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.Release(System.String)">
+            <summary>
+            Release a lock with the specified <paramref name="name"/>.  Note, release is typically not used on a throttle lock.
+            </summary>
+            <param name="name">The name of the lock.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.LockManager.VerifyLock(System.String)">
+            <summary>
+            Verifies the lock record exists.
+            </summary>
+            <param name="name">The name of the lock.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Locks.ThrottleLock">
+            <summary>
+            Throttle Lock Manager controls how frequent a process can run. 
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ThrottleLock.#ctor(MongoDB.Driver.IMongoCollection{MongoDB.Messaging.Locks.LockData})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Locks.DistributedLock"/> class.
+            </summary>
+            <param name="collection">The collection.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ThrottleLock.#ctor(MongoDB.Driver.IMongoCollection{MongoDB.Messaging.Locks.LockData},System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Locks.DistributedLock"/> class.
+            </summary>
+            <param name="collection">The collection.</param>
+            <param name="lockExpiration">The default amount of time before the lock will expire and be free to be acquired again.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ThrottleLock.Acquire(System.String,System.TimeSpan)">
+            <summary>
+            Acquire a lock with the specified <paramref name="name" /> and <paramref name="expiration" />.
+            </summary>
+            <param name="name">The name of the lock.</param>
+            <param name="expiration">The amount of time before the lock will expire and be free to be acquired again.</param>
+            <returns>
+              <c>true</c> if the lock was acquired; otherwise <c>false</c>
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Locks.ThrottleLock.Release(System.String)">
+            <summary>
+            Release a lock with the specified <paramref name="name"/>.  Note, release is typically not used on a throttle lock.
+            </summary>
+            <param name="name">The name of the lock.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.AsynchronousContext">
+            <summary>
+            A property context that maintains state across asynchronous tasks and call contexts.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Apply(MongoDB.Messaging.Logging.ILogBuilder)">
+            <summary>
+            Applies the context properties to the specified <paramref name="builder" />.
+            </summary>
+            <param name="builder">The builder to copy the properties to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Clear">
+            <summary>
+            Removes all keys and values from the property context
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Contains(System.String)">
+            <summary>
+            Determines whether the property context contains the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key to locate in the property context.</param>
+            <returns>
+              <c>true</c> if the property context contains an element with the specified <paramref name="key" />; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Get(System.String)">
+            <summary>
+            Gets the value associated with the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key of the value to get.</param>
+            <returns>
+            The value associated with the specified <paramref name="key" />, if the key is found; otherwise <see langword="null" />.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Keys">
+            <summary>
+            Gets the keys in the property context.
+            </summary>
+            <returns>
+            The keys in the property context.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Remove(System.String)">
+            <summary>
+            Removes the value with the specified <paramref name="key" /> from the property context.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns>
+              <c>true</c> if the element is successfully found and removed; otherwise, <c>false</c>. This method returns <c>false</c> if key is not found.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.AsynchronousContext.Set(System.String,System.Object)">
+            <summary>
+            Sets the <paramref name="value" /> associated with the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key of the value to set.</param>
+            <param name="value">The value associated with the specified key.</param>
+            <returns>
+            An <see cref="T:System.IDisposable" /> that will remove the key on dispose.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.DelegateLogWriter">
+            <summary>
+            A <see langword="delegate"/> log writer.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.DelegateLogWriter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.DelegateLogWriter"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.DelegateLogWriter.#ctor(System.Action{MongoDB.Messaging.Logging.LogData})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.DelegateLogWriter"/> class.
+            </summary>
+            <param name="logAction">The log action.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.DelegateLogWriter.WriteLog(MongoDB.Messaging.Logging.LogData)">
+            <summary>
+            Writes the specified <see cref="T:MongoDB.Messaging.Logging.LogData"/> to the underlying logger.
+            </summary>
+            <param name="logData">The log data to write.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.DisposeAction">
+            <summary>
+            A class that will call an <see cref="T:System.Action"/> when Disposed.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.DisposeAction.#ctor(System.Action)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.DisposeAction"/> class.
+            </summary>
+            <param name="exitAction">The exit action.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.DisposeAction.System#IDisposable#Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.ILogBuilder">
+            <summary>
+            A fluent <see langword="interface"/> to build log messages.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.ILogBuilder.LogData">
+            <summary>
+            Gets the log data that is being built.
+            </summary>
+            <value>
+            The log data.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Level(MongoDB.Messaging.Logging.LogLevel)">
+            <summary>
+            Sets the level of the logging event.
+            </summary>
+            <param name="logLevel">The level of the logging event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Logger(System.String)">
+            <summary>
+            Sets the logger for the logging event.
+            </summary>
+            <param name="logger">The name of the logger.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Logger``1">
+            <summary>
+            Sets the logger name using the generic type.
+            </summary>
+            <typeparam name="TLogger">The type of the logger.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.String)">
+            <summary>
+            Sets the log message on the logging event.
+            </summary>
+            <param name="message">The log message for the logging event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.Func{System.String})">
+            <summary>
+            Sets the log message on the logging event using the return value of specified <see langword="delegate" />.
+            </summary>
+            <param name="messageFactory">The <see langword="delegate" /> to generate the method.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.String,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.String,System.Object,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.String,System.Object,System.Object,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <param name="arg2">The third object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.String,System.Object,System.Object,System.Object,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <param name="arg2">The third object to format.</param>
+            <param name="arg3">The fourth object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.String,System.Object[])">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Message(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="provider">An object that supplies culture-specific formatting information.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Property(System.String,System.Object)">
+            <summary>
+            Sets a log context property on the logging event.
+            </summary>
+            <param name="name">The name of the context property.</param>
+            <param name="value">The value of the context property.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">name</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Exception(System.Exception)">
+            <summary>
+            Sets the exception information of the logging event.
+            </summary>
+            <param name="exception">The exception information of the logging event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.Write(System.String,System.String,System.Int32)">
+            <summary>
+            Writes the log event to the underlying logger.
+            </summary>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.WriteIf(System.Func{System.Boolean},System.String,System.String,System.Int32)">
+            <summary>
+            Writes the log event to the underlying logger if the condition delegate is true.
+            </summary>
+            <param name="condition">If condition is true, write log event; otherwise ignore event.</param>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogBuilder.WriteIf(System.Boolean,System.String,System.String,System.Int32)">
+            <summary>
+            Writes the log event to the underlying logger if the condition is true.
+            </summary>
+            <param name="condition">If condition is true, write log event; otherwise ignore event.</param>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.ILogger">
+            <summary>
+            A logger <see langword="interface"/> for starting log messages.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.ILogger.Name">
+            <summary>
+            Gets the logger name.
+            </summary>
+            <value>
+            The logger name.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.ILogger.Properties">
+            <summary>
+            Gets the logger initial default properties.  All values are copied to each log.
+            </summary>
+            <value>
+            The logger initial default properties.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Log(MongoDB.Messaging.Logging.LogLevel)">
+            <summary>
+            Start a fluent <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> with the specified <see cref="T:MongoDB.Messaging.Logging.LogLevel" />.
+            </summary>
+            <param name="logLevel">The log level.</param>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Log(System.Func{MongoDB.Messaging.Logging.LogLevel})">
+            <summary>
+            Start a fluent <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> with the computed <see cref="T:MongoDB.Messaging.Logging.LogLevel" />.
+            </summary>
+            <param name="logLevelFactory">The log level factory.</param>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Trace">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Trace"/> logger.
+            </summary>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Debug">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Debug"/> logger.
+            </summary>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Info">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Info"/> logger.
+            </summary>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Warn">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Warn"/> logger.
+            </summary>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Error">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Error"/> logger.
+            </summary>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogger.Fatal">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Fatal"/> logger.
+            </summary>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.ILogWriter">
+            <summary>
+            An interface defining a log writer.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILogWriter.WriteLog(MongoDB.Messaging.Logging.LogData)">
+            <summary>
+            Writes the specified <see cref="T:MongoDB.Messaging.Logging.LogData"/> to the underlying logger.
+            </summary>
+            <param name="logData">The log data to write.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.IPropertyContext">
+            <summary>
+            An <see langword="interface"/> defining a logger property context.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Apply(MongoDB.Messaging.Logging.ILogBuilder)">
+            <summary>
+            Applies the context properties to the specified <paramref name="builder"/>.
+            </summary>
+            <param name="builder">The builder to copy the properties to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Clear">
+            <summary>
+            Removes all keys and values from the property context
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Contains(System.String)">
+            <summary>
+            Determines whether the property context contains the specified <paramref name="key"/>.
+            </summary>
+            <param name="key">The key to locate in the property context.</param>
+            <returns><c>true</c> if the property context contains an element with the specified <paramref name="key"/>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Get(System.String)">
+            <summary>
+            Gets the value associated with the specified <paramref name="key"/>.
+            </summary>
+            <param name="key">The key of the value to get.</param>
+            <returns>The value associated with the specified <paramref name="key"/>, if the key is found; otherwise <see langword="null"/>.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Keys">
+            <summary>
+            Gets the keys in the property context.
+            </summary>
+            <returns>The keys in the property context.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Remove(System.String)">
+            <summary>
+            Removes the value with the specified <paramref name="key" /> from the property context.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns><c>true</c> if the element is successfully found and removed; otherwise, <c>false</c>. This method returns <c>false</c> if key is not found.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IPropertyContext.Set(System.String,System.Object)">
+            <summary>
+            Sets the <paramref name="value"/> associated with the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key of the value to set.</param>
+            <param name="value">The value associated with the specified key. The value will be converted to a string.</param>
+            <returns>An <see cref="T:System.IDisposable"/> that will remove the key on dispose.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.LogBuilder">
+            <summary>
+            A fluent <see langword="interface"/> to build log messages.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.#ctor(MongoDB.Messaging.Logging.ILogWriter,MongoDB.Messaging.Logging.IObjectPool{MongoDB.Messaging.Logging.LogBuilder})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> class.
+            </summary>
+            <param name="writer">The delegate to write logs to.</param>
+            <param name="objectPool">The object pool.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer" /> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.#ctor(MongoDB.Messaging.Logging.ILogWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> class.
+            </summary>
+            <param name="writer">The delegate to write logs to.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer" /> is <see langword="null" />.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogBuilder.LogData">
+            <summary>
+            Gets the log data that is being built.
+            </summary>
+            <value>
+            The log data.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Level(MongoDB.Messaging.Logging.LogLevel)">
+            <summary>
+            Sets the level of the logging event.
+            </summary>
+            <param name="logLevel">The level of the logging event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Logger(System.String)">
+            <summary>
+            Sets the logger for the logging event.
+            </summary>
+            <param name="logger">The name of the logger.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Logger``1">
+            <summary>
+            Sets the logger name using the generic type.
+            </summary>
+            <typeparam name="TLogger">The type of the logger.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.String)">
+            <summary>
+            Sets the log message on the logging event.
+            </summary>
+            <param name="message">The log message for the logging event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.Func{System.String})">
+            <summary>
+            Sets the log message on the logging event using the return value of specified <see langword="delegate" />.
+            </summary>
+            <param name="messageFactory">The <see langword="delegate" /> to generate the method.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.String,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.String,System.Object,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.String,System.Object,System.Object,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <param name="arg2">The third object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.String,System.Object,System.Object,System.Object,System.Object)">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="arg0">The first object to format.</param>
+            <param name="arg1">The second object to format.</param>
+            <param name="arg2">The third object to format.</param>
+            <param name="arg3">The fourth object to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.String,System.Object[])">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Message(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+            Sets the log message and parameters for formating on the logging event.
+            </summary>
+            <param name="provider">An object that supplies culture-specific formatting information.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Property(System.String,System.Object)">
+            <summary>
+            Sets a log context property on the logging event.
+            </summary>
+            <param name="name">The name of the context property.</param>
+            <param name="value">The value of the context property.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">name</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Exception(System.Exception)">
+            <summary>
+            Sets the exception information of the logging event.
+            </summary>
+            <param name="exception">The exception information of the logging event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Reset">
+            <summary>
+            Reset log data to default values.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.Write(System.String,System.String,System.Int32)">
+            <summary>
+            Writes the log event to the underlying logger.
+            </summary>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.WriteIf(System.Func{System.Boolean},System.String,System.String,System.Int32)">
+            <summary>
+            Writes the log event to the underlying logger if the condition delegate is true.
+            </summary>
+            <param name="condition">If condition is true, write log event; otherwise ignore event.</param>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogBuilder.WriteIf(System.Boolean,System.String,System.String,System.Int32)">
+            <summary>
+            Writes the log event to the underlying logger if the condition is true.
+            </summary>
+            <param name="condition">If condition is true, write log event; otherwise ignore event.</param>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.LogData">
+            <summary>
+            A class holding log data before being written.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.LogData"/> class.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.Logger">
+            <summary>
+            Gets or sets the logger name.
+            </summary>
+            <value>
+            The logger name.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.LogLevel">
+            <summary>
+            Gets or sets the trace level.
+            </summary>
+            <value>
+            The trace level.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.Message">
+            <summary>
+            Gets or sets the message.
+            </summary>
+            <value>
+            The message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.Parameters">
+            <summary>
+            Gets or sets the message parameters. Used with String.Format.
+            </summary>
+            <value>
+            The parameters.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.MessageFormatter">
+            <summary>
+            Gets or sets the message formatter <see langword="delegate"/>.
+            </summary>
+            <value>
+            The message formatter <see langword="delegate"/>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.FormatProvider">
+            <summary>
+            Gets or sets the format provider.
+            </summary>
+            <value>
+            The format provider.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.Exception">
+            <summary>
+            Gets or sets the exception.
+            </summary>
+            <value>
+            The exception.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.MemberName">
+            <summary>
+            Gets or sets the name of the member.
+            </summary>
+            <value>
+            The name of the member.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.FilePath">
+            <summary>
+            Gets or sets the file path.
+            </summary>
+            <value>
+            The file path.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.LineNumber">
+            <summary>
+            Gets or sets the line number.
+            </summary>
+            <value>
+            The line number.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.LogData.Properties">
+            <summary>
+            Gets or sets the log properties.
+            </summary>
+            <value>
+            The log properties.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogData.FormatMessage">
+            <summary>
+            Formats the log message.
+            </summary>
+            <returns>The formatted log message.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogData.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LogData.Reset">
+            <summary>
+            Reset all properties back to default.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.Logger">
+            <summary>
+            A logger class for starting log messages.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.#cctor">
+            <summary>
+            Initializes the <see cref="T:MongoDB.Messaging.Logging.Logger"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.Logger"/> class.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.Logger.GlobalProperties">
+            <summary>
+            Gets the global property context.  All values are copied to each log on write.
+            </summary>
+            <value>
+            The global property context.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.Logger.ThreadProperties">
+            <summary>
+            Gets the thread-local property context.  All values are copied to each log on write.
+            </summary>
+            <value>
+            The thread-local property context.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.Logger.AsyncProperties">
+            <summary>
+            Gets the property context that maintains state across asynchronous tasks and call contexts. All values are copied to each log on write.
+            </summary>
+            <value>
+            The asynchronous property context.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.Logger.Properties">
+            <summary>
+            Gets the logger initial default properties.  All values are copied to each log.
+            </summary>
+            <value>
+            The logger initial default properties.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Logging.Logger.Name">
+            <summary>
+            Gets the logger name.
+            </summary>
+            <value>
+            The logger name.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Log(MongoDB.Messaging.Logging.LogLevel,System.String)">
+            <summary>
+            Start a fluent <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> with the specified <see cref="T:MongoDB.Messaging.Logging.LogLevel" />.
+            </summary>
+            <param name="logLevel">The log level.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Log(MongoDB.Messaging.Logging.LogLevel)">
+            <summary>
+            Start a fluent <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> with the specified <see cref="T:MongoDB.Messaging.Logging.LogLevel" />.
+            </summary>
+            <param name="logLevel">The log level.</param>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Log(System.Func{MongoDB.Messaging.Logging.LogLevel},System.String)">
+            <summary>
+            Start a fluent <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> with the computed <see cref="T:MongoDB.Messaging.Logging.LogLevel" />.
+            </summary>
+            <param name="logLevelFactory">The log level factory.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Log(System.Func{MongoDB.Messaging.Logging.LogLevel})">
+            <summary>
+            Start a fluent <see cref="T:MongoDB.Messaging.Logging.LogBuilder" /> with the computed <see cref="T:MongoDB.Messaging.Logging.LogLevel" />.
+            </summary>
+            <param name="logLevelFactory">The log level factory.</param>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Trace(System.String)">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Trace"/> logger.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Trace">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Trace" /> logger.
+            </summary>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Debug(System.String)">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Debug"/> logger.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Debug">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Debug" /> logger.
+            </summary>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Info(System.String)">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Info"/> logger.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Info">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Info" /> logger.
+            </summary>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Warn(System.String)">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Warn"/> logger.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Warn">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Warn" /> logger.
+            </summary>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Error(System.String)">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Error"/> logger.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Error">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Error" /> logger.
+            </summary>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.Fatal(System.String)">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Fatal"/> logger.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>A fluent Logger instance.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.MongoDB#Messaging#Logging#ILogger#Fatal">
+            <summary>
+            Start a fluent <see cref="F:MongoDB.Messaging.Logging.LogLevel.Fatal" /> logger.
+            </summary>
+            <returns>
+            A fluent Logger instance.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.RegisterWriter(System.Action{MongoDB.Messaging.Logging.LogData})">
+            <summary>
+            Registers a <see langword="delegate"/> to write logs to.
+            </summary>
+            <param name="writer">The <see langword="delegate"/> to write logs to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.RegisterWriter``1(``0)">
+            <summary>
+            Registers a ILogWriter to write logs to.
+            </summary>
+            <param name="writer">The ILogWriter to write logs to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.CreateLogger(System.Action{MongoDB.Messaging.Logging.LoggerCreateBuilder})">
+            <summary>
+            Creates a new <see cref="T:MongoDB.Messaging.Logging.ILogger"/> using the specified fluent <paramref name="builder"/> action.
+            </summary>
+            <param name="builder">The builder.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.CreateLogger(System.String)">
+            <summary>
+            Creates a new <see cref="T:MongoDB.Messaging.Logging.ILogger"/> using the caller file name as the logger name.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.CreateLogger(System.Type)">
+            <summary>
+            Creates a new <see cref="T:MongoDB.Messaging.Logging.ILogger" /> using the specified type as the logger name.
+            </summary>
+            <param name="type">The type to use as the logger name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.Logger.CreateLogger``1">
+            <summary>
+            Creates a new <see cref="T:MongoDB.Messaging.Logging.ILogger" /> using the specified type as the logger name.
+            </summary>
+            <typeparam name="T">The type to use as the logger name.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.LoggerCreateBuilder">
+            <summary>
+            A fluent class to build a logger.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerCreateBuilder.#ctor(MongoDB.Messaging.Logging.Logger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.LoggerCreateBuilder"/> class.
+            </summary>
+            <param name="logger">The factory.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerCreateBuilder.Logger(System.String)">
+            <summary>
+            Sets the initial logger name for the logging event.
+            </summary>
+            <param name="logger">The name of the logger.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerCreateBuilder.Logger``1">
+            <summary>
+            Sets the initial logger name using the generic type.
+            </summary>
+            <typeparam name="TLogger">The type of the logger.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerCreateBuilder.Logger(System.Type)">
+            <summary>
+            Sets the initial logger name using the specified type.
+            </summary>
+            <param name="type">The type of the logger.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerCreateBuilder.Property(System.String,System.Object)">
+            <summary>
+            Sets an initial  log context property on the logging event.
+            </summary>
+            <param name="name">The name of the context property.</param>
+            <param name="value">The value of the context property.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">name</exception>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.LoggerExtensions">
+            <summary>
+            Extension methods for <see cref="T:MongoDB.Messaging.Logging.ILogger"/>
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerExtensions.Trace(MongoDB.Messaging.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Write a trace level log with specified message formatting <see langword="delegate" />.
+            </summary>
+            <param name="logger">The logger to write to.</param>
+            <param name="messageFormatter">The <see langword="delegate" /> used to generate the log message.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerExtensions.Debug(MongoDB.Messaging.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Write a debug level log with specified message formatting <see langword="delegate"/>.
+            </summary>
+            <param name="messageFormatter">The <see langword="delegate"/> used to generate the log message.</param>
+            <param name="logger">The logger to write to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerExtensions.Info(MongoDB.Messaging.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Write a info level log with specified message formatting <see langword="delegate"/>.
+            </summary>
+            <param name="messageFormatter">The <see langword="delegate"/> used to generate the log message.</param>
+            <param name="logger">The logger to write to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerExtensions.Warn(MongoDB.Messaging.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Write a warn level log with specified message formatting <see langword="delegate"/>.
+            </summary>
+            <param name="messageFormatter">The <see langword="delegate"/> used to generate the log message.</param>
+            <param name="logger">The logger to write to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerExtensions.Error(MongoDB.Messaging.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Write a error level log with specified message formatting <see langword="delegate"/>.
+            </summary>
+            <param name="messageFormatter">The <see langword="delegate"/> used to generate the log message.</param>
+            <param name="logger">The logger to write to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerExtensions.Fatal(MongoDB.Messaging.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Write a fatal level log with specified message formatting <see langword="delegate"/>.
+            </summary>
+            <param name="messageFormatter">The <see langword="delegate"/> used to generate the log message.</param>
+            <param name="logger">The logger to write to.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.ILoggerFactory`1">
+            <summary>
+            A factory for creating <see cref="T:MongoDB.Messaging.Logging.ILogger"/> instances using <typeparamref name="T"/> as the name of the logger.
+            </summary>
+            <typeparam name="T">The type used to name the <see cref="T:MongoDB.Messaging.Logging.ILogger"/>.</typeparam>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ILoggerFactory`1.CreateLogger">
+            <summary>
+            Create an instance of <see cref="T:MongoDB.Messaging.Logging.ILogger"/> using <typeparamref name="T"/> as the logger name.
+            </summary>
+            <returns>An instace of <see cref="T:MongoDB.Messaging.Logging.ILogger"/>.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.LoggerFactory`1">
+            <summary>
+            A factory for creating <see cref="T:MongoDB.Messaging.Logging.ILogger"/> instances using <typeparamref name="T"/> as the name of the logger.
+            </summary>
+            <typeparam name="T">The type used to name the <see cref="T:MongoDB.Messaging.Logging.ILogger"/>.</typeparam>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.LoggerFactory`1.CreateLogger">
+            <summary>
+            Create an instance of <see cref="T:MongoDB.Messaging.Logging.ILogger" /> using <typeparamref name="T" /> as the logger name.
+            </summary>
+            <returns>
+            An instace of <see cref="T:MongoDB.Messaging.Logging.ILogger" />.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.LogLevel">
+            <summary>
+            Defines available log levels.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.Logging.LogLevel.Trace">
+            <summary>Trace log level.</summary>
+        </member>
+        <member name="F:MongoDB.Messaging.Logging.LogLevel.Debug">
+            <summary>Debug log level.</summary>
+        </member>
+        <member name="F:MongoDB.Messaging.Logging.LogLevel.Info">
+            <summary>Info log level.</summary>
+        </member>
+        <member name="F:MongoDB.Messaging.Logging.LogLevel.Warn">
+            <summary>Warn log level.</summary>
+        </member>
+        <member name="F:MongoDB.Messaging.Logging.LogLevel.Error">
+            <summary>Error log level.</summary>
+        </member>
+        <member name="F:MongoDB.Messaging.Logging.LogLevel.Fatal">
+            <summary>Fatal log level.</summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.IObjectPool`1">
+            <summary>
+            Generic implementation of object pooling pattern
+            </summary>
+            <typeparam name="T">The type of object in pool</typeparam>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IObjectPool`1.Allocate">
+            <summary>
+            Produces an instance of <typeparamref name="T"/>.
+            </summary>
+            <remarks>
+            Search strategy is a simple linear probing which is chosen for it cache-friendliness.
+            Note that Free will try to store recycled objects close to the start thus statistically 
+            reducing how far we will typically search.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IObjectPool`1.Free(`0)">
+            <summary>
+            Return specified object to the pool.
+            </summary>
+            <remarks>
+            Search strategy is a simple linear probing which is chosen for it cache-friendliness.
+            Note that Free will try to store recycled objects close to the start thus statistically 
+            reducing how far we will typically search in <see cref="M:MongoDB.Messaging.Logging.IObjectPool`1.Allocate"/>.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.IObjectPool`1.Clear">
+            <summary>
+            Remove all pooled objects from object pool.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.ObjectPool`1">
+            <summary>
+            Generic implementation of object pooling pattern with predefined pool size limit. 
+            </summary>
+            <remarks>
+            Notes: 
+            1) it is not the goal to keep all returned objects. Pool is not meant for storage. If there
+               is no space in the pool, extra returned objects will be dropped.
+            
+            2) it is implied that if object was obtained from a pool, the caller will return it back in
+               a relatively short time. Keeping checked out objects for long durations is ok, but 
+               reduces usefulness of pooling. Just new up your own.
+            
+            Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice. 
+            Rationale: 
+               If there is no intent for reusing the object, do not use pool - just use "new". 
+            </remarks>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.ObjectPool`1.Factory">
+            <remarks>
+            Not using System.Func{T} because this file is linked into the (debugger) Formatter,
+            which does not have that type (since it compiles against .NET 2.0).
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ObjectPool`1.Allocate">
+            <summary>
+            Produces an instance.
+            </summary>
+            <remarks>
+            Search strategy is a simple linear probing which is chosen for it cache-friendliness.
+            Note that Free will try to store recycled objects close to the start thus statistically 
+            reducing how far we will typically search.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ObjectPool`1.Free(`0)">
+            <summary>
+            Returns objects to the pool.
+            </summary>
+            <remarks>
+            Search strategy is a simple linear probing which is chosen for it cache-friendliness.
+            Note that Free will try to store recycled objects close to the start thus statistically 
+            reducing how far we will typically search in Allocate.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.ObjectPool`1.Clear">
+            <summary>
+            Remove all pooled objects from object pool.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.PropertyContext">
+            <summary>
+            A property context that maintains state in a local dictionary
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Logging.PropertyContext"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Apply(MongoDB.Messaging.Logging.ILogBuilder)">
+            <summary>
+            Applies the context properties to the specified <paramref name="builder" />.
+            </summary>
+            <param name="builder">The builder to copy the properties to.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Clear">
+            <summary>
+            Removes all keys and values from the property context
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Contains(System.String)">
+            <summary>
+            Determines whether the property context contains the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key to locate in the property context.</param>
+            <returns>
+              <c>true</c> if the property context contains an element with the specified <paramref name="key" />; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Get(System.String)">
+            <summary>
+            Gets the value associated with the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key of the value to get.</param>
+            <returns>
+            The value associated with the specified <paramref name="key" />, if the key is found; otherwise <see langword="null" />.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Keys">
+            <summary>
+            Gets the keys in the property context.
+            </summary>
+            <returns>
+            The keys in the property context.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Remove(System.String)">
+            <summary>
+            Removes the value with the specified <paramref name="key" /> from the property context.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns>
+              <c>true</c> if the element is successfully found and removed; otherwise, <c>false</c>. This method returns <c>false</c> if key is not found.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.PropertyContext.Set(System.String,System.Object)">
+            <summary>
+            Sets the <paramref name="value" /> associated with the specified <paramref name="key" />.
+            </summary>
+            <param name="key">The key of the value to set.</param>
+            <param name="value">The value associated with the specified key.</param>
+            <returns>
+            An <see cref="T:System.IDisposable" /> that will remove the key on dispose.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Logging.TraceLogWriter">
+            <summary>
+            A system trace log writer
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.TraceLogWriter.#cctor">
+            <summary>
+            Initializes the <see cref="T:MongoDB.Messaging.Logging.TraceLogWriter"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Logging.TraceLogWriter.WriteLog(MongoDB.Messaging.Logging.LogData)">
+            <summary>
+            Writes the specified LogData to the underlying logger.
+            </summary>
+            <param name="logData">The log data.</param>
+        </member>
+        <member name="T:MongoDB.Messaging.Subscription.IMessageRetry">
+            <summary>
+            An <see langword="interface"/> to implement message error retry logic.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.IMessageRetry.ShouldRetry(MongoDB.Messaging.Subscription.ProcessContext,System.Exception)">
+            <summary>
+            Determine if the the message should be retried.
+            </summary>
+            <param name="processContext">The process context.</param>
+            <param name="exception">The exception thrown while processing message.</param>
+            <returns><c>true</c> if the message should be retried; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.IMessageRetry.NextAttempt(MongoDB.Messaging.Subscription.ProcessContext)">
+            <summary>
+            Get the next <see cref="T:System.DateTime"/> to attempt retry.
+            </summary>
+            <param name="processContext">The process context.</param>
+            <returns><see cref="T:System.DateTime"/> the message should be retried.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Subscription.IMessageSubscriber">
+            <summary>
+            An <see langword="interface"/> to implement to process message from a queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.IMessageSubscriber.Process(MongoDB.Messaging.Subscription.ProcessContext)">
+            <summary>
+            Process a message with the specified process context.
+            </summary>
+            <param name="processContext">The process context.</param>
+            <returns>The result to report after processing the message.</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Subscription.MessageRetry">
+            <summary>
+            Default implementation of retry logic
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.MessageRetry.ShouldRetry(MongoDB.Messaging.Subscription.ProcessContext,System.Exception)">
+            <summary>
+            Determine if the the message should be retried.
+            </summary>
+            <param name="processContext">The process context.</param>
+            <param name="exception">The exception thrown while processing message.</param>
+            <returns>
+              <c>true</c> if the message should be retried; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.MessageRetry.NextAttempt(MongoDB.Messaging.Subscription.ProcessContext)">
+            <summary>
+            Get the next <see cref="T:System.DateTime" /> to attempt retry.
+            </summary>
+            <param name="processContext">The process context.</param>
+            <returns>
+              <see cref="T:System.DateTime" /> the message should be retried.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Subscription.ProcessContext">
+            <summary>
+            The message processing context.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.ProcessContext.#ctor(MongoDB.Messaging.Message,MongoDB.Messaging.Configuration.IQueueContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Subscription.ProcessContext"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="container">The collection.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Subscription.ProcessContext.Message">
+            <summary>
+            Gets the queue message to process.
+            </summary>
+            <value>
+            The queue message to process.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Subscription.ProcessContext.Container">
+            <summary>
+            Gets the message queue collection.
+            </summary>
+            <value>
+            The message queue collection.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.ProcessContext.Data``1">
+            <summary>
+            Get data of type <typeparamref name="TData"/> from the <see cref="P:MongoDB.Messaging.Subscription.ProcessContext.Message"/>.
+            </summary>
+            <typeparam name="TData">The type of the data.</typeparam>
+            <returns>An instance of type <typeparamref name="TData"/>.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Subscription.ProcessContext.UpdateStatus(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Writes a status message back to the <see cref="P:MongoDB.Messaging.Subscription.ProcessContext.Container"/> for the current request.
+            </summary>
+            <param name="message">The status message.</param>
+            <param name="step">The current step.</param>
+            <returns></returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Storage.IQueueRepository">
+            <summary>
+            The queue storage repository
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Storage.IQueueRepository.Collection">
+            <summary>
+            Gets the underlying storage collection.
+            </summary>
+            <value>
+            The underlying storage collection.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.All">
+            <summary>
+            Start an <see cref="T:System.Linq.IQueryable"/> of all messages.
+            </summary>
+            <returns>An <see cref="T:System.Linq.IQueryable"/> of all messages.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Find(System.String)">
+            <summary>
+            Finds message with the specified <paramref name="id"/> as an asynchronous operation.
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.FindOne(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Finds one message with the specified <paramref name="criteria"/> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.FindAll(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Finds all message with the specified <paramref name="criteria"/> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Count">
+            <summary>
+            Gets the number of message as an asynchronous operation.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Count(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Gets the number of message with the specified <paramref name="criteria"/> as an asynchronous operation.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Save(MongoDB.Messaging.Message)">
+            <summary>
+            Save the specified <paramref name="message" /> as an asynchronous operation.
+            </summary>
+            <param name="message">The message to save.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Delete(System.String)">
+            <summary>
+            Delete the message with the specified <paramref name="id"/> as an asynchronous operation.
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.DeleteOne(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Delete one message with the specified <paramref name="criteria"/> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.DeleteAll(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Delete all message with the specified <paramref name="criteria"/> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Enqueue(MongoDB.Messaging.Message)">
+            <summary>
+            Enqueue the specified <paramref name="message" /> for processing as an asynchronous operation.
+            </summary>
+            <param name="message">The message to queue.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Dequeue">
+            <summary>
+            Dequeues the next queued message for processing as an asynchronous operation.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Requeue(System.String)">
+            <summary>
+            Requeue the message with the specified <paramref name="id"/> as an asynchronous operation.
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Schedule(System.String,System.DateTime)">
+            <summary>
+            Schedules the message with specified identifier for processing on the <paramref name="scheduled"/> date and time.
+            </summary>
+            <param name="id">The message identifier to schedule.</param>
+            <param name="scheduled">The date and time of the scheduled processing.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.Schedule(MongoDB.Messaging.Message)">
+            <summary>
+            Schedules the specified <paramref name="message" /> for future processing as an asynchronous operation.
+            </summary>
+            <param name="message">The message to queue.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="message"/> is <see langword="null" />.</exception>
+            <exception cref="T:System.ArgumentException">The NextAttempt property can't be null when scheduling a message.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.UpdateStatus(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Updates the status of the message with specified <paramref name="id"/> as an asynchronous operation..
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <param name="status">The status display mesage.</param>
+            <param name="step">The current processing step.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.IQueueRepository.MarkComplete(System.String,MongoDB.Messaging.MessageResult,System.String,System.Nullable{System.DateTime})">
+            <summary>
+            Marks the processing complete for the message with specified <paramref name="id" /> as an asynchronous operation..
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <param name="messageResult">The result of the processing.</param>
+            <param name="status">The status display mesage.</param>
+            <param name="expireDate">The expire date.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:MongoDB.Messaging.Storage.MongoFactory">
+            <summary>
+            A helper class for getting MongoDB database connection.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.MongoFactory.GetDatabaseFromConnectionString(System.String)">
+            <summary>
+            Gets the <see cref="T:MongoDB.Driver.IMongoDatabase"/> with the specified connection string.
+            </summary>
+            <param name="connectionString">The MongoDB connection string.</param>
+            <returns>An instance of <see cref="T:MongoDB.Driver.IMongoDatabase"/>.</returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.MongoFactory.GetDatabaseFromConnectionName(System.String)">
+            <summary>
+            Gets the <see cref="T:MongoDB.Driver.IMongoDatabase" /> with the specified connection name.
+            </summary>
+            <param name="connectionName">Name of the connection.</param>
+            <returns>
+            An instance of <see cref="T:MongoDB.Driver.IMongoDatabase" />.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="connectionName"/> is <see langword="null" />.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException">No connection string could be found in the application configuration file.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.MongoFactory.GetDatabaseFromMongoUrl(MongoDB.Driver.MongoUrl)">
+            <summary>
+            Gets the <see cref="T:MongoDB.Driver.IMongoDatabase" /> with the specified <see cref="T:MongoDB.Driver.MongoUrl" />.
+            </summary>
+            <param name="mongoUrl">The mongo URL.</param>
+            <returns>
+            An instance of <see cref="T:MongoDB.Driver.IMongoDatabase" />.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.MongoFactory.GetMongoUrl(System.String)">
+            <summary>
+            Gets the <see cref="T:MongoDB.Driver.MongoUrl" /> with the specified connection name.
+            </summary>
+            <param name="connectionName">Name of the connection.</param>
+            <returns>
+            An instance of <see cref="T:MongoDB.Driver.MongoUrl" />.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="connectionName"/> is <see langword="null" />.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException">No connection string could be found in the application configuration file.</exception>
+        </member>
+        <member name="T:MongoDB.Messaging.Storage.QueueRepository">
+            <summary>
+            The queue storage repository
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.#ctor(MongoDB.Driver.IMongoCollection{MongoDB.Messaging.Message})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Storage.QueueRepository"/> class.
+            </summary>
+            <param name="collection">The underlying storage collection.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Storage.QueueRepository.Collection">
+            <summary>
+            Gets the underlying storage collection.
+            </summary>
+            <value>
+            The underlying storage collection.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.All">
+            <summary>
+            Start an <see cref="T:System.Linq.IQueryable" /> of all messages.
+            </summary>
+            <returns>
+            An <see cref="T:System.Linq.IQueryable" /> of all messages.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Find(System.String)">
+            <summary>
+            Finds message with the specified <paramref name="id" /> as an asynchronous operation.
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.FindOne(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Finds one message with the specified <paramref name="criteria" /> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.FindAll(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Finds all message with the specified <paramref name="criteria" /> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Count">
+            <summary>
+            Gets the number of message as an asynchronous operation.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Count(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Gets the number of message with the specified <paramref name="criteria" /> as an asynchronous operation.
+            </summary>
+            <param name="criteria"></param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Save(MongoDB.Messaging.Message)">
+            <summary>
+            Save the specified <paramref name="message" /> as an asynchronous operation.
+            </summary>
+            <param name="message">The message to save.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="message"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Delete(System.String)">
+            <summary>
+            Delete the message with the specified <paramref name="id" /> as an asynchronous operation.
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.DeleteOne(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Delete one message with the specified <paramref name="criteria" /> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.DeleteAll(System.Linq.Expressions.Expression{System.Func{MongoDB.Messaging.Message,System.Boolean}})">
+            <summary>
+            Delete all message with the specified <paramref name="criteria" /> as an asynchronous operation.
+            </summary>
+            <param name="criteria">The criteria expression.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Enqueue(MongoDB.Messaging.Message)">
+            <summary>
+            Enqueue the specified <paramref name="message" /> for processing as an asynchronous operation.
+            </summary>
+            <param name="message">The message to queue.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="message"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Dequeue">
+            <summary>
+            Dequeues the next queued message for processing as an asynchronous operation.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Requeue(System.String)">
+            <summary>
+            Requeue the message with the specified <paramref name="id"/> as an asynchronous operation.
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Schedule(System.String,System.DateTime)">
+            <summary>
+            Schedules the message with specified identifier for processing on the <paramref name="scheduled"/> date and time.
+            </summary>
+            <param name="id">The message identifier to schedule.</param>
+            <param name="scheduled">The date and time of the scheduled processing.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.Schedule(MongoDB.Messaging.Message)">
+            <summary>
+            Schedules the specified <paramref name="message" /> for future processing as an asynchronous operation.
+            </summary>
+            <param name="message">The message to queue.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="message"/> is <see langword="null" />.</exception>
+            <exception cref="T:System.ArgumentException">The Scheduled property can't be null when scheduling a message.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.UpdateStatus(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Updates the status of the message with specified <paramref name="id" /> as an asynchronous operation..
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <param name="status">The status display mesage.</param>
+            <param name="step">The current processing step.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.Storage.QueueRepository.MarkComplete(System.String,MongoDB.Messaging.MessageResult,System.String,System.Nullable{System.DateTime})">
+            <summary>
+            Marks the processing complete for the message with specified <paramref name="id" /> as an asynchronous operation..
+            </summary>
+            <param name="id">The identifier of the message.</param>
+            <param name="messageResult">The result of the processing.</param>
+            <param name="status">The status display mesage.</param>
+            <param name="expireDate">The expire date.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="id"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="T:MongoDB.Messaging.Message">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Message.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Message"/> class.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Id">
+            <summary>
+            Gets or sets the identifier for the message.
+            </summary>
+            <value>
+            The identifier for the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Name">
+            <summary>
+            Gets or sets the system name for the message
+            </summary>
+            <value>
+            The system name for the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Description">
+            <summary>
+            Gets or sets the display description for the message.
+            </summary>
+            <value>
+            The display description for the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Correlation">
+            <summary>
+            Gets or sets the correlation identifier used to track messages.
+            </summary>
+            <value>
+            The correlation identifier used to track messages.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.State">
+            <summary>
+            Gets or sets the queue processing state of the message.
+            </summary>
+            <value>
+            The queue processing state of the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Result">
+            <summary>
+            Gets or sets the processing result status.
+            </summary>
+            <value>
+            The processing result status.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.ResponseQueue">
+            <summary>
+            Gets or sets the response queue.
+            </summary>
+            <value>
+            The response queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Step">
+            <summary>
+            Gets or sets the processing step of the message.
+            </summary>
+            <value>
+            The processing step of the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Status">
+            <summary>
+            Gets or sets the message processing status text.
+            </summary>
+            <value>
+            The  message processing status text.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Data">
+            <summary>
+            Gets or sets the data for the message.
+            </summary>
+            <value>
+            The data for the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Priority">
+            <summary>
+            Gets or sets the priority of the message in the queue.
+            </summary>
+            <value>
+            The priority of the message in the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.RetryCount">
+            <summary>
+            Gets or sets the number of times the message should retry on error. Use zero to prevent retry.
+            </summary>
+            <value>
+            The number of times the message should retry on error.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.ErrorCount">
+            <summary>
+            Gets or sets the number of times this messages has been processed with an error.
+            </summary>
+            <value>
+            The number of times this messages has been processed with an error.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Scheduled">
+            <summary>
+            Gets or sets the scheduled start UTC time for processing this message.
+            </summary>
+            <value>
+            The scheduled start UTC time for processing this message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.StartTime">
+            <summary>
+            Gets or sets the processing start UTC time.
+            </summary>
+            <value>
+            The processing start UTC time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.EndTime">
+            <summary>
+            Gets or sets the processing end UTC time.
+            </summary>
+            <value>
+            The processing end UTC time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Expire">
+            <summary>
+            Gets or sets the date and time that this message will expire from the queue.
+            </summary>
+            <value>
+            The date and time that this message will expire from the queue.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.UserName">
+            <summary>
+            Gets or sets the name of the user who queued the message.
+            </summary>
+            <value>
+            The name of the user who queued the message.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Created">
+            <summary>
+            Gets or sets the date the entity was created in UTC time.
+            </summary>
+            <value>
+            The date the entity was created in UTC time.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Message.Updated">
+            <summary>
+            Gets or sets the date the entity was updated in UTC time.
+            </summary>
+            <value>
+            The date the entity was updated in UTC time.
+            </value>
+        </member>
+        <member name="T:MongoDB.Messaging.MessagePriority">
+            <summary>
+            The priority of the message in the queue.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessagePriority.High">
+            <summary>
+            The high priority messages will be processed first.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessagePriority.Normal">
+            <summary>
+            The normal prioritymessages will be processed in the order received.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessagePriority.Low">
+            <summary>
+            The low priority messages are processed last.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.IMessageProcessor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.Name">
+            <summary>
+            Gets the name of the processor.
+            </summary>
+            <value>
+            The name of the processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.IsBusy">
+            <summary>
+            Gets a value indicating whether the processor is busy.
+            </summary>
+            <value>
+              <c>true</c> if this instance is busy; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.ActiveWorkers">
+            <summary>
+            The number active workers
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.Service">
+            <summary>
+            Gets the parent service.
+            </summary>
+            <value>
+            The parent service.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.Container">
+            <summary>
+            Gets the queue container for the processor.
+            </summary>
+            <value>
+            The queue container for the processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageProcessor.Workers">
+            <summary>
+            Gets the list of workers.
+            </summary>
+            <value>
+            The list of workers.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageProcessor.Start">
+            <summary>
+            Start the processor and all the <see cref="P:MongoDB.Messaging.Service.IMessageProcessor.Workers"/>.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageProcessor.Stop">
+            <summary>
+            Stop the processor and all the <see cref="P:MongoDB.Messaging.Service.IMessageProcessor.Workers"/>.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageProcessor.BeginWork">
+            <summary>
+            Signal the processor that a worker has begun.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageProcessor.EndWork">
+            <summary>
+            Signal the processor that a worker has ended.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.IMessageService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageService.Manager">
+            <summary>
+            Gets the queue manager for the service.
+            </summary>
+            <value>
+            The queue manager for the service.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageService.Processors">
+            <summary>
+            Gets the list of message processors for the service.
+            </summary>
+            <value>
+            The list of message processors for the service.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageService.ActiveProcesses">
+            <summary>
+            The number active processes
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageService.Notifier">
+            <summary>
+            Gets the change notifier service.
+            </summary>
+            <value>
+            The change notifier service.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageService.Start">
+            <summary>
+            Start the service and all the <see cref="P:MongoDB.Messaging.Service.IMessageService.Processors"/>.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageService.Stop">
+            <summary>
+            Stop the service and all the <see cref="P:MongoDB.Messaging.Service.IMessageService.Processors"/>.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageService.BeginWork">
+            <summary>
+            Signal the service that a worker has begun.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageService.EndWork">
+            <summary>
+            Signal the service that a worker has ended.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.IMessageWorker">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.Name">
+            <summary>
+            Gets the name of the worker.
+            </summary>
+            <value>
+            The name of the worker.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.IsBusy">
+            <summary>
+            Gets a value indicating whether the worker is busy.
+            </summary>
+            <value>
+              <c>true</c> if this instance is busy; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.IsAwaitingShutdown">
+            <summary>
+            Gets a value indicating whether the worker is awaiting shutdown.
+            </summary>
+            <value>
+            <c>true</c> if worker is awaiting shutdown; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.Processor">
+            <summary>
+            Gets the parent processor.
+            </summary>
+            <value>
+            The parent processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.Container">
+            <summary>
+            Gets the queue container for the processor.
+            </summary>
+            <value>
+            The queue container for the processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.IMessageWorker.Repository">
+            <summary>
+            Gets the storage repository.
+            </summary>
+            <value>
+            The storage repository.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageWorker.Start">
+            <summary>
+            Start the worker processing messages from the queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageWorker.Stop">
+            <summary>
+            Stop the worker from processing messages from the queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageWorker.Trigger">
+            <summary>
+            Trigger immediate processing of the queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageWorker.BeginWork">
+            <summary>
+            Signal that the worker has begun.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.IMessageWorker.EndWork">
+            <summary>
+            Signal that the worker has ended.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.MessageProcessor">
+            <summary>
+            A message queue processor
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageProcessor.#ctor(MongoDB.Messaging.Service.IMessageService,MongoDB.Messaging.Configuration.IQueueContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Service.MessageProcessor"/> class.
+            </summary>
+            <param name="service">The parent message service.</param>
+            <param name="container">The queue container to process.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.Name">
+            <summary>
+            Gets the name of the processor.
+            </summary>
+            <value>
+            The name of the processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.IsBusy">
+            <summary>
+            Gets a value indicating whether the processor is busy.
+            </summary>
+            <value>
+              <c>true</c> if this instance is busy; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.ActiveWorkers">
+            <summary>
+            The number active workers.
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.Service">
+            <summary>
+            Gets the parent service.
+            </summary>
+            <value>
+            The parent service.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.Container">
+            <summary>
+            Gets the queue container for the processor.
+            </summary>
+            <value>
+            The queue container for the processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageProcessor.Workers">
+            <summary>
+            Gets the list of workers.
+            </summary>
+            <value>
+            The list of workers.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageProcessor.Start">
+            <summary>
+            Start the processor and all the <see cref="P:MongoDB.Messaging.Service.MessageProcessor.Workers" />.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageProcessor.Stop">
+            <summary>
+            Stop the processor and all the <see cref="P:MongoDB.Messaging.Service.MessageProcessor.Workers" />.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageProcessor.BeginWork">
+            <summary>
+            Signal the processor that a worker has begun.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageProcessor.EndWork">
+            <summary>
+            Signal the processor that a worker has ended.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageProcessor.MongoDB#Messaging#Change#IHandleChange#HandleChange(MongoDB.Messaging.Change.ChangeRecord)">
+            <summary>
+            Handle a MongoDB change record.
+            </summary>
+            <param name="change">The change record.</param>
+            <remarks>
+            This method is called on a thread-pool background thread.
+            </remarks>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.MessageService">
+            <summary>
+            A message queue processing service.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Service.MessageService"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageService.#ctor(MongoDB.Messaging.Configuration.IQueueManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Service.MessageService"/> class.
+            </summary>
+            <param name="manager">The queue manager.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="manager"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageService.Manager">
+            <summary>
+            Gets the queue manager for the service.
+            </summary>
+            <value>
+            The queue manager for the service.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageService.Processors">
+            <summary>
+            Gets the list of message processors for the service.
+            </summary>
+            <value>
+            The list of message processors for the service.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageService.ActiveProcesses">
+            <summary>
+            The number active processes
+            </summary>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageService.Notifier">
+            <summary>
+            Gets the change notifier service.
+            </summary>
+            <value>
+            The change notifier service.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageService.Start">
+            <summary>
+            Start the service and all the <see cref="P:MongoDB.Messaging.Service.MessageService.Processors" />.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageService.Stop">
+            <summary>
+            Stop the service and all the <see cref="P:MongoDB.Messaging.Service.MessageService.Processors" />.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageService.BeginWork">
+            <summary>
+            Signal the processor that a worker has begun.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageService.EndWork">
+            <summary>
+            Signal the processor that a worker has ended.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.MessageWorker">
+            <summary>
+            A message queue worker
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorker.#ctor(MongoDB.Messaging.Service.IMessageProcessor,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Service.MessageWorker"/> class.
+            </summary>
+            <param name="processor">The parent processor.</param>
+            <param name="name">The name of the worker.</param>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorker.Process">
+            <summary>
+            Process the underlying queue.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.MessageWorkerBase">
+            <summary>
+            A base message worker implementation 
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.#ctor(MongoDB.Messaging.Service.IMessageProcessor,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Service.MessageWorkerBase"/> class.
+            </summary>
+            <param name="processor">The parent processor.</param>
+            <param name="name">The name of the worker.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="processor"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.Name">
+            <summary>
+            Gets the name of the worker.
+            </summary>
+            <value>
+            The name of the worker.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.IsBusy">
+            <summary>
+            Gets a value indicating whether the worker is busy.
+            </summary>
+            <value>
+              <c>true</c> if this instance is busy; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.IsAwaitingShutdown">
+            <summary>
+            Gets a value indicating whether the worker is awaiting shutdown.
+            </summary>
+            <value>
+            <c>true</c> if worker is awaiting shutdown; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.Processor">
+            <summary>
+            Gets the parent processor.
+            </summary>
+            <value>
+            The parent processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.Container">
+            <summary>
+            Gets the queue container for the processor.
+            </summary>
+            <value>
+            The queue container for the processor.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.Configuration">
+            <summary>
+            Gets the queue configuration.
+            </summary>
+            <value>
+            The queue configuration.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.Repository">
+            <summary>
+            Gets the storage repository.
+            </summary>
+            <value>
+            The storage repository.
+            </value>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.MessageWorkerBase.PollTime">
+            <summary>
+            Gets the poll time.
+            </summary>
+            <value>
+            The poll time.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.Start">
+            <summary>
+            Start the worker processing messages from the queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.Stop">
+            <summary>
+            Stop the worker from processing messages from the queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.Trigger">
+            <summary>
+            Trigger immediate processing of the queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.BeginWork">
+            <summary>
+            Signal that a worker has begun.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.EndWork">
+            <summary>
+            Signal that a worker has ended.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.Process">
+            <summary>
+            Process the underlying queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.MessageWorkerBase.Shutdown">
+            <summary>
+            Signal worker to shutdown.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Service.HealthWorker">
+            <summary>
+            A queue health monitoring worker.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.HealthWorker.#ctor(MongoDB.Messaging.Service.IMessageProcessor,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.Service.HealthWorker"/> class.
+            </summary>
+            <param name="processor">The parent processor.</param>
+            <param name="name">The name of the worker.</param>
+        </member>
+        <member name="P:MongoDB.Messaging.Service.HealthWorker.PollTime">
+            <summary>
+            Gets the poll time.
+            </summary>
+            <value>
+            The poll time.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.Service.HealthWorker.Process">
+            <summary>
+            Process the underlying queue.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.MessageQueue">
+            <summary>
+            A class to Configure and Publish to a message queue.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.MessageQueue.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.MessageQueue"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.MessageQueue.#ctor(MongoDB.Messaging.Configuration.IQueueManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Messaging.MessageQueue"/> class.
+            </summary>
+            <param name="manager"> The queue manager for underlying queues.</param>
+            <exception cref="T:System.ArgumentNullException">The manager argument can not be null.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.MessageQueue.QueueManager">
+            <summary>
+            Gets the queue manager for underlying queues.
+            </summary>
+            <value>
+            The queue manager for underlying queues.
+            </value>
+        </member>
+        <member name="M:MongoDB.Messaging.MessageQueue.Configure(System.Action{MongoDB.Messaging.Fluent.QueueManagerBuilder})">
+            <summary>
+            Configure the message queues with the specified fluent builder.
+            </summary>
+            <param name="builder">The fluent builder to configure message queues.</param>
+            <example>
+            Configure queue and subscriber with fluent builder.
+            <code><![CDATA[
+            MessageQueue.Default.Configure(c => c
+                .Connection("Messaging")
+                .Queue(q => q
+                    .Name("queue-name")
+                    .Description("description")
+                    .Retry(1)
+                    .Priority(MessagePriority.Normal)
+                    .ResponseQueue("response-name")
+                )
+                .Subscribe(s => s
+                    .Queue("queue-name")
+                    .PollTime(TimeSpan.FromSeconds(10))
+                    .Handler<MessageHandler>()
+                    .Workers(2)
+                    .Timeout(TimeSpan.FromMinutes(30))
+                    .TimeoutAction(TimeoutPolicy.Retry)
+                )
+            );
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MongoDB.Messaging.MessageQueue.Publish(System.Action{MongoDB.Messaging.Fluent.PublishQueueBuilder})">
+            <summary>
+            Publish a message to a queue with the specified fluent builder as an asynchronous operation.
+            </summary>
+            <param name="builder">The fluent builder for creating the message to publish.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+            <example>
+            Publish a user message to a queue.
+            <code><![CDATA[
+            var message = await MessageQueue.Default.Publish(c => c
+                .Queue("queue-name")
+                .Name("UserMessage")
+                .Description("Update User Data")
+                .Data(userMessage)
+            );
+            ]]></code>
+            </example>
+            <exception cref="T:System.ArgumentNullException">The builder argument is <c>null</c>.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not find queue to publish message.</exception>
+        </member>
+        <member name="M:MongoDB.Messaging.MessageQueue.Schedule(System.Action{MongoDB.Messaging.Fluent.ScheduleQueueBuilder})">
+            <summary>
+            Schedule a message for future processing with the specified fluent builder as an asynchronous operation.
+            </summary>
+            <param name="builder">The fluent builder for creating the message to publish.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+            <example>
+            Schedule a user message for processing in an hour.
+            <code><![CDATA[
+            var message = await MessageQueue.Default.Schedule(c => c
+                .Schedule(DateTime.Now.AddHours(1))
+                .Queue("queue-name")
+                .Data(userMessage)
+            );
+            ]]></code>
+            </example>
+            <exception cref="T:System.ArgumentNullException">The builder argument is <c>null</c>.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not find queue to publish message.</exception>
+        </member>
+        <member name="P:MongoDB.Messaging.MessageQueue.Default">
+            <summary>
+            Gets the default singleton instance of <see cref="T:MongoDB.Messaging.MessageQueue"/>.
+            </summary>
+            <value>The current singleton instance.</value>
+        </member>
+        <member name="T:MongoDB.Messaging.MessageResult">
+            <summary>
+            The processing result state
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageResult.None">
+            <summary>
+            The message has not been processed.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageResult.Successful">
+            <summary>
+            The message processed successfully.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageResult.Warning">
+            <summary>
+            The message processed succesfully with warnings.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageResult.Error">
+            <summary>
+            The message processed with an error.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.MessageState">
+            <summary>
+            The state of a message in the processing queue.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageState.None">
+            <summary>
+            The messaging is being built and is not ready for processing.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageState.Queued">
+            <summary>
+            The message is queued and ready for processing.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageState.Processing">
+            <summary>
+            The message is currently being processed.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageState.Complete">
+            <summary>
+            The message has completed processing
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageState.Timeout">
+            <summary>
+            The message processing timed out
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.MessageState.Scheduled">
+            <summary>
+            The message is scheduled for future processing.
+            </summary>
+        </member>
+        <member name="T:MongoDB.Messaging.Security.UserHelper">
+            <summary>
+            A class to get user information
+            </summary>
+        </member>
+        <member name="M:MongoDB.Messaging.Security.UserHelper.Current">
+            <summary>
+            Gets the current logged in user name
+            </summary>
+            <returns>The current user name</returns>
+        </member>
+        <member name="T:MongoDB.Messaging.TimeoutPolicy">
+            <summary>
+            How a message should be handled on timeout.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.TimeoutPolicy.Fail">
+            <summary>
+            The message will be failed and no furture processing occurs.
+            </summary>
+        </member>
+        <member name="F:MongoDB.Messaging.TimeoutPolicy.Retry">
+            <summary>
+            The message will be requeued for processing.
+            </summary>
+        </member>
+    </members>
+</doc>

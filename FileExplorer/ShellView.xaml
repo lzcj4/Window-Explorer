@@ -25,7 +25,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ContentControl Grid.Row="0"  prism:RegionManager.RegionName="{x:Static local:ViewRegions.Region_Up}"/>
+        <ContentControl Grid.Row="0"  prism:RegionManager.RegionName="{x:Static local:ViewRegions.Region_Top}"/>
 
         <ContentControl Grid.Row="1"  prism:RegionManager.RegionName="{x:Static local:ViewRegions.Region_Bottom}" Background="Red"/>
 
