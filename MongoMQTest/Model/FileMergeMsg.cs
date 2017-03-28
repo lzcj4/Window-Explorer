@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Messaging;
+using System.Collections.Generic;
 
 namespace MongoMQTest.Model
 {
@@ -9,7 +10,8 @@ namespace MongoMQTest.Model
 
         public FileMergeMsg()
         {
-            this.MsgType = MsgType.FileMergeMsg;
+            this.MsgDescription = MsgType.FileMergeMsg.ToString();
+            this.Priority = MessagePriority.High;
         }
     }
 }

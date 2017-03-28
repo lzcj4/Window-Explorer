@@ -100,9 +100,12 @@ namespace MongoMQTest
 
         public void Publish(MsgBase msg)
         {
-            if (!publistGroupIdList.Contains(msg.GroupId))
+            lock (lockObj)
             {
-                publistGroupIdList.Add(msg.GroupId);
+                if (!publistGroupIdList.Contains(msg.GroupId))
+                {
+                    publistGroupIdList.Add(msg.GroupId);
+                }
             }
 
             MessageQueue.Default.Publish(m => m
@@ -110,8 +113,8 @@ namespace MongoMQTest
                  .Name(msg.Name)
                  .Data(msg)
                  .Correlation(msg.GroupId)
-                 .Description(msg.Description)
-                 .Priority(MessagePriority.Normal)
+                 .Description(msg.MsgDescription)
+                 .Priority(msg.Priority)
                  .Retry(publish_retry_count)
              );
         }
@@ -123,6 +126,24 @@ namespace MongoMQTest
             {
                 msgService.Stop();
                 msgService = null;
+            }
+        }
+
+        public bool IsSendBySelf(string groupId)
+        {
+            lock (lockObj)
+            {
+                bool result = this.publistGroupIdList.Contains(groupId);
+                return result;
+            }
+        }
+
+        public bool RemoveSucceedGroupId(string groupId)
+        {
+            lock (lockObj)
+            {
+                bool result = this.publistGroupIdList.Remove(groupId);
+                return result;
             }
         }
 
@@ -144,11 +165,18 @@ namespace MongoMQTest
         {
             public MessageResult Process(ProcessContext processContext)
             {
-                bool isHandled = Handler<AnalysisMsg>(processContext);
-                if (!isHandled)
+                bool isHandled = false;
+                string msgDesc = processContext.Message.Description;
+
+                if (msgDesc == MsgType.AnalysisMsg.ToString())
+                {
+                    isHandled = Handler<AnalysisMsg>(processContext);
+                }
+                else if (msgDesc == MsgType.FileMergeMsg.ToString())
                 {
                     isHandled = Handler<FileMergeMsg>(processContext);
                 }
+
                 return isHandled ? MessageResult.Successful : MessageResult.None;
             }
 

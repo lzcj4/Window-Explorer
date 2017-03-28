@@ -47,7 +47,7 @@ namespace MongoMQTest.Model
             MsgId = msg.Id;
             TaskNo = msg.TaskNo;
 
-            Description = msg.Description;
+            MsgDescription = msg.MsgDescription;
             FilePath = msg.FilePath;
             FileSize = msg.FileSize;
             Length = msg.Length;

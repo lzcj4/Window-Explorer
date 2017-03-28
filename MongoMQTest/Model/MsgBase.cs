@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Messaging;
 using System;
 
 namespace MongoMQTest
@@ -36,16 +37,21 @@ namespace MongoMQTest
             set { groupId = value; }
         }
 
-        public string Description { get; set; }
+        /// <summary>
+        /// 消息描述，主要是哪类消息
+        /// </summary>
+        public string MsgDescription { get; set; }
 
         /// <summary>
         /// File Name + Task Id
         /// </summary>
         public string Name { get; set; }
 
-        public MsgType MsgType { get; set; }
-
-
+        private MessagePriority priority = MessagePriority.Normal;
+        public MessagePriority Priority
+        {
+            get { return priority; }
+            set { priority = value; }
+        }
     }
-
 }

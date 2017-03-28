@@ -18,7 +18,7 @@ namespace MongoMQTest.Tasks
 
         public void Initial(FileMergeMsg msg)
         {
-            if (msg.IsNull()|| msg.DestPath.IsNullOrEmpty() ||
+            if (msg.IsNull() || msg.DestPath.IsNullOrEmpty() ||
                msg.TempFiles.IsNullOrEmpty())
             {
                 throw new ArgumentNullException();

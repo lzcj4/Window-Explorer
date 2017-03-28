@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace MongoMQTest
 {
     public static class AppSettings
     {
         public const string Message_ConnectionString = "mongdb_message_connectionstring";
-        private const string Analysis_ConnectionString = "mongdb_tasks_connectionstring";
 
         public static int SeverCount
         {
@@ -21,10 +15,20 @@ namespace MongoMQTest
         {
             get { return ConfigurationManager.ConnectionStrings[Message_ConnectionString].ConnectionString; }
         }
-
-        public static string AnalysisConnectionString
+        
+        public static long FileSize
         {
-            get { return ConfigurationManager.ConnectionStrings[Analysis_ConnectionString].ConnectionString; }
+            get { return long.Parse(ConfigurationManager.AppSettings["FileSize"]); }
+        }
+
+        public static string TempFolder
+        {
+            get { return ConfigurationManager.AppSettings["TempFolder"]; }
+        }
+
+        public static string DestinationFolder
+        {
+            get { return ConfigurationManager.AppSettings["DestinationFolder"]; }
         }
 
     }

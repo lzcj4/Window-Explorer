@@ -1,5 +1,4 @@
-﻿using MongoMQTest.Queue;
-using System;
+﻿using System;
 
 namespace MongoMQTest
 {
@@ -26,13 +25,11 @@ namespace MongoMQTest
 
         public IMsgStrategy<T> Get<T>() where T : MsgBase
         {
-            //if (typeof(T) is AnalysisMsg)
+            //if (typeof(T)is AnalysisMsg)
             //{
             //    return new AnalysisMsgStrategy();
             //}
             throw new NotImplementedException();
-
         }
-
     }
 }

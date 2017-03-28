@@ -72,7 +72,7 @@ namespace MongoMQTest
                         TaskCount = ServerCount,
                         StartPos = curretPos,
                         Length = currentLen,
-                        Description = string.Format("part {0} of {1}", i + 1, fileName),
+                        MsgDescription = MsgType.AnalysisMsg.ToString(),
                         Name = string.Format("{0}_{1}", fileName, i + 1)
                     };
                     result.Add(msg);
@@ -80,5 +80,6 @@ namespace MongoMQTest
             }
             return result;
         }
+        
     }
 }

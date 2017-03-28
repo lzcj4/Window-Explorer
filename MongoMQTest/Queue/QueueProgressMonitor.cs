@@ -3,14 +3,12 @@ using MongoDB.Messaging;
 using MongoMQTest.DB;
 using MongoMQTest.Model;
 using MongoMQTest.Tasks;
-using MongoMQTest.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MyTasks = MongoMQTest.Tasks;
 
 namespace MongoMQTest.Queue
 {
@@ -64,9 +62,8 @@ namespace MongoMQTest.Queue
         private IList<string> GetMessageGroup()
         {
             var filter = Builders<Message>.Filter.Ne(m => m.State, MessageState.Complete);
-            IList<string> msgGroups = this.CollectionMessage.Find(filter).ToListAsync().
-                                                                               Result.GroupBy(i => i.Correlation).
-                                                                               Select(i => i.Key).ToList();
+            //Correlation 是消息的GroupId
+            IList<string> msgGroups = this.CollectionMessage.Distinct<string>("Correlation", filter).ToList();
             return msgGroups;
         }
 
@@ -77,9 +74,15 @@ namespace MongoMQTest.Queue
             {
                 IList<string> currentGroups = new List<string>();
                 IList<string> groupIds = this.GetMessageGroup();
-
+                
                 foreach (var item in groupIds)
                 {
+                    //只显示自己发送任务的进度
+                    if (!MsgQueue.Instance.IsSendBySelf(item))
+                    {
+                        continue;
+                    }
+
                     if (!currentGroups.Contains(item))
                     {
                         currentGroups.Add(item);
@@ -114,6 +117,7 @@ namespace MongoMQTest.Queue
             long currentProgress = tasks.Sum(t => t.CurrentLen);
             AnalysisTask task = tasks.FirstOrDefault();
             long totalSize = task.FileSize;
+
             this.CheckLocker(groupId, currentProgress / totalSize, tasks);
             this.RaiseProgressChanged(task.FilePath, totalSize, currentProgress);
         }
@@ -146,6 +150,7 @@ namespace MongoMQTest.Queue
 
             Task.Run(() =>
             {
+                MsgQueue.Instance.RemoveSucceedGroupId(groupId);
                 bool isAcquired = distLocker.Acquire(groupId);
                 if (isAcquired)
                 {

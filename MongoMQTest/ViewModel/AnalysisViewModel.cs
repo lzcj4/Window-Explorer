@@ -17,14 +17,14 @@ namespace MongoMQTest.ViewModel
             set { this.SetProperty<string>(ref filePath, value, "FilePath"); }
         }
 
-        private string tempFolder = @"E:\Test\Temp";
+        private string tempFolder = AppSettings.TempFolder;
         public string TempFolder
         {
             get { return tempFolder; }
             set { this.SetProperty<string>(ref tempFolder, value, "TempFolder"); }
         }
 
-        private string destFolder = @"E:\Test\Data";
+        private string destFolder = AppSettings.DestinationFolder;
         public string DestFolder
         {
             get { return destFolder; }
@@ -94,8 +94,8 @@ namespace MongoMQTest.ViewModel
             msgQueue.Subscribe();
             msgQueue.OnMsgReceived += (sender, e) =>
             {
-               MsgBase msg= e.Msg;
-                if(msg is AnalysisMsg)
+                MsgBase msg = e.Msg;
+                if (msg is AnalysisMsg)
                 {
                     //同步处理，防止消息和TASK状态不一
                     FileCopyTask task = new FileCopyTask();

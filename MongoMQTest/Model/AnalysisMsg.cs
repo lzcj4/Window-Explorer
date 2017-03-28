@@ -22,16 +22,14 @@ namespace MongoMQTest.Model
             get { return length <= 0 ? this.FileSize : length; }
             set { length = value; }
         }
-
-
+        
         public AnalysisMsg(string filePath, long fileSize)
         {
             if (filePath.IsNullOrEmpty() || !File.Exists(filePath))
             {
                 throw new InvalidOperationException(filePath);
             }
-
-            this.MsgType = MsgType.AnalysisMsg;
+            
             this.FilePath = filePath;
             this.FileSize = fileSize;
             if (fileSize <= 0)
