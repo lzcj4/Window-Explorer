@@ -213,8 +213,23 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewRegions.cs" />
+    <Compile Include="ViewTest\DefaultDragHandler.cs" />
+    <Compile Include="ViewTest\DefaultDropHandler.cs" />
+    <Compile Include="ViewTest\DragAdorner.cs" />
+    <Compile Include="ViewTest\DragDrop.cs" />
+    <Compile Include="ViewTest\DragInfo.cs" />
+    <Compile Include="ViewTest\DropInfo.cs" />
+    <Compile Include="ViewTest\DropTargetAdorner.cs" />
+    <Compile Include="ViewTest\DropTargetAdorners.cs" />
+    <Compile Include="ViewTest\DropTargetHighlightAdorner.cs" />
+    <Compile Include="ViewTest\DropTargetInsertionAdorner.cs" />
+    <Compile Include="ViewTest\IDragSource.cs" />
+    <Compile Include="ViewTest\IDropHandler.cs" />
+    <Compile Include="ViewTest\IDropTarget.cs" />
     <Compile Include="ViewTest\ImageItem.cs" />
     <Compile Include="ViewTest\ImageViewModel.cs" />
+    <Compile Include="ViewTest\ItemsControlExtensions.cs" />
+    <Compile Include="ViewTest\TypeUtilities.cs" />
     <Compile Include="ViewTest\UCImageView.xaml.cs">
       <DependentUpon>UCImageView.xaml</DependentUpon>
     </Compile>
@@ -224,6 +239,7 @@
     <Compile Include="ViewTest\UCView.xaml.cs">
       <DependentUpon>UCView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewTest\VisualTreeExtensions.cs" />
     <Compile Include="WinApi.cs" />
     <Page Include="Controls\UCConfCategoryGroup.xaml">
       <SubType>Designer</SubType>

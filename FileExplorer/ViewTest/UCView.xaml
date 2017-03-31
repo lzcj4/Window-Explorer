@@ -109,7 +109,8 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <local:UCImageGroupView x:Name="ucView" ItemSource="{Binding Items}" CascadeMaxCount="3" ViewMode="Tile"/>
+            <local:UCImageGroupView x:Name="ucView" ItemSource="{Binding Items}" CascadeMaxCount="3" ViewMode="Tile"
+                                    local:DragDrop.IsDropTarget="True"/>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -124,11 +125,14 @@
         </Grid>
 
         <Grid Grid.Row="2" Background="LightBlue" Margin="0,10">
-            <ListBox Name="listImages" SelectionMode="Extended"
+            <ListBox Name="listImages" SelectionMode="Extended" 
                      ItemsPanel="{DynamicResource ItemsPanelTemplate1}"
                      ItemTemplate="{DynamicResource DataTemplate1}" 
                      ItemsSource="{Binding Items}" 
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle1}"/>
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle1}"
+                     local:DragDrop.IsDragSource="True"
+                     local:DragDrop.DragAdornerTemplate="{StaticResource DataTemplate1}"
+                     />
         </Grid>
     </Grid>
 </UserControl>

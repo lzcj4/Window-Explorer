@@ -14,7 +14,7 @@ namespace FileExplorer.ViewTest
         Max = 2
     }
 
-    public class ImageItem : ViewModelBase
+    public class ImageItem : ViewModelBase, IDragSource
     {
         private string filePath;
         public string FilePath
@@ -55,5 +55,16 @@ namespace FileExplorer.ViewTest
 
         public bool IsMin { get { return this.SizeMode == ImageSize.Min; } }
         public bool IsMax { get { return this.SizeMode == ImageSize.Max; } }
+
+
+        #region IDragSource
+
+        public void StartDrag(DragInfo dragInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
     }
 }
