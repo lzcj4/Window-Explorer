@@ -60,7 +60,7 @@ namespace MongoMQTest
 
                 AnalysisMsgStrategy strategy = new AnalysisMsgStrategy();
                 strategy.Initial(item, serverCount);
-                IEnumerable<AnalysisMsg> slices = strategy.Split();
+                IList<MsgBase> slices = strategy.Split();
 
                 MsgQueue.Instance.Publish(slices);
             }

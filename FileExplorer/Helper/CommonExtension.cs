@@ -110,5 +110,22 @@ namespace FileExplorer.Helper
             else
                 return TryFindParent<T>(parent);
         }
+
+        public static T TryFindParent<T>(this DependencyObject current, string name) where T : FrameworkElement
+        {
+            if (current.IsNull())
+            {
+                return null;
+            }
+            DependencyObject parent = VisualTreeHelper.GetParent(current);
+
+            if (parent.IsNull())
+                return null;
+
+            if ((parent is T) && (parent as T).Name == name)
+                return parent as T;
+            else
+                return TryFindParent<T>(parent);
+        }
     }
 }

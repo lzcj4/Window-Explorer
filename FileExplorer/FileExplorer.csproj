@@ -213,6 +213,17 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewRegions.cs" />
+    <Compile Include="ViewTest\ImageItem.cs" />
+    <Compile Include="ViewTest\ImageViewModel.cs" />
+    <Compile Include="ViewTest\UCImageView.xaml.cs">
+      <DependentUpon>UCImageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewTest\UCImageGroupView.xaml.cs">
+      <DependentUpon>UCImageGroupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewTest\UCView.xaml.cs">
+      <DependentUpon>UCView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinApi.cs" />
     <Page Include="Controls\UCConfCategoryGroup.xaml">
       <SubType>Designer</SubType>
@@ -346,6 +357,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ViewTest\UCImageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewTest\UCImageGroupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewTest\UCView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -415,6 +438,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\add_mouseover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\close.png" />
+    <Resource Include="Resources\Icons\max.png" />
+    <Resource Include="Resources\Icons\min.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
 ﻿
 using FileExplorer.Controls;
 using FileExplorer.Helper;
+using FileExplorer.ViewTest;
 using Microsoft.Practices.Prism.Regions;
 using System.ComponentModel.Composition;
 
@@ -28,7 +29,8 @@ namespace FileExplorer.ViewModel
 
         public void LoadViews()
         {
-            regionManager.AddToRegion(ViewRegions.Region_Top, new UCConfCategoryGroup());
+            regionManager.AddToRegion(ViewRegions.Region_Top, new UCView());
+            // regionManager.AddToRegion(ViewRegions.Region_Top, new UCConfCategoryGroup());
         }
     }
 }

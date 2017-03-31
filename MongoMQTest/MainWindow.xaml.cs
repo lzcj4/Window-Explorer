@@ -1,4 +1,5 @@
-﻿using MongoMQTest.ViewModel;
+﻿using MongoMQTest.Model;
+using MongoMQTest.ViewModel;
 using System.Windows;
 
 namespace MongoMQTest
@@ -14,6 +15,7 @@ namespace MongoMQTest
             this.DataContext = new AnalysisViewModel();
             this.Closing += (sender, e) =>
             {
+                StrategyFactory.Instance.Get();
                 (this.DataContext as AnalysisViewModel).Dispose();
             };
         }

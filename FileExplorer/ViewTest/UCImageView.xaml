@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="FileExplorer.ViewTest.UCImageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FileExplorer.ViewTest"
+             mc:Ignorable="d" 
+             x:Name="ucImage"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Border x:Name="Bd" BorderThickness="2" Padding="4,1" SnapsToDevicePixels="True">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelected}" Value="true">
+                        <Setter Property="Background" Value="#3D26A0DA"/>
+                        <Setter Property="BorderBrush" Value="#FF26A0DA"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="LightBlue"  Name="gridTitle" >
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" >
+                    <Button Name="btnMin" Click="btnMin_Click">
+                        <Button.Content>
+                            <Image  Source="{DynamicResource action_min}" Width="16" Height="16"/>
+                        </Button.Content>
+                    </Button>
+                    <Button Name="btnMax" Click="btnMax_Click">
+                        <Button.Content>
+                            <Image   Source="{DynamicResource action_max}" Width="16" Height="16"/>
+                        </Button.Content>
+                    </Button>
+                    <Button Name="btnClose" Click="btnClose_Click" >
+                        <Button.Content>
+                            <Image   Source="{DynamicResource action_close}" Width="16" Height="16"/>
+                        </Button.Content>
+                    </Button>
+
+
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" >
+                <Image Source="{Binding ImageSource}" Stretch="Fill"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoMQTest.Model;
+using System;
 
 namespace MongoMQTest
 {
@@ -23,13 +24,13 @@ namespace MongoMQTest
         }
 
 
-        public IMsgStrategy<T> Get<T>() where T : MsgBase
+        public IMsgStrategy Get()
         {
-            //if (typeof(T)is AnalysisMsg)
-            //{
-            //    return new AnalysisMsgStrategy();
-            //}
-            throw new NotImplementedException();
+            IMsgStrategy result;
+            {
+                result = new AnalysisMsgStrategy();
+            }
+            return result;
         }
     }
 }

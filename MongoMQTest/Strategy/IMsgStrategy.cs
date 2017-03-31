@@ -2,8 +2,8 @@
 
 namespace MongoMQTest
 {
-    public interface IMsgStrategy<T> where T : MsgBase
+    public interface IMsgStrategy
     {
-        IList<T> Split();
+        IList<MsgBase> Split();
     }
 }

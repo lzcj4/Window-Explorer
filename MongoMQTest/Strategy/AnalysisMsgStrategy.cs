@@ -8,7 +8,7 @@ namespace MongoMQTest
     /// <summary>
     /// 按文件大小平均等分
     /// </summary>
-    class AnalysisMsgStrategy : IMsgStrategy<AnalysisMsg>
+    class AnalysisMsgStrategy : IMsgStrategy
     {
         //1 GB
         private const int fileSize = 1 * 1024 * 1024;
@@ -31,14 +31,14 @@ namespace MongoMQTest
             this.ServerCount = serverCount;
         }
 
-        public IList<AnalysisMsg> Split()
+        public IList<MsgBase> Split()
         {
             if (!File.Exists(this.FilePath))
             {
                 throw new FileNotFoundException(FilePath);
             }
 
-            IList<AnalysisMsg> result = new List<AnalysisMsg>();
+            IList<MsgBase> result = new List<MsgBase>();
             long fileLen = new FileInfo(this.FilePath).Length;
             if (fileLen <= AnalysisMsgStrategy.fileSize)
             {

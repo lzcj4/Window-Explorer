@@ -84,6 +84,9 @@
     <Compile Include="Tasks\FileMergeTask.cs" />
     <Compile Include="Tasks\TaskBase.cs" />
     <Compile Include="Tasks\TaskDistributedLock.cs" />
+    <Compile Include="TestWindow.xaml.cs">
+      <DependentUpon>TestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\AppSettings.cs" />
     <Compile Include="DB\AnalysisTaskCollection.cs" />
     <Compile Include="DB\CollectionBase.cs" />
@@ -144,6 +147,10 @@
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
