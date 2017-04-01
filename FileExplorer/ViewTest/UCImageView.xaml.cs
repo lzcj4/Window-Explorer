@@ -29,6 +29,7 @@ namespace FileExplorer.ViewTest
             {
                 OnMinClick(this, EventArgs.Empty);
             }
+
         }
 
         private void btnMax_Click(object sender, RoutedEventArgs e)

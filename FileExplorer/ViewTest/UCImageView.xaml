@@ -9,6 +9,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <Border x:Name="Bd" BorderThickness="1" Padding="4,1" SnapsToDevicePixels="True">
+        <Border.RenderTransform>
+            <MatrixTransform x:Name="matrixTransform"/>
+        </Border.RenderTransform>
         <Border.Style>
             <Style TargetType="Border">
                 <Style.Triggers>
@@ -32,7 +35,9 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="0" Background="LightBlue"  Name="gridTitle" >
+
+                                
+                                <Grid Grid.Row="0"  Background="LightBlue"  Name="gridTitle" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
@@ -65,7 +70,7 @@
 
                                 </Grid>
 
-                                <Grid Grid.Row="1" Background="White" Name="gridImage">
+                                <Grid Grid.Row="1"  Background="White" Name="gridImage">
                                     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
 
                                         <local:PanAndZoomViewer HorizontalAlignment="Center" VerticalAlignment="Center" 

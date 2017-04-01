@@ -1,10 +1,12 @@
 ﻿using FileExplorer.Helper;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -122,7 +124,7 @@ namespace FileExplorer.ViewTest
             this.canvas.PreviewMouseLeftButtonUp += Canvas_PreviewMouseLeftButtonUp;
             this.SizeChanged += UCImageGroupView_SizeChanged;
         }
-        
+
 
         private IList<UCImageView> AllItems
         {
@@ -501,6 +503,12 @@ namespace FileExplorer.ViewTest
                 {
                     this.SetAllUnselected(this.ItemSource);
                 }
+                if (selectedElement != null)
+                {
+                    // Remove the adorner from the selected element
+                    aLayer.Remove(aLayer.GetAdorners(selectedElement)[0]);
+                    selectedElement = null;
+                }
                 return;
             }
 
@@ -520,7 +528,55 @@ namespace FileExplorer.ViewTest
                 clickPoint = e.GetPosition(canvas);
             }
             selectedItem = ucView;
+
+            if (selected)
+            {
+                selected = false;
+                if (selectedElement != null)
+                {
+                    // Remove the adorner from the selected element
+                    aLayer.Remove(aLayer.GetAdorners(selectedElement)[0]);
+                    selectedElement = null;
+                }
+            }
+
+            #region Resize Adorner 
+
+            // If any element except canvas is clicked, 
+            // assign the selected element and add the adorner
+            if (e.Source != canvas)
+            {
+                _isDown = true;
+                _startPoint = e.GetPosition(canvas);
+
+                selectedElement = e.Source as UIElement;
+
+                _originalLeft = Canvas.GetLeft(selectedElement);
+                _originalTop = Canvas.GetTop(selectedElement);
+
+                aLayer = AdornerLayer.GetAdornerLayer(selectedElement);
+                aLayer.Add(new ResizingAdorner(selectedElement));
+                selected = true;
+                e.Handled = true;
+            }
+
+            #endregion
         }
+
+        #region Resize Adorner 
+
+        AdornerLayer aLayer;
+
+        bool _isDown;
+        bool _isDragging;
+        bool selected = false;
+        UIElement selectedElement = null;
+
+        Point _startPoint;
+        private double _originalLeft;
+        private double _originalTop;
+
+        #endregion
 
         private void Canvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -546,6 +602,25 @@ namespace FileExplorer.ViewTest
 
             Canvas.SetLeft(currentItem, left + moveX);
             Canvas.SetTop(currentItem, top + moveY);
+
+            #region Resize Adorner 
+
+            if (_isDown)
+            {
+                if ((_isDragging == false) &&
+                    ((Math.Abs(e.GetPosition(canvas).X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance) ||
+                    (Math.Abs(e.GetPosition(canvas).Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)))
+                    _isDragging = true;
+
+                if (_isDragging)
+                {
+                    Point position = Mouse.GetPosition(canvas);
+                    Canvas.SetTop(selectedElement, position.Y - (_startPoint.Y - _originalTop));
+                    Canvas.SetLeft(selectedElement, position.X - (_startPoint.X - _originalLeft));
+                }
+            }
+
+            #endregion
         }
 
         private void UCImageGroupView_SizeChanged(object sender, SizeChangedEventArgs e)

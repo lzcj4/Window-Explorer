@@ -231,6 +231,7 @@
     <Compile Include="ViewTest\ImageViewModel.cs" />
     <Compile Include="ViewTest\ItemsControlExtensions.cs" />
     <Compile Include="ViewTest\PanAndZoom.cs" />
+    <Compile Include="ViewTest\ResizeAdorner.cs" />
     <Compile Include="ViewTest\TypeUtilities.cs" />
     <Compile Include="ViewTest\UCImageView.xaml.cs">
       <DependentUpon>UCImageView.xaml</DependentUpon>
