@@ -23,6 +23,7 @@
                         <DataTrigger Binding="{Binding IsMin}" Value="true">
                             <Setter Property="Width" Value="40"/>
                             <Setter Property="Height" Value="40"/>
+                            <Setter Property="Margin" Value="20"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -109,7 +110,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <local:UCImageGroupView x:Name="ucView" ItemSource="{Binding Items}" CascadeMaxCount="3" ViewMode="Tile"
+            <local:UCImageGroupView x:Name="ucView" ItemSource="{Binding EditintItems,Mode=OneWay}" CascadeMaxCount="3" LayoutMode="Tile"
                                     local:DragDrop.IsDropTarget="True"/>
         </Grid>
 
@@ -131,8 +132,7 @@
                      ItemsSource="{Binding Items}" 
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle1}"
                      local:DragDrop.IsDragSource="True"
-                     local:DragDrop.DragAdornerTemplate="{StaticResource DataTemplate1}"
-                     />
+                     local:DragDrop.DragAdornerTemplate="{StaticResource DataTemplate1}"/>
         </Grid>
     </Grid>
 </UserControl>

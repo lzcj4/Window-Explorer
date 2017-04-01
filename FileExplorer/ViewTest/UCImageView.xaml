@@ -19,7 +19,7 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
-        
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -44,13 +44,21 @@
                         </Button.Content>
                     </Button>
 
-
                 </StackPanel>
             </Grid>
 
             <Grid Grid.Row="1" >
-                <Image Source="{Binding ImageSource}" Stretch="Fill"/>
+                <!--<ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+
+                <local:PanAndZoomViewer>
+                    <Viewbox  Stretch="Fill">-->
+                        <Image Source="{Binding ImageSource}"  Stretch="Fill"/>
+                <!--  </Viewbox>
+                </local:PanAndZoomViewer>
+
+             </ScrollViewer>-->
             </Grid>
         </Grid>
+        
     </Border>
 </UserControl>

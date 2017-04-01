@@ -20,7 +20,9 @@ namespace FileExplorer.ViewTest
             ViewModel = new ImageViewModel();
             this.DataContext = ViewModel;
             this.ViewModel.LoadImages();
+
             this.listImages.MouseDoubleClick += ListImages_MouseDoubleClick;
+
         }
 
         private void ListImages_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -36,18 +38,18 @@ namespace FileExplorer.ViewTest
             }
             else
             {
-                ucView.AddCascadeItem(imageItem);
+                ucView.AddItem(imageItem);
             }
         }
 
         private void radioTile_Checked(object sender, RoutedEventArgs e)
         {
-            ucView.ViewMode = LayoutMode.Tile;
+            ucView.LayoutMode = LayoutMode.Tile;
         }
 
         private void radioCascade_Checked(object sender, RoutedEventArgs e)
         {
-            ucView.ViewMode = LayoutMode.Cascade;
+            ucView.LayoutMode = LayoutMode.Cascade;
         }
     }
 }

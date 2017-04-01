@@ -250,7 +250,7 @@ namespace FileExplorer.ViewTest
                 if (selectedItems.Cast<object>().Contains(m_DragInfo.SourceItem))
                 {
                     // TODO: Re-raise the supressed event if the user didn't initiate a drag.
-                    // TOTO: 如果还要双击操作，会被当前设置给屏蔽
+                    /// TOTO: 如果还要双击操作，会被当前设置给屏蔽
                     //e.Handled = true;
                 }
             }

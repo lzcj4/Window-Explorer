@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -63,12 +62,7 @@ namespace FileExplorer.ViewTest
             else
             {
                 Point point = e.GetPosition(VisualTarget);
-                var hitElement = VisualTarget.InputHitTest(point) as UIElement;
-                UCImageView ucView = hitElement.GetVisualAncestor<UCImageView>();
-                if (hitElement is UCImageView || ucView != null)
-                {
-                    TargetItem = ucView;
-                }
+                TargetItem = VisualTarget.InputHitTest(point) as FrameworkElement;
             }
         }
     }

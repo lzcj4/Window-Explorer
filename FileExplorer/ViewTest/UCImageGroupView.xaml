@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:FileExplorer.ViewTest"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Canvas Name="canvas" Background="Transparent">
+    <Canvas Name="canvas" Background="Transparent"/>
 
-    </Canvas>
 </UserControl>

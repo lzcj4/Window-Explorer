@@ -1,6 +1,7 @@
 ﻿using FileExplorer.Helper;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,7 +41,18 @@ namespace FileExplorer.ViewTest
 
         private static void ItemSourceChanged(DependencyObject obj, DependencyPropertyChangedEventArgs arg)
         {
-            (obj as UCImageGroupView).RenderImage();
+            UCImageGroupView view = (obj as UCImageGroupView);
+            view.RenderImage();
+            view.ItemSource.CollectionChanged += (sender, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (ImageItem item in e.NewItems)
+                    {
+                        view.AddItem(item, false);
+                    }
+                }
+            };
         }
 
         public int CascadeMaxCount
@@ -85,14 +97,14 @@ namespace FileExplorer.ViewTest
         public static readonly DependencyProperty OffsetYProperty =
             DependencyProperty.Register("OffsetY", typeof(int), typeof(UCImageGroupView), new PropertyMetadata(30));
 
-        public LayoutMode ViewMode
+        public LayoutMode LayoutMode
         {
             get { return (LayoutMode)GetValue(ViewModeProperty); }
             set { SetValue(ViewModeProperty, value); }
         }
 
         public static readonly DependencyProperty ViewModeProperty =
-            DependencyProperty.Register("ViewMode", typeof(LayoutMode), typeof(UCImageGroupView), new PropertyMetadata(LayoutMode.Cascade, (obj, args) =>
+            DependencyProperty.Register("LayoutMode", typeof(LayoutMode), typeof(UCImageGroupView), new PropertyMetadata(LayoutMode.Cascade, (obj, args) =>
                  {
                      (obj as UCImageGroupView).RenderImage();
                  }));
@@ -107,6 +119,12 @@ namespace FileExplorer.ViewTest
             this.canvas.PreviewMouseLeftButtonDown += Canvas_PreviewMouseLeftButtonDown;
             this.canvas.PreviewMouseMove += Canvas_PreviewMouseMove;
             this.canvas.PreviewMouseLeftButtonUp += Canvas_PreviewMouseLeftButtonUp;
+            this.SizeChanged += UCImageGroupView_SizeChanged;
+        }
+
+        private IList<UCImageView> AllItems
+        {
+            get { return this.canvas.Children.Cast<UCImageView>().ToList(); }
         }
 
         private void RenderImage()
@@ -116,7 +134,7 @@ namespace FileExplorer.ViewTest
 
         private void RenderImage(ObservableCollection<ImageItem> list)
         {
-            switch (this.ViewMode)
+            switch (this.LayoutMode)
             {
                 case LayoutMode.Tile:
                     SetTileView(list);
@@ -153,25 +171,6 @@ namespace FileExplorer.ViewTest
                 currentOffsetX += this.OffsetX;
                 currentOffsetY += this.OffsetY;
             }
-        }
-
-        public void AddCascadeItem(ImageItem item)
-        {
-            if (item.IsNull())
-            {
-                return;
-            }
-            int itemCount = this.ItemSource.Count + 1;
-            double currentOffsetX = this.OffsetX * itemCount, currentOffsetY = this.OffsetY * itemCount;
-            double imgWidth = this.ActualWidth - this.OffsetX * (CascadeMaxCount + 1);
-            double imgHeight = this.ActualHeight - this.OffsetY * (CascadeMaxCount + 1);
-
-            UCImageView ucImage = new UCImageView();
-            this.AddEvents(ucImage);
-            ucImage.DataContext = item;
-
-            this.AddToUI(ucImage, new Rect(currentOffsetX, currentOffsetY, imgWidth, imgHeight));
-            this.ItemSource.Add(item);
         }
 
         private void SetTileView(IList<ImageItem> list)
@@ -211,7 +210,8 @@ namespace FileExplorer.ViewTest
             }
 
             UCImageView ucView = minList.FirstOrDefault(i => i.ViewModel == item);
-            if (ucView.IsNull() || ucView.Tag.IsNull() || !(ucView.Tag is Rect))
+            if (ucView.IsNull() || ucView.Tag.IsNull() || !(ucView.Tag is Rect) ||
+                this.AllItems.Contains(ucView))
             {
                 return;
             }
@@ -219,9 +219,34 @@ namespace FileExplorer.ViewTest
             this.AddToUI(ucView, (Rect)ucView.Tag);
             ucView.ViewModel.SizeMode = ImageSize.Normal;
             this.AddEvents(ucView);
+            minList.Remove(ucView);
+            maxList.Remove(ucView);
+        }
 
-            ///TODO:当本身在最大化时被最小化，不能再以最大化形式显示
-            ///需要按当前显示模式再重新计算最佳尺寸
+        /// <summary>
+        /// 双击加入新项目
+        /// </summary>
+        /// <param name="item"></param>
+        public void AddItem(ImageItem item, bool needAddToList = true)
+        {
+            if (item.IsNull() || this.AllItems.Any(i => i.ViewModel == item))
+            {
+                return;
+            }
+            int itemCount = this.ItemSource.Count + 1;
+            double currentOffsetX = this.OffsetX * itemCount, currentOffsetY = this.OffsetY * itemCount;
+            double imgWidth = this.ActualWidth - this.OffsetX * (CascadeMaxCount + 1);
+            double imgHeight = this.ActualHeight - this.OffsetY * (CascadeMaxCount + 1);
+
+            UCImageView ucImage = new UCImageView();
+            this.AddEvents(ucImage);
+            ucImage.DataContext = item;
+
+            this.AddToUI(ucImage, new Rect(currentOffsetX, currentOffsetY, imgWidth, imgHeight));
+            if (needAddToList)
+            {
+                this.ItemSource.Add(item);
+            }
         }
 
         #region UCImageView events
@@ -261,16 +286,17 @@ namespace FileExplorer.ViewTest
         IList<UCImageView> minList = new List<UCImageView>();
         private void UcView_OnMinClick(object sender, System.EventArgs e)
         {
-            lastMaxItem = null;
             UCImageView ucView = sender as UCImageView;
+            if (!ucView.ViewModel.IsMax)
+            {
+                ucView.Tag = this.GetImageRect(ucView);
+            }
             ucView.ViewModel.SizeMode = ImageSize.Min;
-            ucView.Tag = this.GetImageRect(ucView);
             minList.Add(ucView);
             this.RemoveFromUI(ucView);
         }
 
-        UCImageView lastMaxItem;
-        Rect lastMaxItemRect;
+        IList<UCImageView> maxList = new List<UCImageView>();
 
         private void UcView_OnMaxClick(object sender, System.EventArgs e)
         {
@@ -281,23 +307,22 @@ namespace FileExplorer.ViewTest
 
             UCImageView ucView = sender as UCImageView;
             Rect rect = new Rect();
-            if (lastMaxItem.IsNull())
+            if (!ucView.ViewModel.IsMax)
             {
-                lastMaxItem = ucView;
-                lastMaxItemRect = GetImageRect(ucView);
+                ucView.Tag = GetImageRect(ucView);
 
                 rect.X = imgPadding;
                 rect.Y = imgPadding;
                 rect.Width = this.ActualWidth - imgPadding * 2;
                 rect.Height = this.ActualHeight - imgPadding * 2;
-                lastMaxItem = ucView;
                 ucView.ViewModel.SizeMode = ImageSize.Max;
+                maxList.Add(ucView);
             }
             else
             {
-                rect = lastMaxItemRect;
-                lastMaxItem = null;
+                rect = (Rect)ucView.Tag;
                 ucView.ViewModel.SizeMode = ImageSize.Normal;
+                maxList.Remove(ucView);
             }
 
             lastItem = ucView;
@@ -321,8 +346,10 @@ namespace FileExplorer.ViewTest
 
         private void UcView_OnCloseClick(object sender, System.EventArgs e)
         {
-            lastMaxItem = null;
             UCImageView ucView = sender as UCImageView;
+            minList.Remove(ucView);
+            maxList.Remove(ucView);
+            this.ItemSource.Remove(ucView.ViewModel);
             this.RemoveFromUI(ucView);
         }
 
@@ -367,7 +394,7 @@ namespace FileExplorer.ViewTest
             get
             {
                 return Keyboard.IsKeyDown(Key.LeftCtrl) ||
-              Keyboard.IsKeyDown(Key.RightCtrl);
+                       Keyboard.IsKeyDown(Key.RightCtrl);
             }
         }
 
@@ -383,6 +410,10 @@ namespace FileExplorer.ViewTest
         {
             clickPoint = e.GetPosition(canvas);
             HitTestResult hitItem = VisualTreeHelper.HitTest(canvas, clickPoint);
+            if (hitItem.IsNull())
+            {
+                return;
+            }
 
             UCImageView ucView = hitItem.VisualHit.TryFindParent<UCImageView>();
             if (ucView.IsNull())
@@ -435,6 +466,46 @@ namespace FileExplorer.ViewTest
 
             Canvas.SetLeft(currentItem, left + moveX);
             Canvas.SetTop(currentItem, top + moveY);
+        }
+
+        private void UCImageGroupView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double widthRate = e.NewSize.Width / e.PreviousSize.Width;
+            double heightRate = e.NewSize.Height / e.PreviousSize.Height;
+            switch (this.LayoutMode)
+            {
+                case LayoutMode.Tile:
+                    TileSizeChanged(widthRate, heightRate);
+                    break;
+                case LayoutMode.Cascade:
+                    CascadeSizeChanged(widthRate, heightRate);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void CascadeSizeChanged(double widthRate, double heightRate)
+        {
+            foreach (UCImageView item in canvas.Children)
+            {
+                item.Width *= widthRate;
+                item.Height *= heightRate;
+
+                Canvas.SetLeft(item, Canvas.GetLeft(item) * widthRate);
+                Canvas.SetTop(item, Canvas.GetTop(item) * heightRate);
+            }
+        }
+
+        private void TileSizeChanged(double widthRate, double heightRate)
+        {
+            foreach (UCImageView item in canvas.Children)
+            {
+                item.Width *= widthRate;
+                item.Height *= heightRate;
+
+                Canvas.SetLeft(item, Canvas.GetLeft(item) * widthRate);
+            }
         }
 
         #endregion
