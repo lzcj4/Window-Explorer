@@ -503,12 +503,13 @@ namespace FileExplorer.ViewTest
                 {
                     this.SetAllUnselected(this.ItemSource);
                 }
-                if (selectedElement != null)
-                {
-                    // Remove the adorner from the selected element
-                    aLayer.Remove(aLayer.GetAdorners(selectedElement)[0]);
-                    selectedElement = null;
-                }
+
+                #region Resize Adorner
+
+                this.RemoveResizeAdorner();
+
+                #endregion
+
                 return;
             }
 
@@ -529,34 +530,29 @@ namespace FileExplorer.ViewTest
             }
             selectedItem = ucView;
 
-            if (selected)
-            {
-                selected = false;
-                if (selectedElement != null)
-                {
-                    // Remove the adorner from the selected element
-                    aLayer.Remove(aLayer.GetAdorners(selectedElement)[0]);
-                    selectedElement = null;
-                }
-            }
-
             #region Resize Adorner 
+
+            if (isResizeSelected)
+            {
+                isResizeSelected = false;
+                this.RemoveResizeAdorner();
+            }
 
             // If any element except canvas is clicked, 
             // assign the selected element and add the adorner
             if (e.Source != canvas)
             {
-                _isDown = true;
-                _startPoint = e.GetPosition(canvas);
+                isResizeDown = true;
+                resizeStartPoint = e.GetPosition(canvas);
 
-                selectedElement = e.Source as UIElement;
+                resizeElement = e.Source as UIElement;
 
-                _originalLeft = Canvas.GetLeft(selectedElement);
-                _originalTop = Canvas.GetTop(selectedElement);
+                resizeOriginalLeft = Canvas.GetLeft(resizeElement);
+                resizeOriginalTop = Canvas.GetTop(resizeElement);
 
-                aLayer = AdornerLayer.GetAdornerLayer(selectedElement);
-                aLayer.Add(new ResizingAdorner(selectedElement));
-                selected = true;
+                adornerLayer = AdornerLayer.GetAdornerLayer(resizeElement);
+                adornerLayer.Add(new ResizingAdorner(resizeElement));
+                isResizeSelected = true;
                 e.Handled = true;
             }
 
@@ -565,16 +561,26 @@ namespace FileExplorer.ViewTest
 
         #region Resize Adorner 
 
-        AdornerLayer aLayer;
+        AdornerLayer adornerLayer;
 
-        bool _isDown;
-        bool _isDragging;
-        bool selected = false;
-        UIElement selectedElement = null;
+        bool isResizeDown;
+        bool isResizeDragging;
+        bool isResizeSelected = false;
+        UIElement resizeElement = null;
 
-        Point _startPoint;
-        private double _originalLeft;
-        private double _originalTop;
+        Point resizeStartPoint;
+        private double resizeOriginalLeft;
+        private double resizeOriginalTop;
+
+        private void RemoveResizeAdorner()
+        {
+            if (resizeElement != null)
+            {
+                // Remove the adorner from the selected element
+                adornerLayer.Remove(adornerLayer.GetAdorners(resizeElement)[0]);
+                resizeElement = null;
+            }
+        }
 
         #endregion
 
@@ -605,18 +611,18 @@ namespace FileExplorer.ViewTest
 
             #region Resize Adorner 
 
-            if (_isDown)
+            if (isResizeDown)
             {
-                if ((_isDragging == false) &&
-                    ((Math.Abs(e.GetPosition(canvas).X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance) ||
-                    (Math.Abs(e.GetPosition(canvas).Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)))
-                    _isDragging = true;
+                if ((isResizeDragging == false) &&
+                    ((Math.Abs(e.GetPosition(canvas).X - resizeStartPoint.X) > SystemParameters.MinimumHorizontalDragDistance) ||
+                    (Math.Abs(e.GetPosition(canvas).Y - resizeStartPoint.Y) > SystemParameters.MinimumVerticalDragDistance)))
+                    isResizeDragging = true;
 
-                if (_isDragging)
+                if (isResizeDragging)
                 {
                     Point position = Mouse.GetPosition(canvas);
-                    Canvas.SetTop(selectedElement, position.Y - (_startPoint.Y - _originalTop));
-                    Canvas.SetLeft(selectedElement, position.X - (_startPoint.X - _originalLeft));
+                    Canvas.SetTop(resizeElement, position.Y - (resizeStartPoint.Y - resizeOriginalTop));
+                    Canvas.SetLeft(resizeElement, position.X - (resizeStartPoint.X - resizeOriginalLeft));
                 }
             }
 
