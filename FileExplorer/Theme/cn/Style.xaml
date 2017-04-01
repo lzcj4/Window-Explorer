@@ -3,6 +3,7 @@
                     xmlns:local="clr-namespace:FileExplorer.Theme.cn">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="./Color.xaml"/>
+        <ResourceDictionary Source="./Brushes.xaml"/>
     </ResourceDictionary.MergedDictionaries>
     
 </ResourceDictionary>

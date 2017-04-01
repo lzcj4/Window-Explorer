@@ -30,20 +30,20 @@
                     <Border BorderBrush="#7726A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}" >
                         <Border BorderBrush="#9926A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}" >
 
-                            <Grid >
+                            <Grid Background="{DynamicResource Brush_App_Edit}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 
-                                <Grid Grid.Row="0"  Background="LightBlue"  Name="gridTitle" >
+                                <Grid Grid.Row="0"   Name="gridTitle" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Grid Grid.Column="0">
-                                        <TextBlock Text="{Binding FileName}"/>
+                                        <TextBlock Text="{Binding FileName}" Margin="20,3,0,0"/>
                                     </Grid>
 
                                     <Grid Grid.Column="1" HorizontalAlignment="Right">
@@ -77,7 +77,7 @@
 
                                 </Grid>
 
-                                <Grid Grid.Row="1"  Background="White" Name="gridImage">
+                                <Grid Grid.Row="1" Name="gridImage">
                                     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
 
                                         <local:PanAndZoomViewer HorizontalAlignment="Center" VerticalAlignment="Center" 

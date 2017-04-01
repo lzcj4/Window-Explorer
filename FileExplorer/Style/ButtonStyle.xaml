@@ -158,15 +158,15 @@
                             <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                            <!--<Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>-->
                             <Setter Property="Visibility" TargetName="imgDefault" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="imgOver" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="imgPressed" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                            <!--<Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>-->
                             <Setter Property="Visibility" TargetName="imgDefault" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="imgOver" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="imgPressed" Value="Visible"/>
