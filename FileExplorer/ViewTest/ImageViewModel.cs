@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace FileExplorer.ViewTest
 {
-    [Export(typeof(ImageViewModel))]
+    [Export]
     public class ImageViewModel : ViewModelBase, IDropHandler
     {
         private ObservableCollection<ImageItem> items = new ObservableCollection<ImageItem>();
@@ -19,22 +19,26 @@ namespace FileExplorer.ViewTest
             private set { SetProperty(ref items, value, "Items"); }
         }
 
-        private ObservableCollection<ImageItem> editintItems = new ObservableCollection<ImageItem>();
-        public ObservableCollection<ImageItem> EditintItems
+        private ObservableCollection<ImageItem> editingItems = new ObservableCollection<ImageItem>();
+        public ObservableCollection<ImageItem> EditingItems
         {
-            get { return editintItems; }
-            private set { SetProperty(ref editintItems, value, "EditintItems"); }
+            get { return editingItems; }
+            private set { SetProperty(ref editingItems, value, "EditingItems"); }
         }
 
         public void LoadImages()
         {
             Items.Clear();
-            Items.Add(new ImageItem() { FilePath = @"E:\aa.png" });
-            Items.Add(new ImageItem() { FilePath = @"E:\bb.png" });
-            Items.Add(new ImageItem() { FilePath = @"E:\aa.png" });
+            for (int i = 1; i < 9; i++)
+            {
+                Items.Add(new ImageItem() { FilePath = string.Format(@" E:\素材\Imag\{0}.png", i) });
+            }
 
-            this.EditintItems.Clear();
-            Items.All(item => { this.EditintItems.Add(item); return true; });
+            this.EditingItems.Clear();
+            for (int i = 0; i < 4; i++)
+            {
+                this.EditingItems.Add(Items[i]);
+            }
 
             DragDrop.DefaultDropHandler = this;
         }
@@ -46,7 +50,7 @@ namespace FileExplorer.ViewTest
             /// TOTO: 需要加入去重
             if (dropInfo.Data is ImageItem || dropInfo.Data is IEnumerable<ImageItem>)
             {
-                if (this.EditintItems.Any(item => item == (dropInfo.Data as ImageItem)))
+                if (this.EditingItems.Any(item => item == (dropInfo.Data as ImageItem)))
                 {
                     dropInfo.Effects = DragDropEffects.None;
                 }
@@ -74,13 +78,16 @@ namespace FileExplorer.ViewTest
             {
                 if (!imgItem.IsNull())
                 {
-                    this.EditintItems.Remove(imgView.ViewModel);
+                    this.EditingItems.Remove(imgView.ViewModel);
                     imgView.DataContext = imgItem;
+                    this.EditingItems.Add(imgItem);
                 }
                 else if (!dragItems.IsNullOrEmpty())
                 {
-                    this.EditintItems.Remove(imgView.ViewModel);
-                    imgView.DataContext = items.FirstOrDefault();
+                    ImageItem firstItem = items.FirstOrDefault();
+                    this.EditingItems.Remove(imgView.ViewModel);
+                    imgView.DataContext = firstItem;
+                    this.EditingItems.Add(firstItem);
                 }
             }
             else
@@ -95,11 +102,11 @@ namespace FileExplorer.ViewTest
                 {
                     if (!imgItem.IsNull())
                     {
-                        this.EditintItems.Add(imgItem);
+                        this.EditingItems.Add(imgItem);
                     }
                     else if (!dragItems.IsNullOrEmpty())
                     {
-                        dragItems.All(i => { this.EditintItems.Add(i); return true; });
+                        dragItems.All(i => { this.EditingItems.Add(i); return true; });
                     }
                 }
             }

@@ -9,6 +9,8 @@ namespace FileExplorer.ViewTest
 {
     public class PanAndZoomViewer : ContentControl
     {
+        public event EventHandler ZoomChanged;
+
         public double DefaultZoomFactor { get; set; }
         public FrameworkElement source;
         private Point ScreenStartPoint = new Point(0, 0);
@@ -16,10 +18,11 @@ namespace FileExplorer.ViewTest
         public ScaleTransform zoomTransform;
         public TransformGroup transformGroup;
         private Point startOffset;
+       
 
         public PanAndZoomViewer()
         {
-            this.DefaultZoomFactor = 1.1;
+            this.DefaultZoomFactor = 1.2;
         }
 
         public double ZoomFactor
@@ -36,6 +39,10 @@ namespace FileExplorer.ViewTest
         void Setup()
         {
             this.source = this.Content as FrameworkElement;
+            if (this.source == null)
+            {
+                throw new InvalidOperationException("Conent can't be null");
+            }
 
             this.translateTransform = new TranslateTransform();
             this.zoomTransform = new ScaleTransform();
@@ -44,30 +51,42 @@ namespace FileExplorer.ViewTest
             this.transformGroup.Children.Add(this.translateTransform);
             this.source.RenderTransform = this.transformGroup;
             this.Focusable = true;
-            this.KeyDown += new KeyEventHandler(source_KeyDown);
+            this.PreviewKeyDown += new KeyEventHandler(control_KeyDown);
             this.MouseMove += new MouseEventHandler(control_MouseMove);
-            this.MouseDown += new MouseButtonEventHandler(source_MouseDown);
-            this.MouseUp += new MouseButtonEventHandler(source_MouseUp);
+            this.MouseDown += new MouseButtonEventHandler(control_MouseDown);
+            this.MouseUp += new MouseButtonEventHandler(control_MouseUp);
             this.MouseWheel += new MouseWheelEventHandler(source_MouseWheel);
         }
-
-        void source_KeyDown(object sender, KeyEventArgs e)
+        
+        void control_KeyDown(object sender, KeyEventArgs e)
         {
             // hit escape to reset everything
-            if (e.Key == Key.Escape) Reset();
+            if (e.Key == Key.Escape)
+            {
+                Reset();
+            }
         }
 
         void source_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             // zoom into the content.  Calculate the zoom factor based on the direction of the mouse wheel.
             double zoomFactor = this.DefaultZoomFactor;
-            if (e.Delta <= 0) zoomFactor = 1.0 / this.DefaultZoomFactor;
+            if (e.Delta <= 0)
+            {
+                zoomFactor = 1.0 / this.DefaultZoomFactor;
+            }
             // DoZoom requires both the logical and physical location of the mouse pointer
-            var physicalPoint = e.GetPosition(this);
+
+            ///<**************************************>
+            ///TODO: MUST THE SOURCE POSITION ,IF A PICTURE STRETH MODE IS 
+            ///UNIFORM WILL NOT ZOOM ACCURATELY 
+            ///<**************************************>
+            var physicalPoint = e.GetPosition(this.source);
             DoZoom(zoomFactor, this.transformGroup.Inverse.Transform(physicalPoint), physicalPoint);
+            e.Handled = true;
         }
 
-        void source_MouseUp(object sender, MouseButtonEventArgs e)
+        void control_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (this.IsMouseCaptured)
             {
@@ -77,7 +96,7 @@ namespace FileExplorer.ViewTest
             }
         }
 
-        void source_MouseDown(object sender, MouseButtonEventArgs e)
+        void control_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Save starting point, used later when determining how much to scroll.
             this.ScreenStartPoint = e.GetPosition(this);
@@ -85,7 +104,7 @@ namespace FileExplorer.ViewTest
             this.CaptureMouse();
             this.Cursor = Cursors.ScrollAll;
         }
-        
+
         void control_MouseMove(object sender, MouseEventArgs e)
         {
             if (this.IsMouseCaptured)
@@ -94,8 +113,10 @@ namespace FileExplorer.ViewTest
                 // use the Pan Animation to animate to the new location based on the delta between the 
                 // starting point of the mouse and the current point.
                 var physicalPoint = e.GetPosition(this);
-                this.translateTransform.BeginAnimation(TranslateTransform.XProperty, CreatePanAnimation(physicalPoint.X - this.ScreenStartPoint.X + this.startOffset.X), HandoffBehavior.Compose);
-                this.translateTransform.BeginAnimation(TranslateTransform.YProperty, CreatePanAnimation(physicalPoint.Y - this.ScreenStartPoint.Y + this.startOffset.Y), HandoffBehavior.Compose);
+                this.translateTransform.BeginAnimation(TranslateTransform.XProperty, 
+                                                         CreatePanAnimation(physicalPoint.X - this.ScreenStartPoint.X + this.startOffset.X), HandoffBehavior.Compose);
+                this.translateTransform.BeginAnimation(TranslateTransform.YProperty,
+                                                          CreatePanAnimation(physicalPoint.Y - this.ScreenStartPoint.Y + this.startOffset.Y), HandoffBehavior.Compose);
             }
         }
 
@@ -127,7 +148,6 @@ namespace FileExplorer.ViewTest
             return da;
         }
 
-        public event EventHandler ZoomChanged;
 
         /// <summary>Zoom into or out of the content.</summary>
         /// <param name="deltaZoom">Factor to mutliply the zoom level by. </param>
@@ -182,7 +202,7 @@ namespace FileExplorer.ViewTest
 
         internal double GetZoom()
         {
-            return zoomTransform.ScaleX;
+            return ZoomFactor;
         }
     }
 }

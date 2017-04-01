@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System;
+using System.ComponentModel.Composition;
 
 namespace FileExplorer.ViewTest
 {
@@ -14,13 +15,22 @@ namespace FileExplorer.ViewTest
         Max = 2
     }
 
+    [Export]
     public class ImageItem : ViewModelBase, IDragSource
     {
         private string filePath;
         public string FilePath
         {
             get { return filePath; }
-            set { SetProperty(ref filePath, value, "FilePath"); }
+            set { SetProperty(ref filePath, value, "FilePath", "FileName"); }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return this.FilePath.IsNullOrEmpty() ? string.Empty : Path.GetFileName(this.FilePath);
+            }
         }
 
         private ImageSource imageSource;

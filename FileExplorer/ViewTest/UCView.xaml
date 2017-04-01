@@ -110,7 +110,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <local:UCImageGroupView x:Name="ucView" ItemSource="{Binding EditintItems,Mode=OneWay}" CascadeMaxCount="3" LayoutMode="Tile"
+            <local:UCImageGroupView x:Name="ucView" ItemSource="{Binding EditingItems,Mode=OneWay}" CascadeMaxCount="3" LayoutMode="Tile"
                                     local:DragDrop.IsDropTarget="True"/>
         </Grid>
 

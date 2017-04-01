@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="Converter\AndConverter.cs" />
     <Compile Include="Converter\BooleanReserveConverter.cs" />
+    <Compile Include="Converter\BoolToThicknessConverter.cs" />
     <Compile Include="Converter\CompositeCoverter.cs" />
     <Compile Include="Converter\EmpytToVisibilityConverter.cs" />
     <Compile Include="Converter\OrConverter.cs" />

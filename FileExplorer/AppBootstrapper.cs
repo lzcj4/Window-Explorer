@@ -1,5 +1,4 @@
 ﻿using Microsoft.Practices.Prism.MefExtensions;
-using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.ServiceLocation;
 using System.ComponentModel.Composition.Hosting;
 using System.Windows;
@@ -22,11 +21,17 @@ namespace FileExplorer
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(GetType().Assembly));
         }
 
+        protected override CompositionContainer CreateContainer()
+        {
+            return new CompositionContainer(AggregateCatalog);
+        }
+
         protected override void InitializeShell()
         {
             base.InitializeShell();
+
             Application.Current.MainWindow = (Window)this.Shell;
-            Application.Current.MainWindow.Show();
+            Application.Current.MainWindow.Show();            
         }
     }
 }

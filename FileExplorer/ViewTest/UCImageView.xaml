@@ -8,7 +8,7 @@
              x:Name="ucImage"
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <Border x:Name="Bd" BorderThickness="2" Padding="4,1" SnapsToDevicePixels="True">
+    <Border x:Name="Bd" BorderThickness="1" Padding="4,1" SnapsToDevicePixels="True">
         <Border.Style>
             <Style TargetType="Border">
                 <Style.Triggers>
@@ -20,45 +20,73 @@
             </Style>
         </Border.Style>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <Border BorderBrush="#1126A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}"  >
+            <Border BorderBrush="#3326A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}" >
+                <Border BorderBrush="#5526A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}" >
+                    <Border BorderBrush="#7726A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}" >
+                        <Border BorderBrush="#9926A0DA" BorderThickness="{Binding IsSelected,Converter={StaticResource boolToThicknessConverter},ConverterParameter=1}" >
 
-            <Grid Grid.Row="0" Background="LightBlue"  Name="gridTitle" >
-                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" >
-                    <Button Name="btnMin" Click="btnMin_Click">
-                        <Button.Content>
-                            <Image  Source="{DynamicResource action_min}" Width="16" Height="16"/>
-                        </Button.Content>
-                    </Button>
-                    <Button Name="btnMax" Click="btnMax_Click">
-                        <Button.Content>
-                            <Image   Source="{DynamicResource action_max}" Width="16" Height="16"/>
-                        </Button.Content>
-                    </Button>
-                    <Button Name="btnClose" Click="btnClose_Click" >
-                        <Button.Content>
-                            <Image   Source="{DynamicResource action_close}" Width="16" Height="16"/>
-                        </Button.Content>
-                    </Button>
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
 
-                </StackPanel>
-            </Grid>
+                                <Grid Grid.Row="0" Background="LightBlue"  Name="gridTitle" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-            <Grid Grid.Row="1" >
-                <!--<ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                                    <Grid Grid.Column="0">
+                                        <TextBlock Text="{Binding FileName}"/>
+                                    </Grid>
 
-                <local:PanAndZoomViewer>
-                    <Viewbox  Stretch="Fill">-->
-                        <Image Source="{Binding ImageSource}"  Stretch="Fill"/>
-                <!--  </Viewbox>
-                </local:PanAndZoomViewer>
+                                    <Grid Grid.Column="1" HorizontalAlignment="Right">
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" >
+                                            <Button Name="btnMin" Click="btnMin_Click">
+                                                <Button.Content>
+                                                    <Image  Source="{DynamicResource action_min}" Width="16" Height="16"/>
+                                                </Button.Content>
+                                            </Button>
+                                            <Button Name="btnMax" Click="btnMax_Click">
+                                                <Button.Content>
+                                                    <Image   Source="{DynamicResource action_max}" Width="16" Height="16"/>
+                                                </Button.Content>
+                                            </Button>
+                                            <Button Name="btnClose" Click="btnClose_Click" >
+                                                <Button.Content>
+                                                    <Image   Source="{DynamicResource action_close}" Width="16" Height="16"/>
+                                                </Button.Content>
+                                            </Button>
 
-             </ScrollViewer>-->
-            </Grid>
-        </Grid>
-        
+                                        </StackPanel>
+                                    </Grid>
+
+                                </Grid>
+
+                                <Grid Grid.Row="1" Background="White" Name="gridImage">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+
+                                        <local:PanAndZoomViewer HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                                                Width="{Binding ActualWidth,ElementName=gridImage}"
+                                                                Height="{Binding ActualHeight,ElementName=gridImage}">
+                                            <Viewbox>
+                                                <Image Source="{Binding ImageSource}" />
+                                            </Viewbox>
+
+                                        </local:PanAndZoomViewer>
+
+                                    </ScrollViewer>
+                                </Grid>
+                            </Grid>
+
+                        </Border>
+                    </Border>
+                </Border>
+            </Border>
+        </Border>
+
     </Border>
 </UserControl>

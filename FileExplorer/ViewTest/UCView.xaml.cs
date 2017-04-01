@@ -1,4 +1,5 @@
 ﻿using FileExplorer.Helper;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,18 +12,17 @@ namespace FileExplorer.ViewTest
     /// </summary>
     public partial class UCView : UserControl
     {
-        [Import(typeof(ImageViewModel))]
-        //public Lazy<ImageViewModel> ViewModel { get; set; }
         public ImageViewModel ViewModel { get; set; }
+
+        //public ImageViewModel ViewModel { get; set; }
         public UCView()
         {
             InitializeComponent();
-            ViewModel = new ImageViewModel();
+            this.ViewModel = new ImageViewModel();
             this.DataContext = ViewModel;
             this.ViewModel.LoadImages();
 
             this.listImages.MouseDoubleClick += ListImages_MouseDoubleClick;
-
         }
 
         private void ListImages_MouseDoubleClick(object sender, MouseButtonEventArgs e)

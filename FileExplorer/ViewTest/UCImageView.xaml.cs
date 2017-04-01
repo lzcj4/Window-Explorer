@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace FileExplorer.ViewTest
 {
@@ -46,7 +47,7 @@ namespace FileExplorer.ViewTest
             }
         }
 
-        private void UCImageView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void UCImageView_MouseDoubleClick(object sender,MouseButtonEventArgs e)
         {
             if (null != OnMaxClick)
             {

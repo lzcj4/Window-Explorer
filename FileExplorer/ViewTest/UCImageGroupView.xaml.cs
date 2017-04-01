@@ -72,6 +72,7 @@ namespace FileExplorer.ViewTest
             get { return (int)GetValue(TileMaxCountProperty); }
             set { SetValue(TileMaxCountProperty, value); }
         }
+
         public static readonly DependencyProperty TileMaxCountProperty =
             DependencyProperty.Register("TileMaxCount", typeof(int), typeof(UCImageGroupView), new PropertyMetadata(3,
                 new PropertyChangedCallback((obj, args) =>
@@ -79,23 +80,23 @@ namespace FileExplorer.ViewTest
                     (obj as UCImageGroupView).RenderImage();
                 })));
 
-        public int OffsetX
+        public double OffsetX
         {
-            get { return (int)GetValue(OffsetXProperty); }
+            get { return (double)GetValue(OffsetXProperty); }
             set { SetValue(OffsetXProperty, value); }
         }
 
         public static readonly DependencyProperty OffsetXProperty =
-            DependencyProperty.Register("OffsetX", typeof(int), typeof(UCImageGroupView), new PropertyMetadata(30));
+            DependencyProperty.Register("OffsetX", typeof(double), typeof(UCImageGroupView), new PropertyMetadata(30.0));
 
-        public int OffsetY
+        public double OffsetY
         {
-            get { return (int)GetValue(OffsetYProperty); }
+            get { return (double)GetValue(OffsetYProperty); }
             set { SetValue(OffsetYProperty, value); }
         }
 
         public static readonly DependencyProperty OffsetYProperty =
-            DependencyProperty.Register("OffsetY", typeof(int), typeof(UCImageGroupView), new PropertyMetadata(30));
+            DependencyProperty.Register("OffsetY", typeof(double), typeof(UCImageGroupView), new PropertyMetadata(30.0));
 
         public LayoutMode LayoutMode
         {
@@ -121,18 +122,22 @@ namespace FileExplorer.ViewTest
             this.canvas.PreviewMouseLeftButtonUp += Canvas_PreviewMouseLeftButtonUp;
             this.SizeChanged += UCImageGroupView_SizeChanged;
         }
+        
 
         private IList<UCImageView> AllItems
         {
             get { return this.canvas.Children.Cast<UCImageView>().ToList(); }
         }
 
+
+        #region Cascade / Tile layout
+
         private void RenderImage()
         {
             this.RenderImage(this.ItemSource);
         }
 
-        private void RenderImage(ObservableCollection<ImageItem> list)
+        private void RenderImage(IList<ImageItem> list)
         {
             switch (this.LayoutMode)
             {
@@ -198,6 +203,79 @@ namespace FileExplorer.ViewTest
             }
         }
 
+        private void ChangeSizeForCascade(double widthRate, double heightRate)
+        {
+            foreach (UCImageView item in canvas.Children)
+            {
+                item.Width *= widthRate;
+                item.Height *= heightRate;
+
+                Canvas.SetLeft(item, Canvas.GetLeft(item) * widthRate);
+                Canvas.SetTop(item, Canvas.GetTop(item) * heightRate);
+            }
+        }
+
+        private void ChangeSizeForTile(double widthRate, double heightRate)
+        {
+            foreach (UCImageView item in canvas.Children)
+            {
+                item.Width *= widthRate;
+                item.Height *= heightRate;
+
+                Canvas.SetLeft(item, Canvas.GetLeft(item) * widthRate);
+            }
+        }
+
+
+        private void AddCascadeItem(ImageItem item, bool isAdd = true)
+        {
+            if (item.IsNull() || this.AllItems.Any(i => i.ViewModel == item))
+            {
+                return;
+            }
+
+            this.SelectedViewToBack();
+            int itemCount = this.ItemSource.Count;
+            double currentOffsetX = this.OffsetX * itemCount, currentOffsetY = this.OffsetY * itemCount;
+            double imgWidth = this.ActualWidth - this.OffsetX * (CascadeMaxCount + 1);
+            double imgHeight = this.ActualHeight - this.OffsetY * (CascadeMaxCount + 1);
+
+            UCImageView ucImage = new UCImageView();
+            this.AddEvents(ucImage);
+            ucImage.DataContext = item;
+
+            this.AddToUI(ucImage, new Rect(currentOffsetX, currentOffsetY, imgWidth, imgHeight));
+            if (isAdd)
+            {
+                this.ItemSource.Add(item);
+            }
+        }
+
+        private void AddTileItem(ImageItem item, bool isAdd = true)
+        {
+            if (item.IsNull() || this.AllItems.Any(i => i.ViewModel == item))
+            {
+                return;
+            }
+
+            this.SelectedViewToBack();
+            int itemCount = this.ItemSource.Count;
+            double currentOffsetX = this.ActualWidth / TileMaxCount + this.OffsetX * (itemCount - TileMaxCount);
+            double currentOffsetY = this.OffsetY * (itemCount - TileMaxCount);
+            double imgWidth = this.ActualWidth / TileMaxCount;
+            double imgHeight = this.ActualHeight - this.OffsetY * 2;
+
+            UCImageView ucImage = new UCImageView();
+            this.AddEvents(ucImage);
+            ucImage.DataContext = item;
+
+            this.AddToUI(ucImage, new Rect(currentOffsetX, currentOffsetY, imgWidth, imgHeight));
+            if (isAdd)
+            {
+                this.ItemSource.Add(item);
+            }
+        }
+
         /// <summary>
         /// 最小化被还原
         /// </summary>
@@ -216,6 +294,8 @@ namespace FileExplorer.ViewTest
                 return;
             }
 
+            this.SelectedViewToBack();
+
             this.AddToUI(ucView, (Rect)ucView.Tag);
             ucView.ViewModel.SizeMode = ImageSize.Normal;
             this.AddEvents(ucView);
@@ -227,27 +307,29 @@ namespace FileExplorer.ViewTest
         /// 双击加入新项目
         /// </summary>
         /// <param name="item"></param>
-        public void AddItem(ImageItem item, bool needAddToList = true)
+        public void AddItem(ImageItem item, bool isAdd = true)
         {
-            if (item.IsNull() || this.AllItems.Any(i => i.ViewModel == item))
+            switch (this.LayoutMode)
             {
-                return;
-            }
-            int itemCount = this.ItemSource.Count + 1;
-            double currentOffsetX = this.OffsetX * itemCount, currentOffsetY = this.OffsetY * itemCount;
-            double imgWidth = this.ActualWidth - this.OffsetX * (CascadeMaxCount + 1);
-            double imgHeight = this.ActualHeight - this.OffsetY * (CascadeMaxCount + 1);
-
-            UCImageView ucImage = new UCImageView();
-            this.AddEvents(ucImage);
-            ucImage.DataContext = item;
-
-            this.AddToUI(ucImage, new Rect(currentOffsetX, currentOffsetY, imgWidth, imgHeight));
-            if (needAddToList)
-            {
-                this.ItemSource.Add(item);
+                case LayoutMode.Tile:
+                    AddTileItem(item, isAdd);
+                    break;
+                case LayoutMode.Cascade:
+                default:
+                    AddCascadeItem(item, isAdd);
+                    break;
             }
         }
+
+        private void SelectedViewToBack()
+        {
+            if (!selectedItem.IsNull())
+            {
+                Panel.SetZIndex(selectedItem, zindexNormal);
+            }
+        }
+
+        #endregion
 
         #region UCImageView events
 
@@ -300,10 +382,7 @@ namespace FileExplorer.ViewTest
 
         private void UcView_OnMaxClick(object sender, System.EventArgs e)
         {
-            if (!lastItem.IsNull())
-            {
-                Panel.SetZIndex(lastItem, zindexNormal);
-            }
+            this.SelectedViewToBack();
 
             UCImageView ucView = sender as UCImageView;
             Rect rect = new Rect();
@@ -325,7 +404,7 @@ namespace FileExplorer.ViewTest
                 maxList.Remove(ucView);
             }
 
-            lastItem = ucView;
+            selectedItem = ucView;
             this.SetViewSize(ucView, rect, zindexTop);
         }
 
@@ -398,7 +477,7 @@ namespace FileExplorer.ViewTest
             }
         }
 
-        UCImageView lastItem;
+        UCImageView selectedItem;
         UCImageView currentItem;
         Point clickPoint;
         const int zindexTop = 1;
@@ -425,10 +504,10 @@ namespace FileExplorer.ViewTest
                 return;
             }
 
-            if (!lastItem.IsNull() && !IsCtrlPressed)
+            if (!selectedItem.IsNull() && !IsCtrlPressed)
             {
-                lastItem.ViewModel.IsSelected = false;
-                Panel.SetZIndex(lastItem, zindexNormal);
+                selectedItem.ViewModel.IsSelected = false;
+                Panel.SetZIndex(selectedItem, zindexNormal);
             }
 
             this.SetItemSelected(ucView.ViewModel);
@@ -440,7 +519,7 @@ namespace FileExplorer.ViewTest
                 currentItem = ucView;
                 clickPoint = e.GetPosition(canvas);
             }
-            lastItem = ucView;
+            selectedItem = ucView;
         }
 
         private void Canvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -450,7 +529,8 @@ namespace FileExplorer.ViewTest
 
         private void Canvas_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (currentItem.IsNull())
+            ///可能鼠标在窗体外被放开
+            if (currentItem.IsNull() || Mouse.LeftButton != MouseButtonState.Pressed)
             {
                 return;
             }
@@ -470,41 +550,21 @@ namespace FileExplorer.ViewTest
 
         private void UCImageGroupView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double widthRate = e.NewSize.Width / e.PreviousSize.Width;
-            double heightRate = e.NewSize.Height / e.PreviousSize.Height;
+            double widthRate = e.PreviousSize.Width == 0 ? 1 : e.NewSize.Width / e.PreviousSize.Width;
+            double heightRate = e.PreviousSize.Height == 0 ? 1 : e.NewSize.Height / e.PreviousSize.Height;
+
+            OffsetX *= widthRate;
+            OffsetY *= heightRate;
+
             switch (this.LayoutMode)
             {
                 case LayoutMode.Tile:
-                    TileSizeChanged(widthRate, heightRate);
+                    ChangeSizeForTile(widthRate, heightRate);
                     break;
                 case LayoutMode.Cascade:
-                    CascadeSizeChanged(widthRate, heightRate);
-                    break;
                 default:
+                    ChangeSizeForCascade(widthRate, heightRate);
                     break;
-            }
-        }
-
-        private void CascadeSizeChanged(double widthRate, double heightRate)
-        {
-            foreach (UCImageView item in canvas.Children)
-            {
-                item.Width *= widthRate;
-                item.Height *= heightRate;
-
-                Canvas.SetLeft(item, Canvas.GetLeft(item) * widthRate);
-                Canvas.SetTop(item, Canvas.GetTop(item) * heightRate);
-            }
-        }
-
-        private void TileSizeChanged(double widthRate, double heightRate)
-        {
-            foreach (UCImageView item in canvas.Children)
-            {
-                item.Width *= widthRate;
-                item.Height *= heightRate;
-
-                Canvas.SetLeft(item, Canvas.GetLeft(item) * widthRate);
             }
         }
 

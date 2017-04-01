@@ -1,5 +1,6 @@
 ﻿using FileExplorer.Helper;
 using FileExplorer.ViewModel;
+using FileExplorer.ViewTest;
 using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
@@ -20,7 +21,6 @@ namespace FileExplorer
     {
         [Import]
         public Lazy<CategoryGroupViewModel> ViewModel { get; set; }
-     
         public ShellView()
         {
             InitializeComponent();

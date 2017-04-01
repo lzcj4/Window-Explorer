@@ -9,5 +9,6 @@
     </local:CompositeCoverter>
 
     <local:EmpytToVisibilityConverter x:Key="empytToVisibilityConverter"/>
+    <local:BoolToThicknessConverter x:Key="boolToThicknessConverter"/>
 
 </ResourceDictionary>
