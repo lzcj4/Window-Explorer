@@ -553,7 +553,7 @@ namespace FileExplorer.ViewTest
                 adornerLayer = AdornerLayer.GetAdornerLayer(resizeElement);
                 adornerLayer.Add(new ResizingAdorner(resizeElement));
                 isResizeSelected = true;
-                e.Handled = true;
+                // e.Handled = true;
             }
 
             #endregion
@@ -577,8 +577,13 @@ namespace FileExplorer.ViewTest
             if (resizeElement != null)
             {
                 // Remove the adorner from the selected element
-                adornerLayer.Remove(adornerLayer.GetAdorners(resizeElement)[0]);
-                resizeElement = null;
+                var ad = adornerLayer.GetAdorners(resizeElement);
+                if (!ad.IsNullOrEmpty())
+                {
+                    adornerLayer.Remove(ad[0]);
+                    resizeElement = null;
+                }
+
             }
         }
 

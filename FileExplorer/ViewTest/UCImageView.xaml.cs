@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileExplorer.ViewModel;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,22 +15,23 @@ namespace FileExplorer.ViewTest
         public event EventHandler OnMaxClick;
         public event EventHandler OnCloseClick;
 
+
+
         public ImageItem ViewModel { get { return this.DataContext as ImageItem; } }
 
         public UCImageView()
         {
             InitializeComponent();
-            
-            this.MouseDoubleClick += UCImageView_MouseDoubleClick;
-        }      
 
+            this.MouseDoubleClick += UCImageView_MouseDoubleClick;
+        }
+        
         private void btnMin_Click(object sender, RoutedEventArgs e)
         {
             if (null != OnMinClick)
             {
                 OnMinClick(this, EventArgs.Empty);
             }
-
         }
 
         private void btnMax_Click(object sender, RoutedEventArgs e)
@@ -48,11 +50,11 @@ namespace FileExplorer.ViewTest
             }
         }
 
-        private void UCImageView_MouseDoubleClick(object sender,MouseButtonEventArgs e)
+        private void UCImageView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (null != OnMaxClick)
+            if (null != OnCloseClick)
             {
-                OnMaxClick(this, EventArgs.Empty);
+                OnCloseClick(this, EventArgs.Empty);
             }
         }
 

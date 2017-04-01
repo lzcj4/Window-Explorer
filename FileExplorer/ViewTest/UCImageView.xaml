@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FileExplorer.ViewTest"
+             xmlns:ap="clr-namespace:FileExplorer.Helper"
              mc:Ignorable="d" 
              x:Name="ucImage"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -34,8 +35,6 @@
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-
-
                                 
                                 <Grid Grid.Row="0"  Background="LightBlue"  Name="gridTitle" >
                                     <Grid.ColumnDefinitions>
@@ -49,21 +48,29 @@
 
                                     <Grid Grid.Column="1" HorizontalAlignment="Right">
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" >
-                                            <Button Name="btnMin" Click="btnMin_Click">
-                                                <Button.Content>
-                                                    <Image  Source="{DynamicResource action_min}" Width="16" Height="16"/>
-                                                </Button.Content>
-                                            </Button>
-                                            <Button Name="btnMax" Click="btnMax_Click">
-                                                <Button.Content>
-                                                    <Image   Source="{DynamicResource action_max}" Width="16" Height="16"/>
-                                                </Button.Content>
-                                            </Button>
-                                            <Button Name="btnClose" Click="btnClose_Click" >
-                                                <Button.Content>
-                                                    <Image   Source="{DynamicResource action_close}" Width="16" Height="16"/>
-                                                </Button.Content>
-                                            </Button>
+                                            <Button Name="btnMin" Click="btnMin_Click" 
+                                                    Style="{DynamicResource MultiIconButtonStyle}"
+                                                    ap:UIAttachedProp.IconWidth="24"
+                                                    ap:UIAttachedProp.IconHeight="24"
+                                                    ap:UIAttachedProp.DefaultIcon="{DynamicResource action_min}"
+                                                    ap:UIAttachedProp.MouseOverIcon="{DynamicResource action_min_over}"
+                                                    ap:UIAttachedProp.PressedIcon="{DynamicResource action_min_pressed}"/>
+                                            
+                                            <Button Name="btnMax" Click="btnMax_Click"  
+                                                    Style="{DynamicResource MultiIconButtonStyle}"
+                                                    ap:UIAttachedProp.IconWidth="24"
+                                                    ap:UIAttachedProp.IconHeight="24"
+                                                    ap:UIAttachedProp.DefaultIcon="{DynamicResource action_max}"
+                                                    ap:UIAttachedProp.MouseOverIcon="{DynamicResource action_max_over}"
+                                                    ap:UIAttachedProp.PressedIcon="{DynamicResource action_max_pressed}"/>
+                                            
+                                            <Button Name="btnClose" Click="btnClose_Click" 
+                                                    Style="{DynamicResource MultiIconButtonStyle}"
+                                                    ap:UIAttachedProp.IconWidth="24"
+                                                    ap:UIAttachedProp.IconHeight="24"
+                                                    ap:UIAttachedProp.DefaultIcon="{DynamicResource action_exit}"
+                                                    ap:UIAttachedProp.MouseOverIcon="{DynamicResource action_exit_over}"
+                                                    ap:UIAttachedProp.PressedIcon="{DynamicResource action_exit_pressed}"/>
 
                                         </StackPanel>
                                     </Grid>

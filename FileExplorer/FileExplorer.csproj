@@ -449,9 +449,6 @@
     <Resource Include="Resources\Icons\add.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons\exit.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons\add_default.png" />
     <Resource Include="Resources\Icons\add_pressed.png" />
   </ItemGroup>
@@ -460,8 +457,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\exit.png" />
+    <Resource Include="Resources\Icons\exitOver.png" />
+    <Resource Include="Resources\Icons\exitPressed.png" />
     <Resource Include="Resources\Icons\max.png" />
+    <Resource Include="Resources\Icons\maxOver.png" />
+    <Resource Include="Resources\Icons\maxPressed.png" />
     <Resource Include="Resources\Icons\min.png" />
+    <Resource Include="Resources\Icons\minOver.png" />
+    <Resource Include="Resources\Icons\minPressed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
