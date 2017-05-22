@@ -124,5 +124,9 @@
         <control:UCListView  Margin="573,50,99,0" Height="221" VerticalAlignment="Top" />
         <control:UCImage Width="300" Height="300" Margin="158,186,888,91" />
 
+        <!--<control:TiangleMeasure Height="257" Margin="573,0,426,44" VerticalAlignment="Bottom"/>-->
+        <control:UCAngle Height="257" Margin="573,0,426,44" VerticalAlignment="Bottom"/>
+        <control:UCRect Margin="487,236,609,91" />
+
     </Grid>
 </Window>

@@ -29,6 +29,7 @@ namespace FileExplorer.ViewModel
 
         public void LoadViews()
         {
+            //regionManager.AddToRegion(ViewRegions.Region_Top, new UCMain());
             regionManager.AddToRegion(ViewRegions.Region_Top, new UCView());
             // regionManager.AddToRegion(ViewRegions.Region_Top, new UCConfCategoryGroup());
         }

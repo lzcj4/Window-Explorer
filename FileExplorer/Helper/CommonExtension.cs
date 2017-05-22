@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
@@ -125,7 +124,51 @@ namespace FileExplorer.Helper
             if ((parent is T) && (parent as T).Name == name)
                 return parent as T;
             else
-                return TryFindParent<T>(parent);
+                return TryFindParent<T>(parent, name);
+        }
+
+        public static T TryFindChild<T>(this DependencyObject current) where T : DependencyObject
+        {
+            if (current.IsNull())
+            {
+                return null;
+            }
+            int count = VisualTreeHelper.GetChildrenCount(current);
+
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(current, i);
+                if (child.IsNull())
+                    return null;
+
+                if (child is T)
+                    return child as T;
+                else
+                    return TryFindChild<T>(child);
+            }
+            return null;
+        }
+
+        public static T TryFindChild<T>(this DependencyObject current, string name) where T : FrameworkElement
+        {
+            if (current.IsNull())
+            {
+                return null;
+            }
+            int count = VisualTreeHelper.GetChildrenCount(current);
+
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(current, i);
+                if (child.IsNull())
+                    return null;
+
+                if ((child is T) && (child as T).Name == name)
+                    return child as T;
+                else
+                    return TryFindChild<T>(child);
+            }
+            return null;
         }
     }
 }

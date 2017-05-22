@@ -1,10 +1,12 @@
 ﻿using FileExplorer.Helper;
 using FileExplorer.ViewModel;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Media.Animation;
 
 namespace FileExplorer
 {
+    [Export]
     /// <summary>
     /// Interaction logic for Test.xaml
     /// </summary>

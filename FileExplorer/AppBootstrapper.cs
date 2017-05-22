@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Prism.MefExtensions;
+﻿using FileExplorer.ViewTest;
+using Microsoft.Practices.Prism.MefExtensions;
 using Microsoft.Practices.ServiceLocation;
 using System.ComponentModel.Composition.Hosting;
 using System.Windows;
@@ -9,7 +10,8 @@ namespace FileExplorer
     {
         protected override DependencyObject CreateShell()
         {
-            return ServiceLocator.Current.GetInstance<ShellView>();
+           // return ServiceLocator.Current.GetInstance<ShellView>();
+            return ServiceLocator.Current.GetInstance<Test>();
         }
 
         protected override void ConfigureAggregateCatalog()

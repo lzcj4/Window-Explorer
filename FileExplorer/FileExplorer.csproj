@@ -93,6 +93,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Controls\UCAngle.xaml.cs">
+      <DependentUpon>UCAngle.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UCConfBase.cs" />
     <Compile Include="Controls\UCConfCategoryGroup.xaml.cs">
       <DependentUpon>UCConfCategoryGroup.xaml</DependentUpon>
@@ -126,6 +129,9 @@
     </Compile>
     <Compile Include="Controls\UCConfTextBox.xaml.cs">
       <DependentUpon>UCConfTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UCRect.xaml.cs">
+      <DependentUpon>UCRect.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\AndConverter.cs" />
     <Compile Include="Converter\BooleanReserveConverter.cs" />
@@ -176,6 +182,7 @@
     <Compile Include="TestDataGrid.xaml.cs">
       <DependentUpon>TestDataGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TiangleMeasure.cs" />
     <Compile Include="UCContent.xaml.cs">
       <DependentUpon>UCContent.xaml</DependentUpon>
     </Compile>
@@ -228,6 +235,9 @@
     <Compile Include="ViewTest\IDropHandler.cs" />
     <Compile Include="ViewTest\IDropTarget.cs" />
     <Compile Include="ViewTest\ImageItem.cs" />
+    <Compile Include="ViewTest\ImageTest.xaml.cs">
+      <DependentUpon>ImageTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewTest\ImageViewModel.cs" />
     <Compile Include="ViewTest\ItemsControlExtensions.cs" />
     <Compile Include="ViewTest\PanAndZoom.cs" />
@@ -239,11 +249,18 @@
     <Compile Include="ViewTest\UCImageGroupView.xaml.cs">
       <DependentUpon>UCImageGroupView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewTest\UCMain.xaml.cs">
+      <DependentUpon>UCMain.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewTest\UCView.xaml.cs">
       <DependentUpon>UCView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewTest\VisualTreeExtensions.cs" />
     <Compile Include="WinApi.cs" />
+    <Page Include="Controls\UCAngle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\UCConfCategoryGroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -281,6 +298,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UCConfTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UCRect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -340,10 +361,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Theme\cn\Color.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Theme\cn\Style.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -380,11 +397,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ViewTest\ImageTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ViewTest\UCImageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ViewTest\UCImageGroupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewTest\UCMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
