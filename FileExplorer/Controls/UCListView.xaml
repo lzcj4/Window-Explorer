@@ -94,7 +94,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0">
-                                <Image Source="d://img//1.png" 
+                                <Image  
                                        Width="{Binding Path=(local:UCListView.ImageWidth), 
                                        RelativeSource={RelativeSource AncestorType={x:Type ListView},Mode=FindAncestor}}"  
                                        Height="{Binding Path=(local:UCListView.ImageHeight), 

@@ -10,8 +10,9 @@ namespace FileExplorer
     {
         protected override DependencyObject CreateShell()
         {
-           // return ServiceLocator.Current.GetInstance<ShellView>();
-            return ServiceLocator.Current.GetInstance<Test>();
+            return ServiceLocator.Current.GetInstance<MainWindow>();
+            //return ServiceLocator.Current.GetInstance<ShellView>();
+            //return ServiceLocator.Current.GetInstance<Test>();
         }
 
         protected override void ConfigureAggregateCatalog()

@@ -28,8 +28,8 @@ namespace FileExplorer
               new Uri("/FileExplorer;component/Style/RadioButtonStyle.xaml", UriKind.RelativeOrAbsolute)
             });
             
-            AppBootstrapper bootstrapper = new AppBootstrapper();
-            bootstrapper.Run();
+            //AppBootstrapper bootstrapper = new AppBootstrapper();
+            //bootstrapper.Run();
         }
 
     }
