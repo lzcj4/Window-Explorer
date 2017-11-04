@@ -108,7 +108,7 @@ namespace HttpFileUploader
             }
             int readLen = this.FileStream.Read(buffer, offset, count);
             m_readLen += readLen;
-            //  Debug.WriteLine("Read :{0}".StrFormat(m_readLen));
+            Debug.WriteLine("Read :{0}".StrFormat(m_readLen));
             return readLen;
         }
 

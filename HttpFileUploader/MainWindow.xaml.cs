@@ -25,7 +25,6 @@ namespace HttpFileUploader
         public MainWindow()
         {
             InitializeComponent();
-            TestFileRead();
             this.DataContext = new UploadViewModel();
         }
 

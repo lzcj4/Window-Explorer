@@ -62,7 +62,7 @@
     <Compile Include="CommonExtension.cs" />
     <Compile Include="GenericCommand.cs" />
     <Compile Include="Http\ChunkFileStream.cs" />
-    <Compile Include="Http\MyHttp.cs" />
+    <Compile Include="Http\FileHttp.cs" />
     <Compile Include="Http\HttpBase.cs" />
     <Compile Include="Http\ShareReadFileApi.cs" />
     <Compile Include="Http\UploadManager.cs" />
