@@ -108,7 +108,7 @@ namespace HttpFileUploader
             }
             int readLen = this.FileStream.Read(buffer, offset, count);
             m_readLen += readLen;
-            Debug.WriteLine("Read :{0}".StrFormat(m_readLen));
+            Debug.WriteLine("Read :{0} bytes, thread:{1}".StrFormat(m_readLen,Thread.CurrentThread.ManagedThreadId));
             return readLen;
         }
 
@@ -138,6 +138,11 @@ namespace HttpFileUploader
         long m_readasyncLen = 0;
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
+            if (this.Position + count >= this.LastIndex)
+            {
+                count = (int)(this.LastIndex + 1 - this.Position);
+                count = count < 0 ? 0 : count;
+            }
             var result = this.FileStream.ReadAsync(buffer, offset, count, cancellationToken);
             m_readasyncLen += result.Result;
             // Debug.WriteLine("ReadAsync :{0}".StrFormat(m_readasyncLen));

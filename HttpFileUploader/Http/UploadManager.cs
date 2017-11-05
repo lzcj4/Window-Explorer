@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttpFileUploader
 {
-    class FileChunkItem
+    public class FileChunkItem
     {
         public string Name { get; set; }
         public int Num { get; set; }
@@ -47,8 +47,8 @@ namespace HttpFileUploader
             if (fileSize < 0.1 * GB)
             {
                 //return UploadFile(url, filePath);
-                ChunkFileStream stream = new ChunkFileStream(filePath, 0, fileSize);
-                return UploadFile(url, folderName, fileFullName, 0, stream);
+                ChunkFileStream stream = new ChunkFileStream(filePath, -1, fileSize);
+                return UploadFile(url, folderName,new FileChunkItem(fileFullName,0,fileSize), stream);
             }
             else
             {
@@ -70,9 +70,10 @@ namespace HttpFileUploader
                         {
                             stream = new ChunkFileStream(filePath, j * chunk, chunk);
                         }
-                        fileList.Add(new FileChunkItem(fileFullName, j, stream.Length));
-                        MyHttp client = new MyHttp();
-                        return client.Upload(url, folderName, fileName, j, stream);
+                        var fileItem = new FileChunkItem(fileFullName, j, stream.Length);
+                        fileList.Add(fileItem);
+                        ChunkFileHttp client = new ChunkFileHttp();
+                        return client.Upload(url, folderName, fileItem, stream);
                     });
                     list.Add(t);
                 }
@@ -80,7 +81,7 @@ namespace HttpFileUploader
                 bool[] resultList = Task.WhenAll<bool>(list).Result;
                 if (resultList.All(item => { return item; }))
                 {
-                    FileMerge(folderName, fileFullName,fileList);
+                    FileMerge(folderName, fileFullName, fileList);
                 }
                 return true;
             }
@@ -88,23 +89,23 @@ namespace HttpFileUploader
 
         private bool UploadFile(string url, string filePath)
         {
-            MyHttp client = new MyHttp();
+            ChunkFileHttp client = new ChunkFileHttp();
             return client.Upload(url, filePath);
         }
 
         private bool UploadFile(string url, string fileName, Stream stream)
         {
-            MyHttp client = new MyHttp();
+            ChunkFileHttp client = new ChunkFileHttp();
             return client.UploadEx(url, fileName, stream);
         }
 
-        private bool UploadFile(string url, string folderName, string fileName, int fileNum, Stream stream)
+        private bool UploadFile(string url, string folderName, FileChunkItem fileItem, Stream stream)
         {
-            MyHttp client = new MyHttp();
-            return client.Upload(url, folderName, fileName, fileNum, stream);
+            ChunkFileHttp client = new ChunkFileHttp();
+            return client.Upload(url, folderName, fileItem, stream);
         }
 
-        private bool FileMerge(string folderName,string fileName,IList<FileChunkItem> list)
+        private bool FileMerge(string folderName, string fileName, IList<FileChunkItem> list)
         {
             JArray jArray = new JArray();
             foreach (var item in list)
@@ -118,7 +119,7 @@ namespace HttpFileUploader
             job["foldername"] = folderName;
             job["filename"] = fileName;
             job["files"] = jArray;
-            MyHttp client = new MyHttp();
+            ChunkFileHttp client = new ChunkFileHttp();
             return client.Merge("http://127.0.0.1:8000/file/merge/", job.ToString());
         }
     }

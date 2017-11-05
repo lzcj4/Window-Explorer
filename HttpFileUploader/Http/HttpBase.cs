@@ -11,6 +11,8 @@ namespace HttpFileUploader
 {
     public abstract class HttpBase
     {
+        protected const int timeout = 10 * 60 * 1000;
+
         CookieContainer Cookie { get; set; }
         public HttpBase()
         {
@@ -34,19 +36,27 @@ namespace HttpFileUploader
             request.CookieContainer = this.Cookie;
         }
 
-        public HttpWebRequest GetRequest(string url)
+        protected HttpWebRequest CreateRequest(string url, HttpMethod method)
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.Method = "GET";
+            request.Method = method.Method;
+            return request;
+        }
+
+        public HttpWebRequest GetRequest(string url)
+        {
+            HttpWebRequest request = CreateRequest(url, HttpMethod.Get);
             SetHttpHeader(request);
             return request;
         }
 
         public HttpWebRequest PostRequest(string url, string content)
         {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.Method = "POST";
+            HttpWebRequest request = CreateRequest(url, HttpMethod.Post);
             SetHttpHeader(request);
+            request.Timeout = timeout;
+            request.ReadWriteTimeout = timeout;
+            request.Proxy = WebProxy.GetDefaultProxy();
             using (StreamWriter sw = new StreamWriter(request.GetRequestStream()))
             {
                 sw.Write(content);
@@ -72,8 +82,7 @@ namespace HttpFileUploader
 
         public bool Upload(string url, string fileName, Stream fileStream)
         {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.Method = "POST";
+            HttpWebRequest request = CreateRequest(url, HttpMethod.Post);
             Guid guid = new Guid();
             string boundary = "----{0}".StrFormat(guid);
             request.ContentType = "multipart/form-data; boundary=" + boundary;
@@ -86,7 +95,7 @@ namespace HttpFileUploader
             var footerBytes = Encoding.UTF8.GetBytes("\r\n{0}".StrFormat(boundary));
             request.ContentLength = fileHeaderBytes.Length + fileStream.Length + footerBytes.Length;
 
-            byte[] buffer = new byte[4000];
+            byte[] buffer = new byte[4 * 1024];
             request.Proxy = WebProxy.GetDefaultProxy();
             using (Stream stream = request.GetRequestStream())
             {

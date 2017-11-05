@@ -3,42 +3,49 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 
 namespace HttpFileUploader
 {
-    public class MyHttp : HttpBase
+    public class ChunkFileHttp : HttpBase
     {
-        public bool Upload(string url, string folderName, string fileName, int fileNum, Stream fileStream)
+        private const int timeout = 10 * 60 * 1000;
+        public bool Upload(string url, string folderName,FileChunkItem fileItem, Stream fileStream)
         {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            HttpWebRequest request = CreateRequest(url, HttpMethod.Post);
             //request.SendChunked = true;
             request.AllowWriteStreamBuffering = false;
-            request.Method = "POST";
+            request.Timeout = timeout;
+            request.ReadWriteTimeout = timeout;
+            request.Proxy = WebProxy.GetDefaultProxy();
             Guid guid = new Guid();
             string boundary = "----{0}".StrFormat(guid);
             request.ContentType = "multipart/form-data; boundary=" + boundary;
             boundary = "------{0}\r\n".StrFormat(guid);
             string folderNameHeader = "\r\n{0}Content-Disposition: form-data; name=\"foldername\"\r\n\r\n{1}".StrFormat(boundary, folderName);
-            string fileNameHeader = "\r\n{0}Content-Disposition: form-data; name=\"filenum\"\r\n\r\n{1}".StrFormat(boundary, fileNum);
+            string fileNameHeader = "\r\n{0}Content-Disposition: form-data; name=\"filenum\"\r\n\r\n{1}".StrFormat(boundary, fileItem.Num);
+            string fileLenHeader = "\r\n{0}Content-Disposition: form-data; name=\"filelen\"\r\n\r\n{1}".StrFormat(boundary, fileItem.Len);
 
             string fileHeader = ("\r\n{0}Content-Disposition: form-data; name=\"file\";filename=\"{1}\"\r\n" +
                                   "Content-Type: application/octet-stream\r\n\r\n")
-                                  .StrFormat(boundary, fileName);
+                                  .StrFormat(boundary, fileItem.Name);
             var folderNameHeaderBytes = Encoding.UTF8.GetBytes(folderNameHeader);
             var fileNameHeaderBytes = Encoding.UTF8.GetBytes(fileNameHeader);
+            var fileNameLenBytes = Encoding.UTF8.GetBytes(fileLenHeader);
             byte[] fileHeaderBytes = Encoding.UTF8.GetBytes(fileHeader);
             var footerBytes = Encoding.UTF8.GetBytes("\r\n{0}".StrFormat(boundary));
-            request.ContentLength = folderNameHeaderBytes.Length + fileNameHeaderBytes.Length +
+            request.ContentLength = folderNameHeaderBytes.Length + fileNameHeaderBytes.Length + fileNameLenBytes.Length+
                                     fileHeaderBytes.Length + fileStream.Length + footerBytes.Length;
-
-            byte[] buffer = new byte[256 * 1024];
+        
+            byte[] buffer = new byte[512 * 1024];
             // request.Proxy = WebProxy.GetDefaultProxy();
             using (Stream stream = request.GetRequestStream())
             {
                 stream.Write(folderNameHeaderBytes, 0, folderNameHeaderBytes.Length);
                 stream.Write(fileNameHeaderBytes, 0, fileNameHeaderBytes.Length);
                 stream.Write(fileHeaderBytes, 0, fileHeaderBytes.Length);
+                stream.Write(fileNameLenBytes, 0, fileNameLenBytes.Length);
                 using (fileStream)
                 {
                     int len = 0;
@@ -59,7 +66,7 @@ namespace HttpFileUploader
                     Debug.WriteLine(uploadResult);
                     JObject jObj = JObject.Parse(uploadResult);
 
-                    return jObj["msg"].ToString() == "succeed";
+                    return jObj["code"].ToString() == "200";
                 }
             }
         }
