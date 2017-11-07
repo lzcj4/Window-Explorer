@@ -1,17 +1,73 @@
 ﻿using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace HttpFileUploader
 {
+    public class FileItem : ViewModelBase
+    {
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            set { SetProperty(ref filePath, value, "FilePath"); }
+        }
+
+        public string FileName
+        {
+            get { return Path.GetFileName(this.FilePath); }
+        }
+
+        private double progress;
+        public double Progress
+        {
+            get { return progress; }
+            set { SetProperty(ref progress, value, "Progress"); }
+        }
+
+        public FileItem(string filePath)
+        {
+            this.FilePath = filePath;
+        }
+    }
+
     class UploadViewModel : ViewModelBase
     {
+        private string webHost = "127.0.0.1:8000";
+        public string WebHost
+        {
+            get { return webHost; }
+            set { SetProperty(ref webHost, value, "WebHost"); }
+        }
+
         private string filePath;
 
         public string FilePath
         {
             get { return filePath; }
             set { SetProperty(ref filePath, value, "FilePath"); }
+        }
+
+
+        /// <summary>
+        /// Use for file item location
+        /// </summary>
+        IDictionary<string, FileItem> fileDict = new Dictionary<string, FileItem>();
+
+        private ObservableCollection<FileItem> items = new ObservableCollection<FileItem>();
+        public ObservableCollection<FileItem> Items
+        {
+            get { return items; }
+        }
+
+        public ICollectionView ItemsView
+        {
+            get { return CollectionViewSource.GetDefaultView(this.Items); }
         }
 
         public ICommand OpenCommand
@@ -43,15 +99,29 @@ namespace HttpFileUploader
                     CanExecuteCallback = (obj) => { return true; },
                     ExecuteCallback = (obj) =>
                     {
-                        if (File.Exists(this.FilePath))
+                        if (!File.Exists(this.FilePath))
                         {
-                            //MyHttp http = new MyHttp();
-                            //http.Upload("http://127.0.0.1:8000/file/upload/", this.FilePath);
-
-                            UploadManager uploader = new UploadManager();
-                            //uploader.Upload("http://172.16.4.166:8000/file/upload/", this.FilePath);
-                            uploader.Upload("http://127.0.0.1:8000/file/upload/", this.FilePath);
+                            return;
                         }
+
+                        UploadManager uploader = new UploadManager(this.WebHost);
+                        uploader.OnUploading += (sender, e) =>
+                        {
+                            FileItem fileItem;
+                            if (this.fileDict.TryGetValue(e.FilePath, out fileItem))
+                            {
+                                this.RunOnUIThreadAsync(() =>
+                                {
+                                    fileItem.Progress = 100.0 * e.ReadLen / e.Len;
+                                });
+                            }
+                        };
+
+                        FileItem item = new FileItem(this.FilePath);
+                        fileDict[this.FilePath] = item;
+                        this.Items.Add(item);
+
+                        Task.Run(() => { uploader.Upload(this.FilePath); });
                     }
                 };
             }

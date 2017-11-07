@@ -66,6 +66,11 @@
     <Compile Include="Http\HttpBase.cs" />
     <Compile Include="Http\ShareReadFileApi.cs" />
     <Compile Include="Http\UploadManager.cs" />
+    <Compile Include="Tasks\IDictionary.cs" />
+    <Compile Include="Tasks\PriorityQueue.cs" />
+    <Compile Include="Tasks\TaskBase.cs" />
+    <Compile Include="Tasks\TaskGroup.cs" />
+    <Compile Include="Tasks\TaskScheduler.cs" />
     <Compile Include="UploadViewModel.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
