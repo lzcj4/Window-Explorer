@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HttpFileUploader.Tasks
 {
@@ -35,9 +32,9 @@ namespace HttpFileUploader.Tasks
 
         public ITask Dequeue(TaskPriority priority)
         {
+            ITask result = null;
             var queue = TaskDic[priority];
-            ITask result = queue.Peek();
-            if (!result.IsNull())
+            if (!queue.IsNullOrEmpty())
             {
                 result = queue.Dequeue();
             }

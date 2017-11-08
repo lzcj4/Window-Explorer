@@ -6,49 +6,73 @@ using System.Threading.Tasks;
 
 namespace HttpFileUploader.Tasks
 {
-    public interface ITask
+    public interface ITask : IDisposable
     {
+        TaskGroup Group { get; set; }
         TaskPriority Priority { get; set; }
+
         bool IsCompleted { get; set; }
 
         void Load();
 
         void Run();
 
+        void Pause();
+
+        void Stop();
+
         void UnLoad();
     }
 
     public abstract class TaskBase : ITask
     {
+        public TaskGroup Group { get; set; }
+
         public TaskPriority Priority { get; set; }
 
-        public bool IsCompleted
+        public bool IsCompleted { get; set; }
+
+        public virtual void Load()
         {
-            get
+        }
+
+        public virtual void Run()
+        {
+        }
+
+        public virtual void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void Stop()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void UnLoad()
+        {
+        }
+
+
+        #region IDisposable
+
+        private bool isDisposed = false;
+        public void Dispose()
+        {
+            if (this.isDisposed)
             {
-                throw new NotImplementedException();
+                return;
             }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
+            this.isDisposed = true;
+            OnDisposing(this.isDisposed);
         }
 
-        public void Load()
+        protected virtual void OnDisposing(bool isDisposed)
         {
-            throw new NotImplementedException();
         }
 
-        public void Run()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UnLoad()
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 
 }

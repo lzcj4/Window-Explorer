@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using HttpTasks = HttpFileUploader.Tasks;
 
 namespace HttpFileUploader
 {
@@ -103,8 +104,8 @@ namespace HttpFileUploader
                         {
                             return;
                         }
-
-                        UploadManager uploader = new UploadManager(this.WebHost);
+                        HttpFactory.Instance.WebHost = this.WebHost;
+                        UploadManager uploader = new UploadManager();
                         uploader.OnUploading += (sender, e) =>
                         {
                             FileItem fileItem;
@@ -112,7 +113,7 @@ namespace HttpFileUploader
                             {
                                 this.RunOnUIThreadAsync(() =>
                                 {
-                                    fileItem.Progress = 100.0 * e.ReadLen / e.Len;
+                                    fileItem.Progress = 100.0 * e.Progress / e.Len;
                                 });
                             }
                         };
@@ -121,7 +122,10 @@ namespace HttpFileUploader
                         fileDict[this.FilePath] = item;
                         this.Items.Add(item);
 
-                        Task.Run(() => { uploader.Upload(this.FilePath); });
+                        //Task.Run(() => { uploader.Upload(this.FilePath); });
+
+                        HttpTasks.TaskScheduler.Instance.Run();
+                        HttpTasks.TaskScheduler.Instance.AddFile(this.FilePath);
                     }
                 };
             }

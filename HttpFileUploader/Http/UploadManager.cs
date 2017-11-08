@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using HttpFileUploader.Util;
 
 namespace HttpFileUploader
 {
@@ -15,7 +16,7 @@ namespace HttpFileUploader
 
         public int ChunkCount { get; set; }
         public int ChunkNo { get; set; }
-        public long FileLen { get; set; }
+        public long ChunkLen { get; set; }
 
         /// <summary>
         /// File chunk stream 
@@ -27,10 +28,10 @@ namespace HttpFileUploader
 
         }
 
-        public FileChunkItem(string folderName, string fileName, string destFileName,
+        public FileChunkItem(string folderName, string fileName,
             int chunkCount, int chunkNo, long fileLen, Stream stream)
         {
-            if (folderName.IsNullOrEmpty() || fileName.IsNullOrEmpty() || destFileName.IsNullOrEmpty() ||
+            if (folderName.IsNullOrEmpty() || fileName.IsNullOrEmpty() ||
                 chunkCount < 0 || chunkNo < 0 || fileLen < 0 ||
                 stream.IsNull())
             {
@@ -38,8 +39,8 @@ namespace HttpFileUploader
             }
             this.FolderName = folderName;
             this.FileName = fileName;
-            this.FileLen = fileLen;
-            this.DestFileName = destFileName;
+            this.ChunkLen = fileLen;
+            this.DestFileName = "{0}.tmp".StrFormat(chunkNo);
             this.ChunkCount = chunkCount;
             this.ChunkNo = chunkNo;
 
@@ -51,7 +52,7 @@ namespace HttpFileUploader
             JObject result = new JObject();
             result[ChunkFileHttp.FOLDERNAME] = this.FolderName;
             result[ChunkFileHttp.FILENAME] = this.FileName;
-            result[ChunkFileHttp.FILELEN] = this.FileLen;
+            result[ChunkFileHttp.CHUNK_LEN] = this.ChunkLen;
             result[ChunkFileHttp.CHUNK_COUNT] = this.ChunkCount;
             result[ChunkFileHttp.CHUNK_NO] = this.ChunkNo;
 
@@ -70,41 +71,38 @@ namespace HttpFileUploader
     public class FileUploadProgressEventArgs : EventArgs
     {
         public string FilePath { get; set; }
-        public long Len { get; set; }
-        public double ReadLen { get; set; }
 
-        public FileUploadProgressEventArgs(string filePath, long size, double readLen)
+        /// <summary>
+        /// Current file length
+        /// </summary>
+        public long Len { get; set; }
+
+        /// <summary>
+        /// Total read bytes
+        /// </summary>
+        public long Progress { get; set; }
+
+        public FileUploadProgressEventArgs(string filePath, long len, long progress)
         {
             if (filePath.IsNullOrEmpty() ||
-                 size < 0 || readLen < 0 || readLen > size)
+                 len < 0 || progress < 0 || progress > len)
             {
                 throw new ArgumentException();
             }
             this.FilePath = filePath;
-            this.Len = size;
-            this.ReadLen = readLen;
+            this.Len = len;
+            this.Progress = progress;
         }
     }
 
     class UploadManager
     {
-        private const int threadCount = 4;
-        private const int KB = 1024;
-        private const int MB = KB * KB;
-        private const int GB = KB * MB;
-
         public event EventHandler<FileUploadProgressEventArgs> OnUploading;
-        public string WebHost { get; set; }
-
-        public UploadManager(string webHost)
-        {
-            this.WebHost = webHost;
-        }
 
         public IDictionary<string, long> Query(string filePath)
         {
-            ChunkFileHttp client = new ChunkFileHttp(this.WebHost);
-            return client.Query(filePath);
+            ChunkFileHttp client = HttpFactory.Instance.GetChunkHttp();
+            return client.List(filePath);
         }
 
         private bool CheckFileIsUpload(IDictionary<string, long> dict, string fileName, long fileSize)
@@ -115,18 +113,18 @@ namespace HttpFileUploader
 
         private bool UploadFile(IDictionary<string, long> dict, FileChunkItem item)
         {
-            if (this.CheckFileIsUpload(dict, item.DestFileName, item.FileLen))
+            if (this.CheckFileIsUpload(dict, item.DestFileName, item.ChunkLen))
             {
                 return true;
             }
-            ChunkFileHttp client = new ChunkFileHttp(this.WebHost);
+            ChunkFileHttp client = HttpFactory.Instance.GetChunkHttp();
             client.OnUploading += (sender, e) =>
             {
                 lock (this)
                 {
                     this.ReadLen += e.ReadLen;
                 }
-                RainOnUploading(this.ReadLen);
+                RaiseOnUploading(this.ReadLen);
             };
             return client.Upload(item);
         }
@@ -135,7 +133,7 @@ namespace HttpFileUploader
         private long FileSize { get; set; }
         private long ReadLen { get; set; }
 
-        private void RainOnUploading(long progress)
+        private void RaiseOnUploading(long progress)
         {
             var uploadEvent = this.OnUploading;
             if (!uploadEvent.IsNull())
@@ -164,20 +162,23 @@ namespace HttpFileUploader
             IDictionary<string, long> existedFileDict = Query(folderName);
 
             //100MB
-            if (FileSize < 0.1 * GB)
+            if (FileSize < 0.1 *GlobalConst.GB)
             {
                 ChunkFileStream stream = new ChunkFileStream(filePath, 0, FileSize);
-                return UploadFile(existedFileDict, new FileChunkItem(folderName, fileFullName, fileFullName, 1, 0, FileSize, stream));
+                return UploadFile(existedFileDict, 
+                    new FileChunkItem(folderName, fileFullName, 1, 0, FileSize, stream) { DestFileName = fileFullName }
+                );
             }
             else
             {
                 IList<FileChunkItem> fileList = new List<FileChunkItem>();
                 IList<Task<bool>> list = new List<Task<bool>>();
-                long chunkLen = FileSize / threadCount;
-                for (int i = 0; i < threadCount; i++)
+                int chunkCount = GlobalConst.ThreadCount;
+                long chunkLen = FileSize / chunkCount;
+                for (int i = 0; i < chunkCount; i++)
                 {
                     ChunkFileStream stream = null;
-                    if (i == threadCount - 1)
+                    if (i == chunkCount - 1)
                     {
                         long startOffset = i * chunkLen;
                         stream = new ChunkFileStream(filePath, startOffset, FileSize - startOffset);
@@ -186,7 +187,7 @@ namespace HttpFileUploader
                     {
                         stream = new ChunkFileStream(filePath, i * chunkLen, chunkLen);
                     }
-                    var fileItem = new FileChunkItem(folderName, fileFullName, "{0}.tmp".StrFormat(i), threadCount, i, stream.Length, stream);
+                    var fileItem = new FileChunkItem(folderName, fileFullName, chunkCount, i, stream.Length, stream);
                     fileList.Add(fileItem);
 
                     Task<bool> t = Task.Run<bool>(() =>
@@ -222,7 +223,7 @@ namespace HttpFileUploader
             job[ChunkFileHttp.FILENAME] = fileName;
             job[ChunkFileHttp.FILE_INFOS] = jArray;
             ChunkFileHttp client = new ChunkFileHttp();
-            return client.Merge(job.ToString());
+            return client.Concat(job.ToString());
         }
     }
 }

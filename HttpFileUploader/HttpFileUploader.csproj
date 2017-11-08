@@ -64,14 +64,17 @@
     <Compile Include="Http\ChunkFileStream.cs" />
     <Compile Include="Http\ChunkFileHttp.cs" />
     <Compile Include="Http\HttpBase.cs" />
+    <Compile Include="Http\HttpFactory.cs" />
     <Compile Include="Http\ShareReadFileApi.cs" />
     <Compile Include="Http\UploadManager.cs" />
+    <Compile Include="Tasks\ChunkUploadTask.cs" />
     <Compile Include="Tasks\IDictionary.cs" />
     <Compile Include="Tasks\PriorityQueue.cs" />
     <Compile Include="Tasks\TaskBase.cs" />
     <Compile Include="Tasks\TaskGroup.cs" />
     <Compile Include="Tasks\TaskScheduler.cs" />
     <Compile Include="UploadViewModel.cs" />
+    <Compile Include="Util\GlobalConst.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
