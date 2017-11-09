@@ -45,6 +45,8 @@ namespace HttpFileUploader.Tasks
             throw new NotImplementedException();
         }
 
+        protected bool isRunning = true;
+             
         public virtual void Stop()
         {
             throw new NotImplementedException();

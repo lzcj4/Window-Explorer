@@ -1,5 +1,7 @@
 ﻿using HttpFileUploader.Util;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace HttpFileUploader.Tasks
@@ -16,8 +18,9 @@ namespace HttpFileUploader.Tasks
             }
         }
 
+        public event EventHandler<FileUploadProgressEventArgs> OnUploading;
+
         private object lockObj = new object();
-        private AutoResetEvent taskResetEvent = new AutoResetEvent(true);
 
         private bool isRunning = true;
         private PriorityQueue TaskQueue { get; set; }
@@ -36,69 +39,63 @@ namespace HttpFileUploader.Tasks
 
         private ITask Dequeue()
         {
-            ITask result = null;
-
-            TaskPriority[] priorities = { TaskPriority.High, TaskPriority.Noraml, TaskPriority.Low };
-            foreach (var item in priorities)
+            lock (this.lockObj)
             {
-                result = this.TaskQueue.Dequeue(item);
-                if (!result.IsNull())
+                ITask result = null;
+                TaskPriority[] priorities = { TaskPriority.High, TaskPriority.Noraml, TaskPriority.Low };
+                foreach (var item in priorities)
                 {
-                    break;
+                    result = this.TaskQueue.Dequeue(item);
+                    if (!result.IsNull())
+                    {
+                        break;
+                    }
                 }
-            }
 
-            return result;
+                return result;
+            }
         }
 
+        private int ThreadCount
+        {
+            get { return GlobalConst.ThreadCount; }
+        }
 
+        IList<TaskThread> taskThreads = new List<TaskThread>();
         public void Run()
         {
             this.isRunning = true;
-            for (int i = 0; i < GlobalConst.ThreadCount; i++)
+            for (int i = 0; i < this.ThreadCount; i++)
             {
-                Thread t = new Thread(InternalRun);
-                t.Start();
+                TaskThread tt = new TaskThread(this);
+                tt.Start();
+                taskThreads.Add(tt);
             }
 
             RunTaskCreateThread();
         }
 
+        private void ResumeTaskThread()
+        {
+            foreach (var item in taskThreads)
+            {
+                item.Resume();
+            }
+        }
+
         public void Stop()
         {
-            this.isRunning = true;
-            using (taskResetEvent)
-            {
-                taskResetEvent.Set();
-            }
+            this.isRunning = false;
             using (taskCreateResetEvent)
             {
                 taskCreateResetEvent.Set();
             }
-        }
 
-        private void InternalRun()
-        {
-            while (isRunning)
+            foreach (var item in taskThreads)
             {
-                ITask task = null;
-                lock (lockObj)
-                {
-                    task = this.Dequeue();
-                }
-                if (task.IsNull())
-                {
-                    taskResetEvent.WaitOne();
-                    continue;
-                }
-
-                using (task)
-                {
-                    task.Load();
-                    task.Run();
-                    task.UnLoad();
-                }
+                item.Stop();
             }
+            taskThreads.Clear();
         }
 
         #endregion
@@ -123,8 +120,11 @@ namespace HttpFileUploader.Tasks
                     }
 
                     string[] filePaths = fileQueue.Dequeue();
+                    ///multi-file only create multi sub groups, no tasks
                     ChunkFileTaskGroup group = new ChunkFileTaskGroup(filePaths);
+                    group.OnUploading += File_OnUploading;
                     group.Create();
+
                     foreach (ChunkFileTaskGroup subGroup in group.Groups)
                     {
                         taskGroupDict[subGroup.FilePath] = subGroup;
@@ -134,9 +134,35 @@ namespace HttpFileUploader.Tasks
                     {
                         TaskQueue.Enqueue(t);
                     }
+                    ResumeTaskThread();
                 }
             });
             taskCreateThread.Start();
+        }
+
+        private void File_OnUploading(object sender, FileUploadProgressEventArgs e)
+        {
+            var uploadEvt = this.OnUploading;
+            if (!uploadEvt.IsNull())
+            {
+                uploadEvt(this, e);
+                if ((sender is TaskGroup) && e.Progress >= e.Len)
+                {
+                    AddChunkConcatTast(e.FilePath);
+                }
+            }
+        }
+
+        private void AddChunkConcatTast(string filePath)
+        {
+            if (filePath.IsNullOrEmpty() || !filePath.IsFileExisted())
+            {
+                return;
+            }
+            ChunkConcatTask task = new ChunkConcatTask(filePath) { Priority = TaskPriority.High };
+            task.OnUploading += File_OnUploading;
+
+            TaskQueue.Enqueue(task);
         }
 
         public void AddFile(params string[] filePaths)
@@ -147,10 +173,59 @@ namespace HttpFileUploader.Tasks
 
         #endregion
 
-        #region Task Run
 
+        private class TaskThread
+        {
+            public TaskScheduler Parent { get; set; }
+            private Thread thread;
+            private AutoResetEvent threadResetEvent = new AutoResetEvent(true);
+            private bool isRunning = true;
 
-        #endregion
+            public TaskThread(TaskScheduler parent)
+            {
+                this.Parent = parent;
+            }
 
+            public void Start()
+            {
+                this.isRunning = true;
+                thread = new Thread(InternalRun);
+                thread.Start();
+            }
+
+            public void Resume()
+            {
+                this.threadResetEvent.Set();
+            }
+
+            private void InternalRun()
+            {
+                while (this.isRunning)
+                {
+                    ITask task = Parent.Dequeue();
+                    if (task.IsNull())
+                    {
+                        threadResetEvent.WaitOne();
+                        continue;
+                    }
+
+                    using (task)
+                    {
+                        task.Load();
+                        task.Run();
+                        task.UnLoad();
+                    }
+                }
+            }
+
+            public void Stop()
+            {
+                this.isRunning = false;
+                this.Resume();
+                thread.Join();
+                thread = null;
+            }
+        }
     }
+
 }

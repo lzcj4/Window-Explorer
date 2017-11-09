@@ -63,11 +63,12 @@
     <Compile Include="GenericCommand.cs" />
     <Compile Include="Http\ChunkFileStream.cs" />
     <Compile Include="Http\ChunkFileHttp.cs" />
+    <Compile Include="Http\FileChunkItem.cs" />
     <Compile Include="Http\HttpBase.cs" />
     <Compile Include="Http\HttpFactory.cs" />
-    <Compile Include="Http\ShareReadFileApi.cs" />
-    <Compile Include="Http\UploadManager.cs" />
+    <Compile Include="Util\ShareReadFileApi.cs" />
     <Compile Include="Tasks\ChunkUploadTask.cs" />
+    <Compile Include="Tasks\ChunkConcatTask.cs" />
     <Compile Include="Tasks\IDictionary.cs" />
     <Compile Include="Tasks\PriorityQueue.cs" />
     <Compile Include="Tasks\TaskBase.cs" />

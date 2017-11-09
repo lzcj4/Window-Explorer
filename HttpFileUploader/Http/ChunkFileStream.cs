@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -108,7 +107,7 @@ namespace HttpFileUploader
             }
             int readLen = this.FileStream.Read(buffer, offset, count);
             m_readLen += readLen;
-            //Debug.WriteLine("Read :{0} bytes, thread:{1}".StrFormat(m_readLen,Thread.CurrentThread.ManagedThreadId));
+           // Debug.WriteLine("Read :{0} bytes, thread:{1}".StrFormat(m_readLen,Thread.CurrentThread.ManagedThreadId));
             return readLen;
         }
 

@@ -18,16 +18,20 @@ namespace HttpFileUploader.Tasks
             this.ChunkItem = item;
         }
 
-        public override void Run()
+        ChunkFileHttp client;
+        public override void Load()
         {
-            ChunkFileHttp client = HttpFactory.Instance.GetChunkHttp();
+            client = HttpFactory.Instance.GetChunkHttp();
             client.OnUploading += (sender, e) =>
             {
                 RaiseUploading(e.ReadLen, e.Progress);
             };
-            this.IsCompleted = client.Upload(ChunkItem);
         }
 
+        public override void Run()
+        {
+            this.IsCompleted = client.Upload(ChunkItem);
+        }
 
         private void RaiseUploading(long newReadLen, long progress)
         {
@@ -35,6 +39,14 @@ namespace HttpFileUploader.Tasks
             if (!onUploadEvent.IsNull())
             {
                 onUploadEvent(this, new ChunkUploadProgressEventArgs(this.ChunkItem, newReadLen, progress));
+            }
+        }
+
+        public override void Stop()
+        {
+            if (!client.IsNull())
+            {
+                client.Stop();
             }
         }
 

@@ -166,7 +166,8 @@ namespace HttpFileUploader
                 {
                     int len = 0;
                     int count = 0;
-                    while ((len = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    while (this.isRunning &&
+                          (len = fileStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         stream.Write(buffer, 0, len);
                         readBytes += len;
@@ -199,7 +200,7 @@ namespace HttpFileUploader
                     {
                         RaiseUploading(readBytes, readProgress);
                     }
-                    return isSucceed;
+                    return this.isRunning && isSucceed;
                 }
             }
         }
@@ -227,6 +228,13 @@ namespace HttpFileUploader
                     return jObj[ChunkFileHttp.CODE].ToString() == ChunkFileHttp.CODE_SUCCEED;
                 }
             }
+        }
+
+        private bool isRunning = true;
+        public void Stop()
+        {
+            this.isRunning = false;
+
         }
     }
 }

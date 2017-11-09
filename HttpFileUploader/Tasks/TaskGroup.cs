@@ -10,6 +10,8 @@ namespace HttpFileUploader.Tasks
         public string Name { get; set; }
         public TaskPriority Priority { get; set; }
 
+        public bool IsCompleted { get; protected set; }
+
         /// <summary>
         /// Sub tasks
         /// One file divide into multi tasks
@@ -49,7 +51,6 @@ namespace HttpFileUploader.Tasks
         public abstract void Create();
     }
 
-
     public class ChunkFileTaskGroup : TaskGroup
     {
         public event EventHandler<FileUploadProgressEventArgs> OnUploading;
@@ -64,6 +65,7 @@ namespace HttpFileUploader.Tasks
                 throw new ArgumentException();
             }
             this.files = new List<string>(files);
+            this.Priority = TaskPriority.Noraml;
         }
 
         public override void Create()
@@ -83,6 +85,10 @@ namespace HttpFileUploader.Tasks
                 foreach (string item in this.files)
                 {
                     ChunkFileTaskGroup group = new ChunkFileTaskGroup(item);
+                    group.OnUploading += (sender, e) =>
+                    {
+                        this.RaiseOnUploading(e.FilePath, e.Len, e.Progress);
+                    };
                     group.Create();
                     this.Groups.Add(group);
                 }
@@ -98,17 +104,27 @@ namespace HttpFileUploader.Tasks
         private bool CheckFileIsUpload(IDictionary<string, long> dict, string fileName, long fileSize)
         {
             bool result = dict.ContainsKey(fileName) && dict[fileName] == fileSize;
+            if (result)
+            {
+                this.ReadLen += fileSize;
+                this.RaiseOnUploading(this.FilePath, this.FileSize, this.ReadLen);
+            }
             return result;
         }
 
         private long FileSize = 0;
-        private IList<ITask> CreateTasks(string filePath)
+        private long ChunkLen
         {
-            IList<ITask> result = new List<ITask>();
-            if (!filePath.IsFileExisted())
+            get { return GlobalConst.ChunkLen; }
+        }
+
+        public static IList<FileChunkItem> GetChunks(string filePath, long chunkLen)
+        {
+            if (filePath.IsNullOrEmpty() || !filePath.IsFileExisted() || chunkLen <= 0)
             {
-                return result;
+                throw new ArgumentException();
             }
+            IList<FileChunkItem> result = new List<FileChunkItem>();
 
             FileInfo fi = new FileInfo(filePath);
             string fileName = Path.GetFileNameWithoutExtension(filePath);
@@ -118,42 +134,61 @@ namespace HttpFileUploader.Tasks
             long fileUctTime = fi.CreationTime.ToFileTimeUtc();
             string folderName = "{0}_{1}".StrFormat(fileName, fileUctTime);
 
-            this.FileSize = fileSize;
-
-            IDictionary<string, long> existedFileDict = Query(folderName);
-
             //100MB
-            if (fileSize < GlobalConst.ChunkLen)
+            if (fileSize < chunkLen)
             {
                 ChunkFileStream stream = new ChunkFileStream(filePath, 0, fileSize);
-                if (!CheckFileIsUpload(existedFileDict, fileFullName, fileSize))
-                {
-                    FileChunkItem item = new FileChunkItem(folderName, fileFullName, 1, 0, fileSize, stream)
-                    { DestFileName = fileFullName };
-                    result.Add(new ChunkUploadTask(item) { Priority = this.Priority });
-                }
+                FileChunkItem item = new FileChunkItem(folderName, fileFullName, 1, 0, fileSize, stream) { DestFileName = fileFullName };
+                result.Add(item);
             }
             else
             {
-                int chunkCount = (int)Math.Ceiling(1.0 * fileSize / GlobalConst.ChunkLen);
+                int chunkCount = (int)Math.Ceiling(1.0 * fileSize / chunkLen);
                 for (int i = 0; i < chunkCount; i++)
                 {
                     ChunkFileStream stream = null;
                     if (i == chunkCount - 1)
                     {
-                        long startOffset = i * chunkCount;
+                        long startOffset = i * chunkLen;
                         stream = new ChunkFileStream(filePath, startOffset, fileSize - startOffset);
                     }
                     else
                     {
-                        stream = new ChunkFileStream(filePath, i * chunkCount, GlobalConst.ChunkLen);
+                        stream = new ChunkFileStream(filePath, i * chunkCount, chunkLen);
                     }
 
                     var item = new FileChunkItem(folderName, fileFullName, chunkCount, i, stream.Length, stream);
-                    if (!CheckFileIsUpload(existedFileDict, item.DestFileName, item.ChunkLen))
-                    {
-                        result.Add(new ChunkUploadTask(item) { Priority = this.Priority });
-                    }
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        private IList<ITask> CreateTasks(string filePath)
+        {
+            IList<ITask> result = new List<ITask>();
+            if (!filePath.IsFileExisted())
+            {
+                return result;
+            }
+
+            IList<FileChunkItem> chunkList = GetChunks(filePath, this.ChunkLen);
+            if (chunkList.IsNullOrEmpty())
+            {
+                return result;
+            }
+
+            var firstItem = chunkList[0];
+            FileInfo fi = new FileInfo(filePath);
+            this.FileSize = fi.Length;
+
+            IDictionary<string, long> existedFileDict = Query(firstItem.DestFolderName);
+            foreach (var item in chunkList)
+            {
+                if (!CheckFileIsUpload(existedFileDict, item.DestFileName, item.ChunkLen))
+                {
+                    result.Add(CreateTask(item));
                 }
             }
 
@@ -163,24 +198,24 @@ namespace HttpFileUploader.Tasks
         private long ReadLen { get; set; }
         private ChunkUploadTask CreateTask(FileChunkItem item)
         {
-            ChunkUploadTask task = new ChunkUploadTask(item) { Priority = this.Priority };
+            ChunkUploadTask task = new ChunkUploadTask(item) { Priority = this.Priority, Group = this };
             task.OnUploading += (sender, e) =>
             {
                 lock (this)
                 {
                     this.ReadLen += e.ReadLen;
                 }
-                RaiseOnUploading(this.ReadLen);
+                RaiseOnUploading(this.FilePath, this.FileSize, this.ReadLen);
             };
             return task;
         }
 
-        private void RaiseOnUploading(long progress)
+        private void RaiseOnUploading(string filePath, long fileSize, long progress)
         {
             var uploadEvent = this.OnUploading;
             if (!uploadEvent.IsNull())
             {
-                uploadEvent(this, new FileUploadProgressEventArgs(this.FilePath, this.FileSize, progress));
+                uploadEvent(this, new FileUploadProgressEventArgs(filePath, fileSize, progress));
             }
         }
     }

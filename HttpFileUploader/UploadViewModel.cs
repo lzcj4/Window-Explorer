@@ -54,6 +54,7 @@ namespace HttpFileUploader
             set { SetProperty(ref filePath, value, "FilePath"); }
         }
 
+        private string[] filePaths;
 
         /// <summary>
         /// Use for file item location
@@ -81,10 +82,11 @@ namespace HttpFileUploader
                     ExecuteCallback = (obj) =>
                     {
                         OpenFileDialog openDlg = new OpenFileDialog();
-                        openDlg.Multiselect = false;
+                        openDlg.Multiselect = true;
                         if (openDlg.ShowDialog() == true)
                         {
-                            this.FilePath = openDlg.FileName;
+                            this.FilePath = string.Join("\r\n", openDlg.FileNames);
+                            this.filePaths = openDlg.FileNames;
                         }
                     }
                 };
@@ -100,35 +102,40 @@ namespace HttpFileUploader
                     CanExecuteCallback = (obj) => { return true; },
                     ExecuteCallback = (obj) =>
                     {
-                        if (!File.Exists(this.FilePath))
-                        {
-                            return;
-                        }
                         HttpFactory.Instance.WebHost = this.WebHost;
-                        UploadManager uploader = new UploadManager();
-                        uploader.OnUploading += (sender, e) =>
+                        foreach (var item in this.filePaths)
                         {
-                            FileItem fileItem;
-                            if (this.fileDict.TryGetValue(e.FilePath, out fileItem))
-                            {
-                                this.RunOnUIThreadAsync(() =>
-                                {
-                                    fileItem.Progress = 100.0 * e.Progress / e.Len;
-                                });
-                            }
-                        };
-
-                        FileItem item = new FileItem(this.FilePath);
-                        fileDict[this.FilePath] = item;
-                        this.Items.Add(item);
-
-                        //Task.Run(() => { uploader.Upload(this.FilePath); });
-
-                        HttpTasks.TaskScheduler.Instance.Run();
-                        HttpTasks.TaskScheduler.Instance.AddFile(this.FilePath);
+                            FileItem fi = new FileItem(item);
+                            fileDict[item] = fi;
+                            this.Items.Add(fi);
+                        }                      
+                        
+                        
+                        HttpTasks.TaskScheduler.Instance.AddFile(this.filePaths);
                     }
                 };
             }
+        }
+
+        public void Load()
+        {
+            HttpTasks.TaskScheduler.Instance.Run();
+            HttpTasks.TaskScheduler.Instance.OnUploading += (sender, e) =>
+            {
+                FileItem fileItem;
+                if (this.fileDict.TryGetValue(e.FilePath, out fileItem))
+                {
+                    this.RunOnUIThreadAsync(() =>
+                    {
+                        fileItem.Progress = 100.0 * e.Progress / e.Len;
+                    });
+                }
+            };
+        }
+
+        public void UnLoad()
+        {
+            HttpTasks.TaskScheduler.Instance.Stop();
         }
 
     }
