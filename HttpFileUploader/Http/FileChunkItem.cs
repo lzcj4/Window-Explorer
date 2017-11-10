@@ -9,7 +9,6 @@ namespace HttpFileUploader
         public string DestFolderName { get; set; }
         public string FileName { get; set; }
         public string DestFileName { get; set; }
-
         public int ChunkCount { get; set; }
         public int ChunkNo { get; set; }
         public long ChunkLen { get; set; }

@@ -50,6 +50,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\FileExplorer\packages\WebSocket4Net.0.14.1\lib\net45\WebSocket4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -63,6 +67,7 @@
     <Compile Include="GenericCommand.cs" />
     <Compile Include="Http\ChunkFileStream.cs" />
     <Compile Include="Http\ChunkFileHttp.cs" />
+    <Compile Include="Http\FileChannel.cs" />
     <Compile Include="Http\FileChunkItem.cs" />
     <Compile Include="Http\HttpBase.cs" />
     <Compile Include="Http\HttpFactory.cs" />

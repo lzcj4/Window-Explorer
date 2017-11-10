@@ -103,14 +103,15 @@ namespace HttpFileUploader
                     ExecuteCallback = (obj) =>
                     {
                         HttpFactory.Instance.WebHost = this.WebHost;
+                        FileChannel.Instance.Open();
                         foreach (var item in this.filePaths)
                         {
                             FileItem fi = new FileItem(item);
                             fileDict[item] = fi;
                             this.Items.Add(fi);
-                        }                      
-                        
-                        
+                        }
+
+
                         HttpTasks.TaskScheduler.Instance.AddFile(this.filePaths);
                     }
                 };

@@ -2,8 +2,11 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,9 +37,8 @@ namespace HttpFileUploader.Tasks
             job[ChunkFileHttp.FILENAME] = chunkList[0].FileName;
             job[ChunkFileHttp.FILE_INFOS] = jArray;
             ChunkFileHttp client = HttpFactory.Instance.GetChunkHttp();
-            RaiseOnUploading(this.FilePath, 100, 10);
-            this.IsCompleted = client.Concat(job.ToString());
-            RaiseOnUploading(this.FilePath, 100, 100);
+            //this.IsCompleted = client.Concat(job.ToString());
+            FileChannel.Instance.Send(job.ToString());
         }
 
         private void RaiseOnUploading(string filePath, long fileSize, long progress)
