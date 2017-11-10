@@ -3,6 +3,7 @@
 using System.Diagnostics;
 using WebSocket4Net;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace HttpFileUploader
 {
@@ -64,7 +65,8 @@ namespace HttpFileUploader
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            Debug.WriteLine("WebSocket_MessageReceived");
+            JObject jObj = JObject.Parse(e.Message);
+            Debug.WriteLine(e.Message);
         }
 
         private void Client_DataReceived(object sender, WebSocket4Net.DataReceivedEventArgs e)
