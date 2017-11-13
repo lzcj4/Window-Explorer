@@ -104,13 +104,25 @@ namespace HttpFileUploader
                     {
                         HttpFactory.Instance.WebHost = this.WebHost;
                         FileChannel.Instance.Open();
+                        FileChannel.Instance.OnConcating += (sende, e) =>
+                        {
+                            foreach (var item in this.fileDict)
+                            {
+                                if (item.Key.EndsWith(e.FilePath))
+                                {
+                                    this.RunOnUIThreadAsync(() =>
+                                    {
+                                        item.Value.Progress = 100.0 * e.Progress / e.Len;
+                                    });
+                                }
+                            }
+                        };
                         foreach (var item in this.filePaths)
                         {
                             FileItem fi = new FileItem(item);
                             fileDict[item] = fi;
                             this.Items.Add(fi);
                         }
-
 
                         HttpTasks.TaskScheduler.Instance.AddFile(this.filePaths);
                     }
@@ -132,6 +144,20 @@ namespace HttpFileUploader
                     });
                 }
             };
+
+            //FileChannel.Instance.OnConcating += (sende, e) =>
+            //{
+            //    foreach (var item in this.fileDict)
+            //    {
+            //        if (item.Key.EndsWith(e.FilePath))
+            //        {
+            //            this.RunOnUIThreadAsync(() =>
+            //            {
+            //                item.Value.Progress = 100.0 * e.Progress / e.Len;
+            //            });
+            //        }
+            //    }
+            //};
         }
 
         public void UnLoad()

@@ -9,6 +9,8 @@ namespace HttpFileUploader
 {
     public class FileChannel : IDisposable
     {
+        public event EventHandler<FileUploadProgressEventArgs> OnConcating;
+
         private static FileChannel instance;
         public static FileChannel Instance
         {
@@ -55,18 +57,35 @@ namespace HttpFileUploader
 
         private void Client_Closed(object sender, System.EventArgs e)
         {
-            Debug.WriteLine("WebSocket_Closed");
+            Debug.WriteLine("WebSocket_Closed:{0}".StrFormat(e.ToString()));
         }
 
         private void Client_Error(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
         {
-            Debug.WriteLine("WebSocket_Error");
+            Debug.WriteLine("WebSocket_Error:{0}".StrFormat(e.Exception.Message));
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
             JObject jObj = JObject.Parse(e.Message);
-            Debug.WriteLine(e.Message);
+            Debug.WriteLine(jObj.ToString());
+            
+            if (jObj["filename"].IsNull()||jObj["file_len"].IsNull())
+            {
+                return;
+            }
+            string fileName = jObj["filename"].ToString();
+            int chunkCount = int.Parse(jObj["file_len"].ToString());
+            int progress = int.Parse(jObj["progress"].ToString());
+            RaiseOnConcating(fileName, chunkCount, progress);
+        }
+
+        private void RaiseOnConcating(string fileName, int len, int progress)
+        {
+            if (!this.OnConcating.IsNull())
+            {
+                this.OnConcating(this, new FileUploadProgressEventArgs(fileName, len, progress));
+            }
         }
 
         private void Client_DataReceived(object sender, WebSocket4Net.DataReceivedEventArgs e)
