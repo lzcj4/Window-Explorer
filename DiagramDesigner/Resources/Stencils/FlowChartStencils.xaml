@@ -317,9 +317,10 @@
 
             <Grid IsHitTestVisible="False">
                 <Grid.Background>
-                    <VisualBrush Viewport="0,0,0.5,0.5"  Stretch="None" TileMode="Tile">
+                    <VisualBrush  Viewport="0,0,35,35" ViewportUnits="Absolute" Viewbox="0,0,30,30" ViewboxUnits="Absolute"
+                                  Stretch="UniformToFill" TileMode="Tile" >
                         <VisualBrush.Visual>
-                            <Image Source="../Images/grass.png" Width="20" Height="20"  />
+                            <Image Source="../Images/grass.png"  />
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </Grid.Background>
