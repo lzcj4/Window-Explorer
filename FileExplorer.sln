@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Blend for Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileExplorer", "FileExplorer.csproj", "{76295CD4-637B-4E22-91DF-A13BA52FB79B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileExplorer", "FileExplorer\FileExplorer.csproj", "{76295CD4-637B-4E22-91DF-A13BA52FB79B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFServer", "..\WCFServer\WCFServer.csproj", "{791A805B-B924-428F-8495-54A8A6B7B8DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFServer", "WCFServer\WCFServer.csproj", "{791A805B-B924-428F-8495-54A8A6B7B8DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFClient", "..\WCFClient\WCFClient.csproj", "{EC9C5711-7F32-4E2F-9ADF-AD9952B52C54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFClient", "WCFClient\WCFClient.csproj", "{EC9C5711-7F32-4E2F-9ADF-AD9952B52C54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoMQTest", "..\MongoMQTest\MongoMQTest.csproj", "{4BD796E4-4E7F-403D-85D5-C6A6E793D1FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoMQTest", "MongoMQTest\MongoMQTest.csproj", "{4BD796E4-4E7F-403D-85D5-C6A6E793D1FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpFileUploader", "..\HttpFileUploader\HttpFileUploader.csproj", "{4A938D68-8601-4113-B032-3921415F9DF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpFileUploader", "HttpFileUploader\HttpFileUploader.csproj", "{4A938D68-8601-4113-B032-3921415F9DF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesigner", "..\DiagramDesigner\DiagramDesigner.csproj", "{B437DF5F-20E0-4082-A92E-5C1D9C31A8E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesigner", "DiagramDesigner\DiagramDesigner.csproj", "{B437DF5F-20E0-4082-A92E-5C1D9C31A8E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

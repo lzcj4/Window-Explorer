@@ -128,7 +128,11 @@
     <Style TargetType="{x:Type s:DesignerItem}">
         <Setter Property="MinWidth" Value="10"/>
         <Setter Property="MinHeight" Value="10"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>        
+        <!--<Setter Property="Text" Value="{Binding Text,Mode=TwoWay}"/>
+        <Setter Property="ControlId" Value="{Binding ControlId,Mode=TwoWay}"/>
+        <Setter Property="Fill" Value="{Binding Fill,Mode=TwoWay}"/>
+        <Setter Property="Stroke" Value="{Binding Stroke,Mode=TwoWay}"/>-->
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type s:DesignerItem}">
@@ -138,7 +142,8 @@
                         <c:DragThumb x:Name="PART_DragThumb" Cursor="SizeAll"/>
                         <c:RotateThumb x:Name="PART_RotateThumb"   
                                        Visibility="Collapsed"  Cursor="Hand"
-                                       Template="{DynamicResource RotateThumbControlTemplate1}"/>
+                                       Template="{DynamicResource RotateThumbControlTemplate1}"
+                                       Rotate="{Binding Path=Rotate,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"/>
                         <!-- PART_ResizeDecorator -->
                         <Control x:Name="PART_ResizeDecorator" 
                                  Visibility="Collapsed"

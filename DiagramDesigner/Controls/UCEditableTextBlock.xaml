@@ -18,7 +18,7 @@
             </Label.Resources>
         </Label>
 
-        <TextBox Name="txtContent" MinWidth="80" Margin="0,8,0,0" VerticalContentAlignment="Top" >
+        <TextBox Name="txtContent" MinWidth="80" Margin="0,8,0,0" VerticalContentAlignment="Top" AcceptsReturn="True" AcceptsTab="True" >
             <TextBox.Resources>
                 <Style TargetType="TextBox">
                     <Setter Property="Text" Value="{Binding Text,Mode=TwoWay,ElementName=ucText,UpdateSourceTrigger=PropertyChanged}"/>

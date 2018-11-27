@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="DiagramDesigner.UserControls.UCCenter"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiagramDesigner.UserControls"
+        mc:Ignorable="d" Name="ucSelf" Background="White"
+        d:DesignHeight="50" d:DesignWidth="50">
+    <Grid>
+        <Ellipse>
+            <Ellipse.Style>
+                <Style TargetType="Ellipse">
+                    <Setter Property="Fill" Value="{Binding Fill,Mode=TwoWay,ElementName=ucSelf}"/>
+                    <Setter Property="Stroke" Value="{Binding Stroke,Mode=TwoWay,ElementName=ucSelf}"/>
+                </Style>
+            </Ellipse.Style>
+        </Ellipse>
+
+        <Path Data="M40,10 C10,38.625 9.5,39.5 9.5,39.5" Margin="10" Stretch="Fill" >
+            <Path.Style>
+                <Style TargetType="Path">
+                    <Setter Property="Fill" Value="{Binding Fill,Mode=TwoWay,ElementName=ucSelf}"/>
+                    <Setter Property="Stroke" Value="{Binding Stroke,Mode=TwoWay,ElementName=ucSelf}"/>
+                </Style>
+            </Path.Style>
+        </Path>
+        <Path Data="M10,10 C40,40 39.5,39.5 39.5,39.5"  Margin="10" Stretch="Fill" >
+            <Path.Style>
+                <Style TargetType="Path">
+                    <Setter Property="Fill" Value="{Binding Fill,Mode=TwoWay,ElementName=ucSelf}"/>
+                    <Setter Property="Stroke" Value="{Binding Stroke,Mode=TwoWay,ElementName=ucSelf}"/>
+                </Style>
+            </Path.Style>
+        </Path>
+
+
+        <!--<Ellipse Fill="Transparent" Stroke="Black"/>
+        <Path Data="M40,10 C10,38.625 9.5,39.5 9.5,39.5" Fill="Transparent" Margin="10" Stretch="Fill" Stroke="Black"/>
+        <Path Data="M10,10 C40,40 39.5,39.5 39.5,39.5" Fill="Transparent" Margin="10" Stretch="Fill" Stroke="Black"/>-->
+    </Grid>
+</UserControl>

@@ -36,7 +36,13 @@ namespace DiagramDesigner
             {
                 // XamlWriter.Save() has limitations in exactly what is serialized,
                 // see SDK documentation; short term solution only;
-                string xamlString = XamlWriter.Save(this.Content);
+                object ui = DesignerItem.GetRealControl(this.Content as UIElement);
+                if (ui == null)
+                {
+                    ui = this.Content;
+                }
+                // string xamlString = XamlWriter.Save(this.Content);
+                string xamlString = XamlWriter.Save(ui);
                 DragObject dataObject = new DragObject();
                 dataObject.Xaml = xamlString;
 
@@ -44,7 +50,8 @@ namespace DiagramDesigner
                 if (panel != null)
                 {
                     // desired size for DesignerCanvas is the stretched Toolbox item size
-                    double scale = 1.3;
+                    //double scale = 1.3;
+                    double scale = 2;
                     dataObject.DesiredSize = new Size(panel.ItemWidth * scale, panel.ItemHeight * scale);
                 }
 

@@ -33,6 +33,8 @@ namespace DiagramDesigner
         public static RoutedCommand DistributeVertical = new RoutedCommand();
         public static RoutedCommand SelectAll = new RoutedCommand();
 
+        public static RoutedCommand ColorCmd = new RoutedCommand();
+
         public DesignerCanvas()
         {
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.New, New_Executed));
@@ -58,6 +60,8 @@ namespace DiagramDesigner
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.DistributeHorizontal, DistributeHorizontal_Executed, Distribute_Enabled));
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.DistributeVertical, DistributeVertical_Executed, Distribute_Enabled));
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.SelectAll, SelectAll_Executed));
+            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.ColorCmd, ColorCmd_Executed));
+
             SelectAll.InputGestures.Add(new KeyGesture(Key.A, ModifierKeys.Control));
 
             this.AllowDrop = true;
@@ -483,7 +487,7 @@ namespace DiagramDesigner
                     Canvas.SetZIndex(item, selectionSorted.Count + i++);
                 }
             }
-        }        
+        }
 
         #endregion
 
@@ -746,6 +750,25 @@ namespace DiagramDesigner
 
         #endregion
 
+        #region SelectAll Command
+
+        private void ColorCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selectedItems = from item in SelectionService.CurrentSelection.OfType<DesignerItem>()
+                                select item;
+
+            if (selectedItems.Count() > 0)
+            {
+                foreach (DesignerItem item in selectedItems)
+                {
+                    item.Fill = Brushes.Red;
+                    item.Stroke = Brushes.Blue;
+                }
+            }
+        }
+
+        #endregion
+
         #region Helper Methods
 
         private XElement LoadSerializedDataFromFile()
@@ -820,7 +843,12 @@ namespace DiagramDesigner
                                                   new XElement("zIndex", Canvas.GetZIndex(item)),
                                                   new XElement("IsGroup", item.IsGroup),
                                                   new XElement("ParentID", item.ParentID),
-                                                  new XElement("Content", contentXaml)
+                                                  new XElement("Content", contentXaml),
+                                                  new XElement("Text", item.Text),
+                                                  new XElement("ControlId", item.ControlId),
+                                                  new XElement("Rotate", item.Rotate),
+                                                  new XElement("Fill", item.Fill.ToString()),
+                                                  new XElement("Stroke", item.Stroke.ToString())
                                               )
                                    );
 
@@ -852,11 +880,19 @@ namespace DiagramDesigner
             item.Height = Double.Parse(itemXML.Element("Height").Value, CultureInfo.InvariantCulture);
             item.ParentID = new Guid(itemXML.Element("ParentID").Value);
             item.IsGroup = Boolean.Parse(itemXML.Element("IsGroup").Value);
+            item.Text = itemXML.Element("Text").Value;
+            item.ControlId = itemXML.Element("ControlId").Value;
+            item.Rotate = Double.Parse(itemXML.Element("Rotate").Value, CultureInfo.InvariantCulture);
+            item.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(itemXML.Element("Fill").Value));
+            item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(itemXML.Element("Stroke").Value));
+
             Canvas.SetLeft(item, Double.Parse(itemXML.Element("Left").Value, CultureInfo.InvariantCulture) + OffsetX);
             Canvas.SetTop(item, Double.Parse(itemXML.Element("Top").Value, CultureInfo.InvariantCulture) + OffsetY);
             Canvas.SetZIndex(item, Int32.Parse(itemXML.Element("zIndex").Value));
-            Object content = XamlReader.Load(XmlReader.Create(new StringReader(itemXML.Element("Content").Value)));
+            FrameworkElement content = (FrameworkElement)XamlReader.Load(XmlReader.Create(new StringReader(itemXML.Element("Content").Value)));
+            content.DataContext = item;
             item.Content = content;
+
             return item;
         }
 

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using DiagramDesigner.Controls;
+using DiagramDesigner.ViewModel;
 
 namespace DiagramDesigner
 {
@@ -72,6 +73,23 @@ namespace DiagramDesigner
         {
             element.SetValue(DragThumbTemplateProperty, value);
         }
+
+
+
+        public static UIElement GetRealControl(DependencyObject obj)
+        {
+            return (UIElement)obj.GetValue(RealControlProperty);
+        }
+
+        public static void SetRealControl(DependencyObject obj, UIElement value)
+        {
+            obj.SetValue(RealControlProperty, value);
+        }
+
+        public static readonly DependencyProperty RealControlProperty =
+            DependencyProperty.RegisterAttached("RealControl", typeof(UIElement), typeof(DesignerItem), new PropertyMetadata(null));
+
+
 
 
         // can be used to replace the default template for the DragThumb
@@ -152,6 +170,57 @@ namespace DiagramDesigner
 
         #endregion
 
+        #region Text / ID / Fill / Stroke
+
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        public static readonly DependencyProperty TextProperty =
+            DependencyProperty.Register("Text", typeof(string), typeof(DesignerItem), new PropertyMetadata(null));
+
+        public string ControlId
+        {
+            get { return (string)GetValue(ControlIdProperty); }
+            set { SetValue(ControlIdProperty, value); }
+        }
+
+        public static readonly DependencyProperty ControlIdProperty =
+            DependencyProperty.Register("ControlId", typeof(string), typeof(DesignerItem), new PropertyMetadata(null));
+
+        public double Rotate
+        {
+            get { return (double)GetValue(RotateProperty); }
+            set { SetValue(RotateProperty, value); }
+        }
+
+        public static readonly DependencyProperty RotateProperty =
+            DependencyProperty.Register("Rotate", typeof(double), typeof(DesignerItem), new PropertyMetadata(0.0));
+
+        public Brush Fill
+        {
+            get { return (Brush)GetValue(FillProperty); }
+            set { SetValue(FillProperty, value); }
+        }
+
+        public static readonly DependencyProperty FillProperty =
+            DependencyProperty.Register("Fill", typeof(Brush), typeof(DesignerItem), new PropertyMetadata(Brushes.Transparent));
+
+
+        public Brush Stroke
+        {
+            get { return (Brush)GetValue(StrokeProperty); }
+            set { SetValue(StrokeProperty, value); }
+        }
+
+        public static readonly DependencyProperty StrokeProperty =
+            DependencyProperty.Register("Stroke", typeof(Brush), typeof(DesignerItem), new PropertyMetadata(Brushes.Black));
+
+
+        #endregion
+
         static DesignerItem()
         {
             // set the key to reference the style for this control
@@ -163,6 +232,7 @@ namespace DiagramDesigner
         {
             this.id = id;
             this.Loaded += new RoutedEventHandler(DesignerItem_Loaded);
+            //this.DataContext = new ControlViewModel();
         }
 
         public DesignerItem()

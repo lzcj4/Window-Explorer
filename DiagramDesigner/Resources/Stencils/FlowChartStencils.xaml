@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:DiagramDesigner"
-                    xmlns:c="clr-namespace:DiagramDesigner.Controls">
+                    xmlns:c="clr-namespace:DiagramDesigner.Controls"
+                    xmlns:uc="clr-namespace:DiagramDesigner.UserControls">
 
     <Brush x:Key="ItemStroke">#FFD69436</Brush>
     <LinearGradientBrush x:Key="ItemBrush" StartPoint="0,0" EndPoint="0,1">
@@ -273,10 +274,47 @@
 
     <Brush x:Key="brushRed">Red</Brush>
 
-    <s:Toolbox x:Key="FlowChartStencils" ItemSize="60,50" SnapsToDevicePixels="True"
+    <Style x:Key="toolboxStyle" TargetType="ContentControl" >
+        <Setter Property="Template" >
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border BorderBrush="{DynamicResource brushRed}" BorderThickness="2" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--TODO: Binding 写入Style 是因为XmlWriter时直接绑定只有值，不是Binding表达式 -->
+                            <c:UCEditableTextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="2">
+                                <c:UCEditableTextBlock.Resources>
+                                    <Style TargetType="{x:Type c:UCEditableTextBlock}">
+                                        <Setter Property="IsEditing" Value="{Binding RelativeSource={RelativeSource Self},
+                                         Path=DataContext.IsSelected}"/>
+                                        <Setter Property="IsEditMode" Value="{Binding RelativeSource={RelativeSource Self},
+                                         Path=DataContext.IsSelected}"/>
+                                        <Setter Property="Text" Value="{Binding RelativeSource={RelativeSource Self},
+                                         Path=DataContext.Text,Mode=TwoWay}"/>
+                                    </Style>
+                                </c:UCEditableTextBlock.Resources>
+                            </c:UCEditableTextBlock>
+
+                            <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{TemplateBinding ContentControl.Content}" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <s:Toolbox x:Key="FlowChartStencils" SnapsToDevicePixels="True"
              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ItemsControl.Items>
-            <Border BorderBrush="{DynamicResource brushRed}" BorderThickness="2" IsHitTestVisible="False"
+            <!--<Border BorderBrush="{DynamicResource brushRed}" BorderThickness="2" IsHitTestVisible="False"
                     s:DesignerItem.IsEditable="True" Name="borderText">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -288,7 +326,9 @@
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
 
-                    <!--TODO: Binding 写入Style 是因为XmlWriter时直接绑定只有值，不是Binding表达式 -->
+                    -->
+            <!--TODO: Binding 写入Style 是因为XmlWriter时直接绑定只有值，不是Binding表达式 -->
+            <!--
                     <c:UCEditableTextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="2">
                         <c:UCEditableTextBlock.Resources>
                             <Style TargetType="{x:Type c:UCEditableTextBlock}">
@@ -300,18 +340,9 @@
                         </c:UCEditableTextBlock.Resources>
                     </c:UCEditableTextBlock>
 
-                    <!--<TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="2">
-                        <TextBox.Resources>
-                            <Style TargetType="TextBox">
-                                <Setter Property="IsEnabled" Value="{Binding RelativeSource={RelativeSource Self},
-                                         Path=DataContext.IsSelected,Converter={StaticResource booleanReserveConverter}}"/>
-                            </Style>
-                        </TextBox.Resources>
-                    </TextBox>-->
-
                     <Image Grid.Row="1" Grid.Column="1" Source="../Images/Save.png"/>
                 </Grid>
-            </Border>
+            </Border>-->
 
             <Image Source="../Images/Arrow.png" IsHitTestVisible="False"/>
 
@@ -325,6 +356,21 @@
                     </VisualBrush>
                 </Grid.Background>
             </Grid>
+
+            <uc:UCCenter>
+                <s:DesignerItem.RealControl>
+                    <ContentControl Style="{DynamicResource toolboxStyle}"  s:DesignerItem.IsEditable="True">
+                        <uc:UCCenter>
+                            <uc:UCCenter.Style>
+                                <Style TargetType="{x:Type uc:UCCenter}">
+                                    <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Fill,Mode=TwoWay}"/>
+                                    <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Stroke,Mode=TwoWay}"/>
+                                </Style>
+                            </uc:UCCenter.Style>
+                        </uc:UCCenter>
+                    </ContentControl>
+                </s:DesignerItem.RealControl>
+            </uc:UCCenter>
 
             <Path Style="{StaticResource Process}" ToolTip="Process">
                 <s:DesignerItem.DragThumbTemplate>
