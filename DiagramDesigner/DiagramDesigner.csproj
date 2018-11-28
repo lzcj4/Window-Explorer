@@ -63,8 +63,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="RuleCanvas.cs" />
+    <Compile Include="UserControls\UCBase.cs" />
     <Compile Include="UserControls\UCCenter.xaml.cs">
       <DependentUpon>UCCenter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UCArrow.xaml.cs">
+      <DependentUpon>UCArrow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ControlViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -128,6 +133,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\UCCenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UCArrow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

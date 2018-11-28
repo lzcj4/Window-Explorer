@@ -216,8 +216,7 @@ namespace DiagramDesigner
         }
 
         public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(DesignerItem), new PropertyMetadata(Brushes.Black));
-
+            DependencyProperty.Register("Stroke", typeof(Brush), typeof(DesignerItem), new PropertyMetadata(Brushes.Black));        
 
         #endregion
 

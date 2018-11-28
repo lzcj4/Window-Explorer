@@ -750,7 +750,7 @@ namespace DiagramDesigner
 
         #endregion
 
-        #region SelectAll Command
+        #region Color Command
 
         private void ColorCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -761,8 +761,9 @@ namespace DiagramDesigner
             {
                 foreach (DesignerItem item in selectedItems)
                 {
-                    item.Fill = Brushes.Red;
-                    item.Stroke = Brushes.Blue;
+                    item.Fill = Brushes.Blue;
+                    item.Stroke = Brushes.Red;
+                    item.FontSize = 20;
                 }
             }
         }
@@ -848,7 +849,8 @@ namespace DiagramDesigner
                                                   new XElement("ControlId", item.ControlId),
                                                   new XElement("Rotate", item.Rotate),
                                                   new XElement("Fill", item.Fill.ToString()),
-                                                  new XElement("Stroke", item.Stroke.ToString())
+                                                  new XElement("Stroke", item.Stroke.ToString()),
+                                                  new XElement("FontSize", item.FontSize)
                                               )
                                    );
 
@@ -885,6 +887,7 @@ namespace DiagramDesigner
             item.Rotate = Double.Parse(itemXML.Element("Rotate").Value, CultureInfo.InvariantCulture);
             item.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(itemXML.Element("Fill").Value));
             item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(itemXML.Element("Stroke").Value));
+            item.FontSize = Double.Parse(itemXML.Element("FontSize").Value, CultureInfo.InvariantCulture);
 
             Canvas.SetLeft(item, Double.Parse(itemXML.Element("Left").Value, CultureInfo.InvariantCulture) + OffsetX);
             Canvas.SetTop(item, Double.Parse(itemXML.Element("Top").Value, CultureInfo.InvariantCulture) + OffsetY);

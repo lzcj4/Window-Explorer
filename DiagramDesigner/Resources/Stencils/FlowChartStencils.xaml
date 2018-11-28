@@ -299,6 +299,8 @@
                                          Path=DataContext.IsSelected}"/>
                                         <Setter Property="Text" Value="{Binding RelativeSource={RelativeSource Self},
                                          Path=DataContext.Text,Mode=TwoWay}"/>
+                                        <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource Self},
+                                         Path=DataContext.FontSize,Mode=TwoWay}"/>
                                     </Style>
                                 </c:UCEditableTextBlock.Resources>
                             </c:UCEditableTextBlock>

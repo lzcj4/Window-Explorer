@@ -41,13 +41,17 @@
                     VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
             <!-- Designer -->
             <GroupBox Header="Diagram" Grid.Column="1" Margin="3,0,0,0">
+
                 <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
-                    <s:DesignerCanvas Focusable="true" x:Name="MyDesigner"
+                      VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <s:RuleCanvas Margin="10">
+                        <s:DesignerCanvas Focusable="true" x:Name="MyDesigner"
                             Background="{StaticResource WindowBackgroundBrush}"
                             Margin="10" FocusVisualStyle="{x:Null}"
-                            ContextMenu="{StaticResource DesignerCanvasContextMenu}"/>                    
+                            ContextMenu="{StaticResource DesignerCanvasContextMenu}"/>
+                    </s:RuleCanvas>
                 </ScrollViewer>
+
             </GroupBox>
         </Grid>
     </Grid>
