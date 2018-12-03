@@ -63,7 +63,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="RuleCanvas.cs" />
+    <Compile Include="RuleBorder.cs" />
+    <Compile Include="RuleScrollView.cs" />
     <Compile Include="UserControls\UCBase.cs" />
     <Compile Include="UserControls\UCCenter.xaml.cs">
       <DependentUpon>UCCenter.xaml</DependentUpon>
