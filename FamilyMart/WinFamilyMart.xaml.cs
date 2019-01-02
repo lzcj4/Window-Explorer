@@ -16,8 +16,9 @@ namespace WpfApplication3
         public WinFamilyMart()
         {
             InitializeComponent();
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.PrintPreview, PrintSinglePage_Executed));
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, Print_Executed));
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.New , New_Executed));
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.New, New_Executed));
         }
 
 
@@ -40,15 +41,30 @@ namespace WpfApplication3
             }
         }
 
-        private void PrintPreview_Executed(object sender, ExecutedRoutedEventArgs e)
+        //打印当前页
+        private void PrintSinglePage_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //System.Windows.Forms.PrintPreviewDialog printDialog = new System.Windows.Forms.PrintPreviewDialog() { Document;
+            TabItem tab = this.tabGood.SelectedItem as TabItem;
+            if (tab == null) return;
+            UCPage page = tab.Content as UCPage;
+            if (page == null) return;
+            PrintDialog printDialog = new PrintDialog();
 
-            //if (true == printDialog.ShowDialog())
-            //{
-            //    printDialog.PrintDocument(new ShapeDocumentPaginator(GetSheets()), "全家套餐");
-            //}
+            if (true == printDialog.ShowDialog())
+            {
+                printDialog.PrintVisual(page, "全家套餐");
+            }
         }
+
+        //private void PrintPreview_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    System.Windows.Forms.PrintPreviewDialog printDialog = new System.Windows.Forms.PrintPreviewDialog() { Document;
+
+        //    if (true == printDialog.ShowDialog())
+        //    {
+        //        printDialog.PrintDocument(new ShapeDocumentPaginator(GetSheets()), "全家套餐");
+        //    }
+        //}
 
         private IList<UCPage> GetSheets()
         {
@@ -89,7 +105,7 @@ namespace WpfApplication3
 
             public override DocumentPage GetPage(int pageNumber)
             {
-                return new DocumentPage(this.items[pageNumber],this.PageSize,Rect.Empty, Rect.Empty);
+                return new DocumentPage(this.items[pageNumber], this.PageSize, Rect.Empty, Rect.Empty);
             }
 
         }

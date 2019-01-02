@@ -21,8 +21,11 @@
                 <Button Content="加页" Command="{x:Static ApplicationCommands.New}"
                     Height="25" Width="60" />
 
-                <Button Content="打印" Command="{x:Static ApplicationCommands.Print}"
-                    Height="25" Width="60" />
+                <Button Content="打印当前页" Command="{x:Static ApplicationCommands.PrintPreview}"
+                    Height="25" Width="80"  Margin="10,0,0,0"/>
+                
+                <Button Content="打印全部" Command="{x:Static ApplicationCommands.Print}"
+                    Height="25" Width="60"  Margin="10,0,0,0"/>
             </StackPanel>
          
         </Grid>
