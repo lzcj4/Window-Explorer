@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="WpfApplication3.UCPrice"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApplication3"
+             mc:Ignorable="d"  Name="ucSelf"
+             d:DesignHeight="200" d:DesignWidth="200">
+    <Grid>
+        <Path Grid.Column="1" 
+                  Data="M287.00417,257.28205 C287.00417,257.28205 286.95285,251.35039 287.00279,248.28447 L287.00181,238.28317 C286.98923,233.76646 287.37935,230.72091 288.62952,228.28358 289.50464,227.12741 292.7724,223.12183 297.00567,223.28393 L335.17852,223.1168 C339.918,222.77234 343.00019,222.16399 343.37523,221.7109 344.81306,221.19531 347.376,219.69701 347.01728,219.42982 347.01728,219.42982 347.00896,224.95014 347.00885,228.28348 L347.01063,245.78261 C347.01063,245.78261 347.01763,250.73994 347.01763,250.73994 347.17444,253.7587 341.61656,257.82891 331.37175,258.1892 331.37175,258.1892 317.00239,258.28299 317.00239,258.28299 302.79637,258.14674 289.24176,259.31959 287.00429,260.28136" 
+                  Fill="{DynamicResource fm_price_bg_black}" HorizontalAlignment="Left" 
+                 Stretch="Fill" VerticalAlignment="Bottom" />
+        <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Text="{Binding Price,ElementName=ucSelf,StringFormat={}￥:{0}}" Foreground="White"  FontSize="25"/>
+    </Grid>
+</UserControl>

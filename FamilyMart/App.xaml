@@ -1,0 +1,16 @@
+﻿<Application x:Class="WpfApplication3.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfApplication3"
+             StartupUri="WinFamilyMart.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="fm_green" Color="#FF009C41"/>
+        <SolidColorBrush x:Key="fm_blue" Color="#FF0087C1"/>
+        <SolidColorBrush x:Key="fm_gray" Color="#FF7B7986"/>
+        <SolidColorBrush x:Key="fm_font_black" Color="#FF312732"/>
+        <SolidColorBrush x:Key="fm_font_orange" Color="#FFC67255"/>
+        <SolidColorBrush x:Key="fm_price_bg_black" Color="#FF3A2F34"/>
+        
+
+    </Application.Resources>
+</Application>
