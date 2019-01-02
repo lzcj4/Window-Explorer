@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="WpfApplication3.UCPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApplication3"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Grid  Name="gridRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Height="60" Margin="20,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0" Background="{DynamicResource fm_green}"/>
+            <Border Grid.Row="1" Background="#FFFFFF"/>
+            <Border Grid.Row="2" Background="{DynamicResource fm_blue}" />
+
+            <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+                       Margin="10,-9.902,337,-9.902" VerticalAlignment="Center"
+                       Text="FamilyMart" Foreground="{DynamicResource fm_blue}" 
+                       FontSize="50"  FontFamily="Segoe UI Historic"/>
+
+            <local:UCSuilt Width="200" Height="150" Grid.Column="1" Margin="442,-38.64,10,-101.36" Grid.RowSpan="3"/>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <local:UCEditableTextBlock  Height="150"
+                                     FontSize="45" Margin="10,40,0,0" TextWrapping="WrapWithOverflow"
+                                     Foreground="{DynamicResource fm_font_black}" 
+                                     Text="白色恋人团团蛋糕*1味全燕麦牛奶*1味全乳酸菌*1（合计30.5元）"/>
+        </Grid>
+        <Grid Grid.Row="2" Margin="33,7.584,-33,-7.584">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <local:UCGood Image="./Resources/Images/1.jpg" Price="8.5"/>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <local:UCGood Image="./Resources/Images/2.jpg" Price="6.0"/>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <local:UCGood Image="./Resources/Images/3.jpg" Price="15.2"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

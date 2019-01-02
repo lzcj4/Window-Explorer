@@ -21,8 +21,10 @@
                    Height="65" Margin="10,0,0,35" Stroke="Transparent" 
                    StrokeThickness="5" VerticalAlignment="Bottom" Width="90"/>
 
-        <TextBlock  Foreground="{DynamicResource fm_font_orange}" Text="{Binding Title,ElementName=ucSelf}"
-                    FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <local:UCEditableTextBlock  VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                    Background="Transparent" Height="55"
+                                    FontSize="25" Panel.ZIndex="1"
+                                    Foreground="{DynamicResource fm_font_orange}" Text="{Binding Title,ElementName=ucSelf}"/>
 
     </Grid>
 </UserControl>

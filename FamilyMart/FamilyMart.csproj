@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,6 +60,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BooleanReserveConverter.cs" />
+    <Compile Include="CompositeCoverter.cs" />
+    <Compile Include="UCEditableTextBlock.xaml.cs">
+      <DependentUpon>UCEditableTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UCGood.xaml.cs">
+      <DependentUpon>UCGood.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UCPage.xaml.cs">
+      <DependentUpon>UCPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UCPrice.xaml.cs">
       <DependentUpon>UCPrice.xaml</DependentUpon>
     </Compile>
@@ -76,6 +88,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\Brushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UCEditableTextBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UCGood.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UCPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

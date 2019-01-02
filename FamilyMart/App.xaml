@@ -10,7 +10,13 @@
         <SolidColorBrush x:Key="fm_font_black" Color="#FF312732"/>
         <SolidColorBrush x:Key="fm_font_orange" Color="#FFC67255"/>
         <SolidColorBrush x:Key="fm_price_bg_black" Color="#FF3A2F34"/>
+
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
         
+        <local:CompositeCoverter x:Key="reverseBooleanToVisibilityConverter">
+            <local:BooleanReserveConverter/>
+            <BooleanToVisibilityConverter />
+        </local:CompositeCoverter>
 
     </Application.Resources>
 </Application>
