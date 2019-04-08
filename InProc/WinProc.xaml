@@ -1,0 +1,35 @@
+﻿<Window x:Class="InProc.WinProc"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InProc"
+        mc:Ignorable="d"
+        Title="WinProc" Height="600" Width="600">
+    <Grid>
+        <TabControl SelectionChanged="TabControl_Selected" >
+            <TabItem Header="Tab1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Name="border1"  Background="Red"/>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel Orientation="Horizontal" Height="30" VerticalAlignment="Top">
+                            <Button Name="btnShow" Content="Show" Margin="5,2" Click="btnShow_Click"/>
+                            <Button Name="btnHidden" Content="Hidden" Margin="5,2" Click="btnHidden_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Tab2">
+
+            </TabItem>
+        </TabControl>
+    </Grid>
+
+</Window>
