@@ -62,6 +62,7 @@
     </ApplicationDefinition>
     <Compile Include="BooleanReserveConverter.cs" />
     <Compile Include="CompositeCoverter.cs" />
+    <Compile Include="DrawCanvas.cs" />
     <Compile Include="UCEditableTextBlock.xaml.cs">
       <DependentUpon>UCEditableTextBlock.xaml</DependentUpon>
     </Compile>
@@ -79,6 +80,9 @@
     </Compile>
     <Compile Include="WinClip.xaml.cs">
       <DependentUpon>WinClip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WinDraw.xaml.cs">
+      <DependentUpon>WinDraw.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinFamilyMart.xaml.cs">
       <DependentUpon>WinFamilyMart.xaml</DependentUpon>
@@ -112,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WinClip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WinDraw.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
